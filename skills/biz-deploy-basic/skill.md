@@ -14,13 +14,13 @@ description: >-
 
 # biz-deploy-basic
 
-Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project receives only the scaffold it owns (`.cursorrules`, `.work.biz/`); everything else (skills, standards, concepts, docs, scripts, templates) stays in the **source** `.ai.biz` and is loaded on demand via the `AGENT_OS_SOURCE` pointer written into `.cursorrules`.
+Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project receives only the scaffold it owns (`.cursorrules`, `.work.biz/`); everything else (skills, standards, concepts, docs, scripts, templates) stays in the **source** Business OS and is loaded on demand via the `AGENT_OS_SOURCE` pointer written into `.cursorrules`.
 
-**Shell:** `bash <source>/.ai.biz/scripts/biz-deploy-basic.sh <target-path> [mode]`
+**Shell:** `bash <source>/scripts/biz-deploy-basic.sh <target-path> [mode]` (source framework is self-hosted; `skills/` and `scripts/` live at the repo root)
 
-**Canonical path:** `.ai.biz/skills/biz-deploy-basic/skill.md` · **Shell:** `.ai.biz/scripts/biz-deploy-basic.sh`
+**Canonical path:** `.ai.biz/skills/biz-deploy-basic/skill.md` · **Shell:** `<source>/scripts/biz-deploy-basic.sh`
 
-**Source not modified.** biz-deploy-basic only writes to the **target**. The source `.ai.biz` is read-only (script reads its templates).
+**Source not modified.** biz-deploy-basic only writes to the **target**. The source framework is read-only (script reads its templates).
 
 **Contrast with `biz-deploy-files`:** `biz-deploy-files` = **fat-client** (vendored full `.ai.biz/` into target, skills are local). `biz-deploy-basic` = **thin-client** (skills remote in source). Choose:
 - `biz-deploy-files` — you want skills/standards/concepts versioned inside the project, offline-editable, no external dependency.
@@ -185,7 +185,7 @@ test -d "$(grep -oE 'AGENT_OS_SOURCE=[^ ]*' .cursorrules | head -1 | cut -d= -f2
 
 | When | Ask / do |
 |------|----------|
-| Invoked from target with no source pointer yet (greenfield, no `.cursorrules`) | The skill itself can't be loaded in thin-client mode before bootstrap. Tell the user to run the shell directly: `bash /abs/path/to/source/.ai.biz/scripts/biz-deploy-basic.sh .` — chicken-and-egg escape (see `.cursorrules` § Source resolution). |
+| Invoked from target with no source pointer yet (greenfield, no `.cursorrules`) | The skill itself can't be loaded in thin-client mode before bootstrap. Tell the user to run the shell directly: `bash /abs/path/to/source/scripts/biz-deploy-basic.sh .` — chicken-and-egg escape (see `.cursorrules` § Source resolution). |
 | Bootstrap target already has `.ai.biz/skills/` (fat-client) | Warn; ask: convert to thin (delete local `.ai.biz/`)?, keep mixed (skills resolve local-first per fat-client rule — unexpected)?, or abort? Do not silently leave a mixed state. |
 | `update` finds `.cursorrules` with no `AGENT_OS_SOURCE` line | Fat-client template detected → flag as merge candidate; agent appends the Source-resolution section with current source value. |
 | Source moved since last bootstrap | `update` re-syncs the pointer in-place; report old→new. If source unreachable, report `business-os source unreachable` and stop. |

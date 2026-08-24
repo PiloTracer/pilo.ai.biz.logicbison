@@ -3,13 +3,13 @@
 #
 # Copies ONLY the minimal scaffold into the target:
 #   - .cursorrules (from templates/cursorrules.template, with AGENT_OS_SOURCE
-#     token substituted to the absolute path of THIS source .ai.biz, and
+#     token substituted to the absolute path of THIS source framework root, and
 #     Change-safety gate-table script paths baked to the same absolute root)
 #   - .work.biz/ skeleton (HANDOFF, NEXT, UNKNOWNS, pipeline, research)
 #
 # Framework assets (skills/, standards/, concepts/, docs/, scripts/, templates/)
 # are NOT copied — the target's .cursorrules carries an AGENT_OS_SOURCE pointer so
-# the agent resolves them from the source .ai.biz at runtime (thin-client mode).
+# the agent resolves them from the source framework root at runtime (thin-client mode).
 #
 # Default = NO-OVERWRITE: existing target files are preserved by construction.
 # --update: no-overwrite + re-syncs the source pointer + re-bakes script paths
@@ -19,16 +19,16 @@
 # --force: idempotent overwrite of the local scaffold surface only.
 #
 # Source resolution: BIZ_ROOT is derived from this script's location, so the
-# script can be invoked from a TARGET using an external source .ai.biz:
-#   bash /mnt/work/Projects/.ai.biz/scripts/biz-deploy-basic.sh /mnt/work/Projects/tools-project
-# Override the source with BIZ_SOURCE=/abs/path/.ai.biz if needed.
+# script can be invoked from a TARGET using an external source framework root:
+#   bash /mnt/work/Projects/pilo.ai.biz.logicbison/scripts/biz-deploy-basic.sh /mnt/work/Projects/tools-project
+# Override the source with BIZ_SOURCE=/abs/path/to/source-root if needed.
 #
 # Usage:
 #   bash scripts/biz-deploy-basic.sh <target-path>              # no-overwrite (skip existing)
 #   bash scripts/biz-deploy-basic.sh [status] [target-path]     # read-only report (+ verify)
 #   bash scripts/biz-deploy-basic.sh <target-path> [--update]   # no-overwrite + repair + merge candidates
 #   bash scripts/biz-deploy-basic.sh <target-path> [--force]    # overwrite local scaffold (legacy)
-#   BIZ_SOURCE=/path/.ai.biz bash scripts/biz-deploy-basic.sh <target-path>
+#   BIZ_SOURCE=/path/to/source-root bash scripts/biz-deploy-basic.sh <target-path>
 #
 # Argument forms are equivalent: verbs accept the '--' prefix or bare form
 # (`update` ≡ `--update`, `status` ≡ `--status`), '-' / '--' separators are

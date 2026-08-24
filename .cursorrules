@@ -68,12 +68,12 @@ Sister frameworks are siblings on disk; `.ai.<fw>` (legacy) / `pilo.ai.<fw>.logi
 | Framework | Director | Path | Bootstrap artifact |
 |-----------|----------|------|--------------------|
 | `.ai.biz` (Business OS) | `@biz-director` | *this directory* | `skills/README.md` |
-| `.ai` (Agent OS) | `@ai-director` | `../pilo.ai.logicbison` | `../pilo.ai.logicbison/skills/README.md` |
-| `.ai.cto` (CTO Professor OS) | `@cto-director` | `../.ai.cto` | `../.ai.cto/skills/README.md` |
-| `.ai.flutter` (Flutter Agent OS) | `@flutter-director` | `../.ai.flutter` | `../.ai.flutter/skills/README.md` |
-| `.ai.mlt` (MLT Agent OS) | `@mlt-director` | `../.ai.mlt` | `../.ai.mlt/skills/README.md` |
-| `.ai.soc` (Social OS) | `@soc-director` | `../.ai.soc` | `../.ai.soc/skills/README.md` |
-| `.ai.ui` (UI Design OS) | `@ui-director` | `../.ai.ui` | `../.ai.ui/skills/README.md` |
+| `.ai` (Agent OS) | `@ai-director` | `../pilo.ai.logicbison` | `skills/README.md` |
+| `.ai.cto` (CTO Professor OS) | `@cto-director` | `../.ai.cto` | `skills/README.md` |
+| `.ai.flutter` (Flutter Agent OS) | `@flutter-director` | `../.ai.flutter` | `skills/README.md` |
+| `.ai.mlt` (MLT Agent OS) | `@mlt-director` | `../.ai.mlt` | `skills/README.md` |
+| `.ai.soc` (Social OS) | `@soc-director` | `../.ai.soc` | `skills/README.md` |
+| `.ai.ui` (UI Design OS) | `@ui-director` | `../.ai.ui` | `skills/README.md` |
 
 **Path resolution:** (1) use a filled path cell; empty → fall through. (2) Auto-discover: parent = `S/..` with S = this repo (self-hosted) or `$AGENT_OS_SOURCE` (thin); sister = `<S basename with <fw> inserted before its last .segment>` (e.g. `pilo.ai.ui.logicbison` for a `pilo.ai.logicbison` source; `.ai`-prefixed sources resolve `.ai.<fw>` directly), else legacy `.ai.<fw>`; missing = "not installed". (3) Before routing, verify the framework dir + its `skills/README.md` exist; if absent, route with `[degraded: <framework> not installed]` — never route into the void. If your source dir name breaks discovery, fill the path cells manually. (The `.ai` row here tracks the Agent OS family source `pilo.ai.logicbison`; hosts still on the legacy `.ai` name should change that cell to `../.ai`. If neither `../.ai` nor the family-named root exists, ask the user for the correct path — never guess.)
 
@@ -148,7 +148,7 @@ AGENT_OS_SOURCE=REPLACE_BASICSOURCE
 4. `.work.biz/...` references and project app code resolve locally in this repo in both modes.
 5. **Thin-client + unreachable source:** if `$AGENT_OS_SOURCE` is set but the directory does not exist or `skills/README.md` is unreadable, **stop** and report `business-os source unreachable: $AGENT_OS_SOURCE` — do **not** silently fall back to a local `.ai.biz/` (there isn't one) and do **not** guess a different path.
 
-**First bootstrap in thin-client mode** is a chicken-and-egg escape: before `@biz-deploy-basic` runs, the target has no local skill to invoke. Bootstrap is initiated either (a) from the **source** repo — `@biz-deploy-basic - /abs/path/to/target` — or (b) by invoking the shell directly from the target: `bash /abs/path/to/source/.ai.biz/scripts/biz-deploy-basic.sh .` After that, the source pointer in `.cursorrules` lets the local agent load `@biz-deploy-basic update` and every other skill from source.
+**First bootstrap in thin-client mode** is a chicken-and-egg escape: before `@biz-deploy-basic` runs, the target has no local skill to invoke. Bootstrap is initiated either (a) from the **source** repo — `@biz-deploy-basic - /abs/path/to/target` — or (b) by invoking the shell directly from the target: `bash /abs/path/to/source/scripts/biz-deploy-basic.sh .` After that, the source pointer in `.cursorrules` lets the local agent load `@biz-deploy-basic update` and every other skill from source.
 
 ---
 
