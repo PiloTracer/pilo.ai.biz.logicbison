@@ -66,7 +66,7 @@ if [[ -z "$RAW_TARGET" ]]; then
   fi
 fi
 
-# Source .ai.biz root: explicit override wins, else derive from script location.
+# Source Business OS root: explicit override wins, else derive from script location.
 if [[ -n "${BIZ_SOURCE:-}" ]]; then
   BIZ_ROOT="$(cd "$BIZ_SOURCE" && pwd)"
 else
@@ -112,11 +112,11 @@ fi
 # Validate source has required templates and skills.
 TPL_CURS="${BIZ_ROOT}/templates/cursorrules.template"
 if [[ ! -f "$TPL_CURS" ]]; then
-  echo "ERROR: source .ai.biz missing templates/cursorrules.template at $BIZ_ROOT" >&2
+  echo "ERROR: source framework missing templates/cursorrules.template at $BIZ_ROOT" >&2
   exit 1
 fi
 if [[ ! -d "${BIZ_ROOT}/skills" ]]; then
-  echo "ERROR: source .ai.biz missing skills/ directory at $BIZ_ROOT" >&2
+  echo "ERROR: source framework missing skills/ directory at $BIZ_ROOT" >&2
   exit 1
 fi
 

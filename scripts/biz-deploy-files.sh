@@ -9,7 +9,7 @@
 #   bash scripts/biz-deploy-files.sh [status] [target-path]     # read-only report (+ verify)
 #   bash scripts/biz-deploy-files.sh <target-path> --force      # overwrite existing
 #   bash scripts/biz-deploy-files.sh <target-path> --update     # no-overwrite + merge list
-#   BIZ_SOURCE=/path/.ai.biz bash scripts/biz-deploy-files.sh <target-path>
+#   BIZ_SOURCE=/path/to/source-root bash scripts/biz-deploy-files.sh <target-path>
 #
 # Argument forms are equivalent: verbs accept the '--' prefix or bare form
 # (`update` ≡ `--update`, `status` ≡ `--status`), '-' / '--' separators are

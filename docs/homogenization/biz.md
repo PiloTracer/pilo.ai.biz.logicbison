@@ -1,6 +1,6 @@
 # `.ai.biz` (Business OS) — upgrade directions for the deploy skills
 
-**Status:** Ready · **Needs:** none · **Repo:** `/mnt/work/Projects/.ai.biz` (24 skills, clean git, CI present)
+**Status:** Ready · **Needs:** none · **Repo:** `/mnt/work/Projects/pilo.ai.biz.logicbison` (24 skills, clean git, CI present)
 
 Goal: make `@biz-deploy-basic` / `@biz-deploy-files` produce targets whose `.cursorrules` discovers all six sister frameworks under both namings — same as the current framework.
 

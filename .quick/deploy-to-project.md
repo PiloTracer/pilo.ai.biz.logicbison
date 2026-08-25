@@ -7,9 +7,9 @@ Two modes: **fat-client** (`biz-deploy-files` — vendored `.ai.biz/`) and **thi
 ## Thin-client
 
 ```bash
-bash /path/to/.ai.biz/scripts/biz-deploy-basic.sh /path/to/target
-bash /path/to/.ai.biz/scripts/biz-deploy-basic.sh --status /path/to/target
-bash /path/to/.ai.biz/scripts/biz-deploy-basic.sh /path/to/target --update
+bash /path/to/source-root/scripts/biz-deploy-basic.sh /path/to/target
+bash /path/to/source-root/scripts/biz-deploy-basic.sh --status /path/to/target
+bash /path/to/source-root/scripts/biz-deploy-basic.sh /path/to/target --update
 ```
 
 ```text
@@ -21,15 +21,15 @@ bash /path/to/.ai.biz/scripts/biz-deploy-basic.sh /path/to/target --update
 ## Fat-client
 
 ```bash
-bash /path/to/.ai.biz/scripts/biz-deploy-files.sh /path/to/target
-bash /path/to/.ai.biz/scripts/biz-deploy-files.sh /path/to/target --update
-bash /path/to/.ai.biz/scripts/biz-deploy-files.sh /path/to/target --force
+bash /path/to/source-root/scripts/biz-deploy-files.sh /path/to/target
+bash /path/to/source-root/scripts/biz-deploy-files.sh /path/to/target --update
+bash /path/to/source-root/scripts/biz-deploy-files.sh /path/to/target --force
 ```
 
 In-place scaffold (`.ai.biz/`, `.work.biz/`, `.cursorrules`):
 
 ```bash
-cd /path/to/target && bash /path/to/.ai.biz/scripts/biz-deploy-files.sh .
+cd /path/to/target && bash /path/to/source-root/scripts/biz-deploy-files.sh .
 ```
 
 ## Full repo
@@ -37,7 +37,7 @@ cd /path/to/target && bash /path/to/.ai.biz/scripts/biz-deploy-files.sh .
 For a full repo mirror (with VCS history), use plain `git clone` out-of-band:
 
 ```bash
-git clone /path/to/.ai.biz /path/to/destination
+git clone /path/to/source-root /path/to/destination
 ```
 
 ## Next steps
@@ -47,4 +47,4 @@ git clone /path/to/.ai.biz /path/to/destination
 @biz-strategy greenfield
 ```
 
-Verify: `bash /path/to/.ai.biz/scripts/framework-verify.sh`
+Verify: `bash /path/to/source-root/scripts/framework-verify.sh`

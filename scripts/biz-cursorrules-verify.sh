@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # biz-cursorrules-verify.sh — verify (optionally repair) a deployed target's
 # .cursorrules against the CURRENT Business OS source location
-# (/mnt/work/Projects/.ai.biz or wherever this script lives).
+# (/mnt/work/Projects/pilo.ai.biz.logicbison or wherever this script lives).
 #
 # Read-only by default. --fix applies safe mechanical repairs (idempotent;
 # preserves target customizations and filled REPLACE: tokens):
@@ -17,7 +17,7 @@
 # Usage:
 #   bash scripts/biz-cursorrules-verify.sh <target-root> [--fix] [--thin|--fat]
 #   bash scripts/biz-cursorrules-verify.sh --self-test
-#   BIZ_SOURCE=/abs/path/.ai.biz bash scripts/biz-cursorrules-verify.sh <target-root>
+#   BIZ_SOURCE=/abs/path/to/source-root bash scripts/biz-cursorrules-verify.sh <target-root>
 #
 # Flags accept the '--' prefix or bare form; the target path may appear in any
 # position. <target-root> = consumer repo root (the dir holding .cursorrules).
@@ -53,7 +53,7 @@ for arg in "$@"; do
 done
 [[ -n "$RAW_TARGET" ]] || { echo "Usage: $0 [--fix] [--thin|--fat] <target-root>" >&2; exit 2; }
 
-# Source .ai.biz root: explicit override wins, else derive from script location.
+# Source Business OS root: explicit override wins, else derive from script location.
 if [[ -n "${BIZ_SOURCE:-}" ]]; then
   BIZ_ROOT="$(cd "$BIZ_SOURCE" && pwd)"
 else
