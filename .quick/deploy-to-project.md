@@ -1,6 +1,6 @@
 # Deploy .ai.biz (Business OS) Into a Target Project
 
-Two modes: **fat-client** (`biz-deploy-files` — vendored `.ai.biz/`) and **thin-client** (`biz-deploy-basic` — `.cursorrules` + `.work.biz/` only; skills load from `$AGENT_OS_SOURCE`).
+Two modes: **fat-client** (`biz-deploy-files` — vendored `.ai.biz/`) and **thin-client** (`biz-deploy-basic` — `.cursorrules` + `.work.biz/` only; skills load from `$AI_BIZ_SOURCE`).
 
 **No local `opencode.json`.** Register via parent Agent OS (`.ai/opencode.json`) when co-installed.
 

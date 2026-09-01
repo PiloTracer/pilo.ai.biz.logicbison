@@ -2,7 +2,7 @@
 name: biz-deploy-basic
 description: >-
   Thin-client bootstrap of Business OS (.ai.biz) into a target project. Copies
-  ONLY the minimal scaffold — .cursorrules (with AGENT_OS_SOURCE pointer to the
+  ONLY the minimal scaffold — .cursorrules (with AI_BIZ_SOURCE pointer to the
   source .ai.biz) and .work.biz/ skeleton (HANDOFF, NEXT, UNKNOWNS, pipeline,
   research). Framework assets (skills, standards, concepts, docs, scripts) are
   NOT copied; the agent resolves them from the source Business OS at runtime per
@@ -14,7 +14,7 @@ description: >-
 
 # biz-deploy-basic
 
-Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project receives only the scaffold it owns (`.cursorrules`, `.work.biz/`); everything else (skills, standards, concepts, docs, scripts, templates) stays in the **source** Business OS and is loaded on demand via the `AGENT_OS_SOURCE` pointer written into `.cursorrules`.
+Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project receives only the scaffold it owns (`.cursorrules`, `.work.biz/`); everything else (skills, standards, concepts, docs, scripts, templates) stays in the **source** Business OS and is loaded on demand via the `AI_BIZ_SOURCE` pointer written into `.cursorrules`.
 
 **Shell:** `bash <source>/scripts/biz-deploy-basic.sh <target-path> [mode]` (source framework is self-hosted; `skills/` and `scripts/` live at the repo root)
 
@@ -55,7 +55,7 @@ Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project 
 
 | Path | Source | If target exists |
 |------|--------|-------------------|
-| `.cursorrules` | `templates/cursorrules.template` with `AGENT_OS_SOURCE=<source>` substituted | skip (preserve); `--force` overwrites |
+| `.cursorrules` | `templates/cursorrules.template` with `AI_BIZ_SOURCE=<source>` substituted | skip (preserve); `--force` overwrites |
 | `.work.biz/README.md`, `gates.md`, `context/HANDOFF.md`, `plans/NEXT.md`, `plans/UNKNOWNS.md`, `pipeline/pipeline_tracker.md`, `pipeline/outreach-cadence.md`, `research/research_index.md`, `strategy/README.md`, `reference/CONTENT_STATUS.md`, `reference/BRAND_STATUS.md`, `reference/VOICE_PROFILE.md`, `reference/VOICE_RETRO.md`, `reference/OPERATOR_PROFILE.md`, `reference/PROJECTS.md` | `templates/work/*.template` (suffix stripped) | skip (preserve) |
 | `.work.biz/{context,plans,pipeline,research,drafts,strategy,reference,ideas,ideas.archive}/` | created empty dirs | skip (preserve) |
 
@@ -73,7 +73,7 @@ Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project 
 | Source `skills/` directory missing | **Block**: source is not a valid `.ai.biz` framework root |
 | Target dir does not exist | **Block**: report missing path |
 | Target already has local `.ai.biz/skills/` | **Block** fat-client leak (use `--force` to override, or remove local `.ai.biz/` first) |
-| Target `.cursorrules` exists + lacks `AGENT_OS_SOURCE=` line | In `update` mode → flag as **MERGE CANDIDATE** (the Source-resolution section is missing); in default mode → skip (preserve) and report that source-resolution is not wired. |
+| Target `.cursorrules` exists + lacks `AI_BIZ_SOURCE=` line (and no legacy `AGENT_OS_SOURCE=` line) | In `update` mode → flag as **MERGE CANDIDATE** (the Source-resolution section is missing); in default mode → skip (preserve) and report that source-resolution is not wired. |
 
 ---
 
@@ -81,7 +81,7 @@ Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project 
 
 1. Resolve source `BIZ_ROOT` (explicit `BIZ_SOURCE` env, else script's parent). Validate `templates/cursorrules.template` + `skills/` exist.
 2. Resolve target = `REPO_ROOT` of the consumer (cwd for in-place, or the named path for outbound).
-3. Write `.cursorrules` into the target from the template, substituting `AGENT_OS_SOURCE=REPLACE_BASICSOURCE` → `AGENT_OS_SOURCE=<absolute BIZ_ROOT>` and baking `bash scripts/<name>` → `bash <BIZ_ROOT>/scripts/<name>` (Change-safety gate table + git-hooks install line — these commands live inside `.cursorrules` itself, so the skill-level source-resolution rule doesn't cover them). **No-overwrite** if `.cursorrules` exists; `--force` overwrites.
+3. Write `.cursorrules` into the target from the template, substituting `AI_BIZ_SOURCE=REPLACE_BASICSOURCE` → `AI_BIZ_SOURCE=<absolute BIZ_ROOT>` and baking `bash scripts/<name>` → `bash <BIZ_ROOT>/scripts/<name>` (Change-safety gate table + git-hooks install line — these commands live inside `.cursorrules` itself, so the skill-level source-resolution rule doesn't cover them). **No-overwrite** if `.cursorrules` exists; `--force` overwrites.
 4. Create `.work.biz/` skeleton by copying template files and creating directory structure. `copy_if_missing` enforces no-overwrite.
 5. **Post-deploy verification** (every mode): the script runs `scripts/biz-cursorrules-verify.sh` against the target and surfaces any `[FAIL]` findings. In `update` mode unrepairable findings fail the deploy; in `skip`/`force` they are reported as pre-existing with the repair hint.
 6. Report: source pointer value, `.work.biz/` presence, fat-client leak check, next steps — close per the Operator handoff contract (Form A when nothing is needed, Form B otherwise).
@@ -96,7 +96,7 @@ Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project 
 
 After I1 (no-overwrite) the script:
 
-1. **Repairs via the shared verifier** (`scripts/biz-cursorrules-verify.sh --fix --thin`): re-syncs a stale `AGENT_OS_SOURCE` pointer in-place (assignment only — preserves all other target edits) and re-bakes `bash scripts/...` gate-table paths to the current source. **Foreign-pointer guard:** if the existing pointer resolves to a valid root of a *different* framework (e.g. an Agent OS `.ai` in a mixed project), it is left untouched — repair it with that framework's own deploy update.
+1. **Repairs via the shared verifier** (`scripts/biz-cursorrules-verify.sh --fix --thin`): re-syncs a stale `AI_BIZ_SOURCE` pointer in-place (assignment only — preserves all other target edits) and re-bakes `bash scripts/...` gate-table paths to the current source. **Legacy fallback:** a target still on the old `AGENT_OS_SOURCE=` pointer name is migrated to `AI_BIZ_SOURCE=` (same root, in place) when the value resolves to a Business OS root. **Foreign-pointer guard:** if the existing pointer resolves to a valid root of a *different* framework (e.g. an Agent OS `.ai` in a mixed project — including a foreign `AGENT_OS_SOURCE`), it is left untouched — repair it with that framework's own deploy update.
 2. **Lists merge candidates** among the local surface: existing-but-differing files vs the current source templates (substituted). Candidates:
    - `.cursorrules` (differs from current `template-with-source`)
    - `.work.biz/<file>` (target has user content; templates are skeletons)
@@ -106,13 +106,13 @@ After I1 (no-overwrite) the script:
 
 | Class | Merge rule |
 |-------|------------|
-| `.cursorrules` | Update framework sections (Skills table, Core principles, Protected files, **Source resolution** section, Frameworks registry). Preserve target-filled `REPLACE:` tokens, target customizations, target-specific protected-file paths. If target lacks the Source-resolution section entirely (fat-client template) → append it with the current `AGENT_OS_SOURCE`. Never wholesale-replace. |
+| `.cursorrules` | Update framework sections (Skills table, Core principles, Protected files, **Source resolution** section, Frameworks registry). Preserve target-filled `REPLACE:` tokens, target customizations, target-specific protected-file paths. If target lacks the Source-resolution section entirely (fat-client template) → append it with the current `AI_BIZ_SOURCE`. Never wholesale-replace. |
 | `.work.biz/<file>` skeletons | Append new template sections absent in target; **preserve all user content** (HANDOFF rows, NEXT iteration blocks, UNKNOWNS entries, pipeline data). Skeletons are minimal — most merges add no new sections. Never drop target rows. |
 | `.work.biz/<dir>` | Create any NEW scaffold dir that didn't exist (e.g. a new sub-dir added since last bootstrap); do not touch existing. |
 
 ### Preserve invariants (never drop)
 - Target's filled `REPLACE:` tokens (the merge keeps target values, not source `REPLACE:*` placeholders).
-- Target's `AGENT_OS_SOURCE` line, in-place value (synced, not reset to `REPLACE_BASICSOURCE`).
+- Target's `AI_BIZ_SOURCE` line, in-place value (synced, not reset to `REPLACE_BASICSOURCE`).
 - Target's custom content in `.work.biz/` files — any HANDOFF rows, NEXT items, pipeline data, research notes the user or `biz-*` skills produced.
 - Target's git history, `.gitignore`, app code — all untouched.
 
@@ -125,12 +125,12 @@ Delegates `.cursorrules` checks to `scripts/biz-cursorrules-verify.sh` (single s
 | Check | Output |
 |-------|--------|
 | `.cursorrules` present | pass / missing |
-| `AGENT_OS_SOURCE` value + reachable + a Business OS root | pass / unfilled / unreachable / foreign-framework pointer (warn — mixed project) |
+| `AI_BIZ_SOURCE` value + reachable + a Business OS root | pass / unfilled / unreachable / foreign-framework pointer (warn — mixed project) |
 | Baked gate-table script paths | pass / unbaked literals / stale prefix |
 | Source-resolution section present | pass / missing (merge candidate) |
 | `.work.biz/` skeleton (HANDOFF, NEXT, UNKNOWNS) | pass / missing |
 | Local `.ai.biz/skills/` exists (fat-client leak) | no (good, thin) / yes (warn — mixed) |
-| `REPLACE:` tokens remaining in `.cursorrules` | count (excludes `AGENT_OS_SOURCE` which is filled) |
+| `REPLACE:` tokens remaining in `.cursorrules` | count (excludes `AI_BIZ_SOURCE` which is filled) |
 
 Exit code is non-zero when any `[FAIL]` finding remains, so `status` doubles as a CI/deploy gate.
 
@@ -152,14 +152,14 @@ Flags accept `--` or bare form (`fix` ≡ `--fix`); path may appear in any posit
 |---|-------|--------|
 | 1 | Source `templates/cursorrules.template` readable | pass |
 | 2 | Source `skills/` directory present | pass |
-| 3 | Target `.cursorrules` exists with valid `AGENT_OS_SOURCE` (resolves to a Business OS root) | |
+| 3 | Target `.cursorrules` exists with valid `AI_BIZ_SOURCE` (resolves to a Business OS root) | |
 | 4 | Source-resolution section present in target `.cursorrules` | |
 | 5 | `.work.biz/` skeleton present (HANDOFF, NEXT, UNKNOWNS at minimum) | |
 | 6 | No-overwrite honored (existing target files preserved; `--force` only when explicitly requested) | |
 | 7 | `update`: source pointer re-synced if stale; script paths baked; merge candidate list produced; no wholesale replaces; foreign-framework pointer left untouched | |
 | 8 | Fat-client leak checked (no unexpected local `.ai.biz/skills/`) | |
 | 9 | Post-deploy verification ran (`biz-cursorrules-verify.sh`); `[FAIL]` findings surfaced or repaired | |
-| 10 | User informed that skills load from `$AGENT_OS_SOURCE` at runtime + next steps | |
+| 10 | User informed that skills load from `$AI_BIZ_SOURCE` at runtime + next steps | |
 
 - **Operator handoff:** close every operator-facing report per the Operator handoff contract in `skills/SKILL_DEPENDENCIES.md` (Form A single line when nothing is needed; otherwise `**Needs your approval:**` with `path:L<n>` cites, `**Needs your answer:**`, and exactly one `**Next step:**`; omit empty sections).
 
@@ -167,9 +167,9 @@ Flags accept `--` or bare form (`fix` ≡ `--fix`); path may appear in any posit
 
 ```text
 # Verify the source is reachable from the target's perspective:
-test -d "$(grep -oE 'AGENT_OS_SOURCE=[^ ]*' .cursorrules | head -1 | cut -d= -f2-)"
+test -d "$(grep -oE 'AI_BIZ_SOURCE=[^ ]*' .cursorrules | head -1 | cut -d= -f2-)"
 
-# Fill remaining REPLACE tokens in .cursorrules (NOT AGENT_OS_SOURCE — biz-deploy-basic set it):
+# Fill remaining REPLACE tokens in .cursorrules (NOT AI_BIZ_SOURCE — biz-deploy-basic set it):
 #   rg 'REPLACE:' .cursorrules
 
 # First skill invocation — loads from source:
@@ -187,7 +187,7 @@ test -d "$(grep -oE 'AGENT_OS_SOURCE=[^ ]*' .cursorrules | head -1 | cut -d= -f2
 |------|----------|
 | Invoked from target with no source pointer yet (greenfield, no `.cursorrules`) | The skill itself can't be loaded in thin-client mode before bootstrap. Tell the user to run the shell directly: `bash /abs/path/to/source/scripts/biz-deploy-basic.sh .` — chicken-and-egg escape (see `.cursorrules` § Source resolution). |
 | Bootstrap target already has `.ai.biz/skills/` (fat-client) | Warn; ask: convert to thin (delete local `.ai.biz/`)?, keep mixed (skills resolve local-first per fat-client rule — unexpected)?, or abort? Do not silently leave a mixed state. |
-| `update` finds `.cursorrules` with no `AGENT_OS_SOURCE` line | Fat-client template detected → flag as merge candidate; agent appends the Source-resolution section with current source value. |
+| `update` finds `.cursorrules` with no `AI_BIZ_SOURCE` line (and no legacy `AGENT_OS_SOURCE` line) | Fat-client template detected → flag as merge candidate; agent appends the Source-resolution section with current source value. |
 | Source moved since last bootstrap | `update` re-syncs the pointer in-place; report old→new. If source unreachable, report `business-os source unreachable` and stop. |
 
 ---
@@ -196,8 +196,8 @@ test -d "$(grep -oE 'AGENT_OS_SOURCE=[^ ]*' .cursorrules | head -1 | cut -d= -f2
 
 - Copying `skills/`/`standards/`/`concepts/` into the target (that defeats thin-client; use `@biz-deploy-files` instead).
 - Wholesale-replacing `.cursorrules` or `.work.biz/context/HANDOFF.md` on `update`.
-- Resetting `AGENT_OS_SOURCE` to `REPLACE_BASICSOURCE` instead of the resolved path.
+- Resetting `AI_BIZ_SOURCE` to `REPLACE_BASICSOURCE` instead of the resolved path.
 - Running `@biz-deploy-basic` and expecting skills to work offline — thin-client requires the source path to remain reachable.
-- Failing to verify `$AGENT_OS_SOURCE` is readable before claiming bootstrap complete.
+- Failing to verify `$AI_BIZ_SOURCE` is readable before claiming bootstrap complete.
 - Invoking `@biz-deploy-basic -` from the source dir **without** a target path — the shell aborts; the agent must prompt for the target rather than guessing or defaulting to the source's own cwd.
 - Using `biz-deploy-basic` to "upgrade" a fat-client repo without first removing the local `.ai.biz/` (creates a mixed state; skills resolve fat-client first).

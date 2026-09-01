@@ -4,7 +4,7 @@ Canonical layout of the Business OS framework and project memory.
 
 ## Framework files (`.ai.biz/`)
 
-Stored in the source Business OS. In thin-client mode they are read from `AGENT_OS_SOURCE`; in fat-client mode they are vendored inside the project.
+Stored in the source Business OS. In thin-client mode they are read from `AI_BIZ_SOURCE` (legacy pointer name: `AGENT_OS_SOURCE`); in fat-client mode they are vendored inside the project.
 
 ```text
 .ai.biz/
@@ -101,4 +101,4 @@ The agent must not modify these without explicit user approval:
 
 ## Resolution rule
 
-When the source resolution section in `.cursorrules` says `AGENT_OS_SOURCE` is set, read framework assets from that path. Otherwise read them locally from the project's own `.ai.biz/`.
+When the source resolution section in `.cursorrules` says `AI_BIZ_SOURCE` is set, read framework assets from that path. Otherwise read them locally from the project's own `.ai.biz/`. (Legacy installs name the pointer `AGENT_OS_SOURCE`; it counts only when it resolves to a valid Business OS root, and `@biz-deploy-basic update` migrates it to `AI_BIZ_SOURCE`.)

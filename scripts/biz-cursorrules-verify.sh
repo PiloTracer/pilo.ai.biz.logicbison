@@ -5,14 +5,18 @@
 #
 # Read-only by default. --fix applies safe mechanical repairs (idempotent;
 # preserves target customizations and filled REPLACE: tokens):
-#   thin-client: re-sync AGENT_OS_SOURCE to the current source; re-bake
-#                Change-safety gate-table script paths (old absolute prefix
-#                first, then un-prefixed `scripts/` literals)
+#   thin-client: re-sync AI_BIZ_SOURCE to the current source; migrate a legacy
+#                AGENT_OS_SOURCE line to AI_BIZ_SOURCE when it is a Business OS
+#                pointer; re-bake Change-safety gate-table script paths (old
+#                absolute prefix first, then un-prefixed `scripts/` literals)
 #
-# Foreign-pointer guard: if the target's AGENT_OS_SOURCE resolves to a valid
-# root of a DIFFERENT framework (e.g. an Agent OS `.ai` in a mixed project),
-# the pointer is left untouched — repair it with that framework's own deploy.
-# The verifier then validates Business OS wiring via baked .ai.biz references.
+# Pointer name: AI_BIZ_SOURCE is canonical. Legacy AGENT_OS_SOURCE counts as
+# the Business OS pointer ONLY when it resolves to a valid Business OS root.
+# Foreign-pointer guard: if the target's AGENT_OS_SOURCE (or AI_BIZ_SOURCE)
+# resolves to a valid root of a DIFFERENT framework (e.g. an Agent OS `.ai` in
+# a mixed project), the pointer is left untouched — repair it with that
+# framework's own deploy. The verifier then validates Business OS wiring via
+# baked .ai.biz references.
 #
 # Usage:
 #   bash scripts/biz-cursorrules-verify.sh <target-root> [--fix] [--thin|--fat]
@@ -102,7 +106,8 @@ baked_sister_paths() {
     | sort -u || true
 }
 
-get_source() {
+# Raw value of a legacy AGENT_OS_SOURCE line, whatever it points at.
+get_legacy_source() {
   [[ -f "$CURS_DEST" ]] || { printf ''; return 0; }
   local s
   s="$(grep -E '^AGENT_OS_SOURCE=' "$CURS_DEST" 2>/dev/null | head -1 | cut -d= -f2- || true)"
@@ -112,11 +117,32 @@ get_source() {
   printf '%s' "$s"
 }
 
+# The Business OS source pointer: prefer AI_BIZ_SOURCE; fall back to a legacy
+# AGENT_OS_SOURCE line only when it resolves to a valid Business OS root — a
+# foreign framework's AGENT_OS_SOURCE (e.g. Agent OS in a mixed repo) is never
+# read as the Business OS pointer.
+get_source() {
+  [[ -f "$CURS_DEST" ]] || { printf ''; return 0; }
+  local s
+  s="$(grep -E '^AI_BIZ_SOURCE=' "$CURS_DEST" 2>/dev/null | head -1 | cut -d= -f2- || true)"
+  if [[ -z "$s" ]]; then
+    s="$(grep -oE 'AI_BIZ_SOURCE=[^[:space:]`]+' "$CURS_DEST" 2>/dev/null | head -1 | cut -d= -f2- || true)"
+  fi
+  if [[ -z "$s" ]]; then
+    local legacy
+    legacy="$(get_legacy_source)"
+    if [[ -n "$legacy" && "$legacy" != "REPLACE_BASICSOURCE" ]] && is_biz_root "$legacy"; then
+      s="$legacy"
+    fi
+  fi
+  printf '%s' "$s"
+}
+
 # ── Layout detection (unless forced) ──────────────────────────────────
 SRC_VALUE="$(get_source)"
 if [[ -z "$LAYOUT" ]]; then
   if is_biz_root "$DEST_ROOT" && [[ "$(cd "$DEST_ROOT" && pwd)" == "$BIZ_ROOT" ]]; then
-    LAYOUT="source"   # self-hosted framework repo — registry cells are filled paths; AGENT_OS_SOURCE stays REPLACE_BASICSOURCE by design
+    LAYOUT="source"   # self-hosted framework repo — registry cells are filled paths; AI_BIZ_SOURCE stays REPLACE_BASICSOURCE by design
   elif [[ -n "$SRC_VALUE" && "$SRC_VALUE" != "REPLACE_BASICSOURCE" ]]; then
     LAYOUT="thin"
   elif [[ -d "${DEST_ROOT}/.ai.biz/skills" ]]; then
@@ -128,8 +154,24 @@ fi
 
 # ── --fix: mechanical repairs (before checks so verdict reflects them) ──
 if [[ "$FIX" -eq 1 && -f "$CURS_DEST" ]]; then
-  if [[ "$LAYOUT" == "thin" ]] && grep -q 'AGENT_OS_SOURCE=' "$CURS_DEST"; then
+  if [[ "$LAYOUT" == "thin" ]]; then
     BIZ_ESC="${BIZ_ROOT//\//\\/}"
+    # 0. Migrate the legacy pointer name: AGENT_OS_SOURCE → AI_BIZ_SOURCE, only
+    #    when no AI_BIZ_SOURCE line exists yet AND the legacy value is a
+    #    Business OS pointer (valid biz root, unfilled token, or stale but
+    #    .ai.biz-shaped). A foreign AGENT_OS_SOURCE (Agent OS in a mixed repo)
+    #    is left untouched.
+    if ! grep -q 'AI_BIZ_SOURCE=' "$CURS_DEST"; then
+      legacy="$(get_legacy_source)"
+      if [[ -n "$legacy" ]] && { [[ "$legacy" == "REPLACE_BASICSOURCE" ]] || is_biz_root "$legacy" || { [[ ! -d "$legacy" ]] && [[ "$legacy" == *.ai.biz* ]]; }; }; then
+        legacy_esc="${legacy//\//\\/}"
+        perl -i -pe "s{AGENT_OS_SOURCE=\Q${legacy}\E}{AI_BIZ_SOURCE=${legacy_esc}}" "$CURS_DEST"
+        echo "  [fix] migrated AGENT_OS_SOURCE → AI_BIZ_SOURCE ($legacy)"
+        SRC_VALUE="$legacy"
+      fi
+    fi
+  fi
+  if [[ "$LAYOUT" == "thin" ]] && grep -q 'AI_BIZ_SOURCE=' "$CURS_DEST"; then
     # 1. Re-sync the source pointer in place (all other lines untouched).
     #    Guards: only rewrite values that are unfilled, stale-but-biz-shaped,
     #    or point at another Business OS root. A reachable pointer into a
@@ -141,20 +183,20 @@ if [[ "$FIX" -eq 1 && -f "$CURS_DEST" ]]; then
         repoint=1
       elif [[ ! -d "$SRC_VALUE" ]]; then
         if [[ "$SRC_VALUE" == *.ai.biz* ]]; then repoint=1
-        else warn "AGENT_OS_SOURCE: $SRC_VALUE unreachable and not .ai.biz-shaped — foreign framework pointer? Left untouched."; fi
+        else warn "AI_BIZ_SOURCE: $SRC_VALUE unreachable and not .ai.biz-shaped — foreign framework pointer? Left untouched."; fi
       elif is_biz_root "$SRC_VALUE"; then
         repoint=1
       else
-        warn "AGENT_OS_SOURCE: $SRC_VALUE is a valid non-Business-OS root — foreign framework pointer, left untouched."
+        warn "AI_BIZ_SOURCE: $SRC_VALUE is a valid non-Business-OS root — foreign framework pointer, left untouched."
       fi
       if [[ "$repoint" -eq 1 ]]; then
         if [[ -n "$SRC_VALUE" ]]; then
-          perl -i -pe "s{AGENT_OS_SOURCE=\Q${SRC_VALUE}\E}{AGENT_OS_SOURCE=${BIZ_ESC}}" "$CURS_DEST" 2>/dev/null || \
-            perl -i -pe "s/AGENT_OS_SOURCE=[^\n]*/AGENT_OS_SOURCE=${BIZ_ESC}/" "$CURS_DEST"
+          perl -i -pe "s{AI_BIZ_SOURCE=\Q${SRC_VALUE}\E}{AI_BIZ_SOURCE=${BIZ_ESC}}" "$CURS_DEST" 2>/dev/null || \
+            perl -i -pe "s/AI_BIZ_SOURCE=[^\n]*/AI_BIZ_SOURCE=${BIZ_ESC}/" "$CURS_DEST"
         else
-          perl -i -pe "s/AGENT_OS_SOURCE=[^\n]*/AGENT_OS_SOURCE=${BIZ_ESC}/" "$CURS_DEST"
+          perl -i -pe "s/AI_BIZ_SOURCE=[^\n]*/AI_BIZ_SOURCE=${BIZ_ESC}/" "$CURS_DEST"
         fi
-        echo "  [fix] AGENT_OS_SOURCE → $BIZ_ROOT (was: ${SRC_VALUE:-<unset>})"
+        echo "  [fix] AI_BIZ_SOURCE → $BIZ_ROOT (was: ${SRC_VALUE:-<unset>})"
       fi
     fi
     # 2. Re-bake gate-table script paths: old absolute prefix first (so the
@@ -239,31 +281,40 @@ check_baked_refs() {
   done <<< "$refs"
 }
 
-# Self-hosted source repo: AGENT_OS_SOURCE stays REPLACE_BASICSOURCE by design
+# Self-hosted source repo: AI_BIZ_SOURCE stays REPLACE_BASICSOURCE by design
 # (fat-client marker), registry cells are filled paths — nothing to repair.
 if [[ "$LAYOUT" == "source" ]]; then
-  ok "self-hosted framework source repo (AGENT_OS_SOURCE=REPLACE_BASICSOURCE by design — not a target)"
+  ok "self-hosted framework source repo (AI_BIZ_SOURCE=REPLACE_BASICSOURCE by design — not a target)"
 # Thin-client: source pointer + baked executable paths.
 elif [[ "$LAYOUT" == "thin" ]]; then
   SRC_NOW="$(get_source)"
-  if ! grep -q 'AGENT_OS_SOURCE=' "$CURS_DEST"; then
-    baked_biz="$(grep -oE '/[^ `|"]+/\.ai\.biz\b' "$CURS_DEST" 2>/dev/null | sort -u || true)"
-    if [[ -n "$baked_biz" ]]; then
-      warn "AGENT_OS_SOURCE: line missing — custom standalone layout; validating baked .ai.biz references instead"
+  if ! grep -q 'AI_BIZ_SOURCE=' "$CURS_DEST" && [[ -z "$SRC_NOW" ]]; then
+    legacy_raw="$(get_legacy_source)"
+    if [[ -n "$legacy_raw" && "$legacy_raw" != "REPLACE_BASICSOURCE" ]]; then
+      # Legacy AGENT_OS_SOURCE present but not a valid Business OS root —
+      # foreign framework pointer: never read as the biz source, never touched.
+      warn "AGENT_OS_SOURCE: $legacy_raw is not a Business OS root — foreign framework pointer, left untouched (biz pointer is AI_BIZ_SOURCE); Business OS resolves via baked references"
       check_baked_refs
     else
-      fail "AGENT_OS_SOURCE: line missing (fat-client template? → Source-resolution section is a merge candidate)"
+      baked_biz="$(grep -oE '/[^ `|"]+/\.ai\.biz\b' "$CURS_DEST" 2>/dev/null | sort -u || true)"
+      if [[ -n "$baked_biz" ]]; then
+        warn "AI_BIZ_SOURCE: line missing — custom standalone layout; validating baked .ai.biz references instead"
+        check_baked_refs
+      else
+        fail "AI_BIZ_SOURCE: line missing (fat-client template? → Source-resolution section is a merge candidate)"
+      fi
     fi
   elif [[ -z "$SRC_NOW" || "$SRC_NOW" == "REPLACE_BASICSOURCE" ]]; then
-    fail "AGENT_OS_SOURCE: unfilled (${SRC_NOW:-<empty>}) — run @biz-deploy-basic update"
+    fail "AI_BIZ_SOURCE: unfilled (${SRC_NOW:-<empty>}) — run @biz-deploy-basic update"
   elif [[ ! -d "$SRC_NOW" ]]; then
-    fail "AGENT_OS_SOURCE: $SRC_NOW UNREACHABLE (source moved? run @biz-deploy-basic update)"
+    fail "AI_BIZ_SOURCE: $SRC_NOW UNREACHABLE (source moved? run @biz-deploy-basic update)"
   elif ! is_biz_root "$SRC_NOW"; then
-    warn "AGENT_OS_SOURCE: $SRC_NOW belongs to another framework (not a Business OS root) — mixed project; Business OS resolves via baked references"
+    warn "AI_BIZ_SOURCE: $SRC_NOW belongs to another framework (not a Business OS root) — mixed project; Business OS resolves via baked references"
     check_baked_refs
   else
-    ok "AGENT_OS_SOURCE: $SRC_NOW (reachable)"
-    [[ "$SRC_NOW" == "$BIZ_ROOT" ]] || note "AGENT_OS_SOURCE differs from this source ($BIZ_ROOT) — target tracks another Business OS source"
+    ok "AI_BIZ_SOURCE: $SRC_NOW (reachable)"
+    grep -q 'AI_BIZ_SOURCE=' "$CURS_DEST" || note "legacy AGENT_OS_SOURCE name in use — run @biz-deploy-basic update to migrate to AI_BIZ_SOURCE"
+    [[ "$SRC_NOW" == "$BIZ_ROOT" ]] || note "AI_BIZ_SOURCE differs from this source ($BIZ_ROOT) — target tracks another Business OS source"
   fi
 
   # Gate-table executables must be baked to absolute paths that exist, but only
@@ -297,7 +348,7 @@ else
     fail "local .ai.biz/skills/: missing — broken fat-client copy (re-run @biz-deploy-files)"
   fi
   if [[ -n "$SRC_VALUE" && "$SRC_VALUE" != "REPLACE_BASICSOURCE" ]]; then
-    warn "mixed state: AGENT_OS_SOURCE set AND local .ai.biz/skills present (fat-client resolves first)"
+    warn "mixed state: AI_BIZ_SOURCE set AND local .ai.biz/skills present (fat-client resolves first)"
   fi
 fi
 
@@ -371,7 +422,7 @@ if command -v find_agent_os_dir >/dev/null 2>&1; then
 fi
 
 replace_count="$(grep -c 'REPLACE:' "$CURS_DEST" 2>/dev/null || true)"
-note "REPLACE: tokens remaining: ${replace_count:-0} (operator fills project tokens; AGENT_OS_SOURCE excluded)"
+note "REPLACE: tokens remaining: ${replace_count:-0} (operator fills project tokens; AI_BIZ_SOURCE excluded)"
 
 echo "biz-cursorrules-verify: $([ "$FAILS" -eq 0 ] && echo PASS || echo "FAIL ($FAILS)")"
 exit "$([ "$FAILS" -eq 0 ] && echo 0 || echo 1)"

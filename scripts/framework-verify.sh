@@ -252,7 +252,7 @@ rm -rf "$DF_SMOKE"
 note "biz-deploy-basic thin-client scaffold"
 DB_SMOKE="$(mktemp -d)"
 bash "$AI_ROOT/scripts/biz-deploy-basic.sh" "$DB_SMOKE" >/dev/null
-if [[ -f "${DB_SMOKE}/.cursorrules" ]] && grep -q 'AGENT_OS_SOURCE=' "${DB_SMOKE}/.cursorrules"; then
+if [[ -f "${DB_SMOKE}/.cursorrules" ]] && grep -q 'AI_BIZ_SOURCE=' "${DB_SMOKE}/.cursorrules"; then
   ok "biz-deploy-basic creates thin-client .cursorrules + .work.biz/"
 else
   die "biz-deploy-basic thin-client scaffold failed"
@@ -283,21 +283,53 @@ note "biz-cursorrules-verify repair cycle"
 CV_SMOKE="$(mktemp -d)"
 bash "$AI_ROOT/scripts/biz-deploy-basic.sh" "$CV_SMOKE" >/dev/null
 mv "${CV_SMOKE}/.cursorrules" "${CV_SMOKE}/.cursorrules.bak"
-sed "s#AGENT_OS_SOURCE=${AI_ROOT}#AGENT_OS_SOURCE=/nonexistent/stale/.ai.biz#" "${CV_SMOKE}/.cursorrules.bak" > "${CV_SMOKE}/.cursorrules"
+sed "s#AI_BIZ_SOURCE=${AI_ROOT}#AI_BIZ_SOURCE=/nonexistent/stale/.ai.biz#" "${CV_SMOKE}/.cursorrules.bak" > "${CV_SMOKE}/.cursorrules"
 rm -f "${CV_SMOKE}/.cursorrules.bak"
 if bash "$AI_ROOT/scripts/biz-cursorrules-verify.sh" "$CV_SMOKE" >/dev/null 2>&1; then
   die "biz-cursorrules-verify passed a deliberately broken target"
 else
-  ok "biz-cursorrules-verify flags stale AGENT_OS_SOURCE"
+  ok "biz-cursorrules-verify flags stale AI_BIZ_SOURCE"
 fi
 bash "$AI_ROOT/scripts/biz-cursorrules-verify.sh" "$CV_SMOKE" --fix >/dev/null
 if bash "$AI_ROOT/scripts/biz-cursorrules-verify.sh" "$CV_SMOKE" >/dev/null 2>&1 \
-   && grep -q "AGENT_OS_SOURCE=${AI_ROOT}\$" "${CV_SMOKE}/.cursorrules"; then
+   && grep -q "AI_BIZ_SOURCE=${AI_ROOT}\$" "${CV_SMOKE}/.cursorrules"; then
   ok "biz-cursorrules-verify --fix repairs stale pointer"
 else
   die "biz-cursorrules-verify --fix did not repair the stale pointer"
 fi
 rm -rf "$CV_SMOKE" "$DB_SMOKE"
+
+note "Legacy AGENT_OS_SOURCE pointer migration"
+# A target still on the old pointer name (value = a valid Business OS root)
+# must be migrated to AI_BIZ_SOURCE by --fix — renamed in place, not duplicated.
+LG_SMOKE="$(mktemp -d)"
+bash "$AI_ROOT/scripts/biz-deploy-basic.sh" "$LG_SMOKE" >/dev/null
+sed -i "s#^AI_BIZ_SOURCE=${AI_ROOT}\$#AGENT_OS_SOURCE=${AI_ROOT}#" "${LG_SMOKE}/.cursorrules"
+bash "$AI_ROOT/scripts/biz-cursorrules-verify.sh" "$LG_SMOKE" --fix >/dev/null
+if grep -q "AI_BIZ_SOURCE=${AI_ROOT}\$" "${LG_SMOKE}/.cursorrules" \
+   && ! grep -q '^AGENT_OS_SOURCE=' "${LG_SMOKE}/.cursorrules" \
+   && bash "$AI_ROOT/scripts/biz-cursorrules-verify.sh" "$LG_SMOKE" >/dev/null 2>&1; then
+  ok "--fix migrates legacy AGENT_OS_SOURCE → AI_BIZ_SOURCE"
+else
+  die "--fix did not migrate the legacy AGENT_OS_SOURCE pointer"
+fi
+rm -rf "$LG_SMOKE"
+
+note "Foreign AGENT_OS_SOURCE guard (mixed Agent OS + Business OS repo)"
+# AGENT_OS_SOURCE pointing at a valid root of a DIFFERENT framework must be
+# left untouched by --fix — never read as the biz pointer, never rewritten.
+FG_SMOKE="$(mktemp -d)"; FG_FOREIGN="$(mktemp -d)"
+mkdir -p "$FG_FOREIGN/skills" && echo "# foreign framework" > "$FG_FOREIGN/skills/README.md"
+bash "$AI_ROOT/scripts/biz-deploy-basic.sh" "$FG_SMOKE" >/dev/null
+sed -i "s#^AI_BIZ_SOURCE=${AI_ROOT}\$#AGENT_OS_SOURCE=${FG_FOREIGN}#" "${FG_SMOKE}/.cursorrules"
+bash "$AI_ROOT/scripts/biz-cursorrules-verify.sh" "$FG_SMOKE" --fix >/dev/null 2>&1 || true
+if grep -q "AGENT_OS_SOURCE=${FG_FOREIGN}\$" "${FG_SMOKE}/.cursorrules" \
+   && ! grep -q "AI_BIZ_SOURCE=${FG_FOREIGN}" "${FG_SMOKE}/.cursorrules"; then
+  ok "--fix leaves a foreign AGENT_OS_SOURCE pointer untouched"
+else
+  die "--fix rewrote a foreign framework's AGENT_OS_SOURCE pointer"
+fi
+rm -rf "$FG_SMOKE" "$FG_FOREIGN"
 
 echo ""
 if [[ "$errors" -eq 0 ]]; then

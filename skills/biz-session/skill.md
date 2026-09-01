@@ -63,7 +63,7 @@ if [ -f "$ROOT/skills/biz-session/skill.md" ]; then ROLE=source; else ROLE=targe
 | Role | Detected when | Commit scope |
 |------|---------------|--------------|
 | **source** | the git root itself is the Business OS framework (`skills/biz-session/skill.md` exists at the root, next to `standards/`, `templates/`) | **All safe changes repo-wide** — every modified/added/deleted path incl. new untracked files/dirs |
-| **target** | any consumer project (framework vendored under `.ai.biz/` or remote via `AGENT_OS_SOURCE`) | **`.work.biz/` only** |
+| **target** | any consumer project (framework vendored under `.ai.biz/` or remote via `AI_BIZ_SOURCE`; legacy targets may still name the pointer `AGENT_OS_SOURCE`) | **`.work.biz/` only** |
 
 **File writes** always land under `.work.biz/` in both roles (`HANDOFF.md`, `NEXT.md`, `UNKNOWNS.md`, `active-ref`, session artifacts) — that is where Business OS project memory lives, including in the source repo.
 

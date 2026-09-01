@@ -2,13 +2,13 @@
 # biz-deploy-basic.sh — Thin-client bootstrap of Business OS into a target project.
 #
 # Copies ONLY the minimal scaffold into the target:
-#   - .cursorrules (from templates/cursorrules.template, with AGENT_OS_SOURCE
+#   - .cursorrules (from templates/cursorrules.template, with AI_BIZ_SOURCE
 #     token substituted to the absolute path of THIS source framework root, and
 #     Change-safety gate-table script paths baked to the same absolute root)
 #   - .work.biz/ skeleton (HANDOFF, NEXT, UNKNOWNS, pipeline, research)
 #
 # Framework assets (skills/, standards/, concepts/, docs/, scripts/, templates/)
-# are NOT copied — the target's .cursorrules carries an AGENT_OS_SOURCE pointer so
+# are NOT copied — the target's .cursorrules carries an AI_BIZ_SOURCE pointer so
 # the agent resolves them from the source framework root at runtime (thin-client mode).
 #
 # Default = NO-OVERWRITE: existing target files are preserved by construction.
@@ -84,7 +84,7 @@ if [[ "$MODE" == "status" ]]; then
   status_rc=0
   echo "=== biz-deploy-basic status → $DEST_ROOT ==="
   # .cursorrules checks are delegated to the shared verifier (single source of
-  # truth: AGENT_OS_SOURCE, gate-table script-path baking, source-resolution,
+  # truth: AI_BIZ_SOURCE, gate-table script-path baking, source-resolution,
   # .work.biz skeleton, REPLACE token count).
   if [[ -f "$CURS_DEST" ]]; then
     BIZ_SOURCE="$BIZ_ROOT" bash "$BIZ_ROOT/scripts/biz-cursorrules-verify.sh" "$DEST_ROOT" || status_rc=$?
@@ -155,11 +155,11 @@ fi
 
 # Build the substituted .cursorrules content.
 # Substitutes:
-#   1. AGENT_OS_SOURCE=REPLACE_BASICSOURCE → absolute BIZ_ROOT
+#   1. AI_BIZ_SOURCE=REPLACE_BASICSOURCE → absolute BIZ_ROOT
 #   2. `bash scripts/<name>` → `bash <BIZ_ROOT>/scripts/<name>` (Change-safety
 #      gate table + git-hooks install line). These commands live inside
 #      .cursorrules itself, not inside a skill doc, so the general "any
-#      .ai.biz/<x> inside a skill resolves to $AGENT_OS_SOURCE/<x>" rule
+#      .ai.biz/<x> inside a skill resolves to $AI_BIZ_SOURCE/<x>" rule
 #      doesn't unambiguously cover them — bake the resolved absolute path here
 #      instead of relying on read-time interpretation.
 subst_cursorules() {
@@ -168,8 +168,8 @@ subst_cursorules() {
   SIBLING_PARENT="$(cd "$BIZ_ROOT/.." && pwd)"
   tmpfile="$(mktemp)"
 
-  # Step 1: substitute AGENT_OS_SOURCE
-  perl -pe "s/AGENT_OS_SOURCE=REPLACE_BASICSOURCE/AGENT_OS_SOURCE=${BIZ_ROOT_ESC}/" "$TPL_CURS" > "$tmpfile"
+  # Step 1: substitute AI_BIZ_SOURCE
+  perl -pe "s/AI_BIZ_SOURCE=REPLACE_BASICSOURCE/AI_BIZ_SOURCE=${BIZ_ROOT_ESC}/" "$TPL_CURS" > "$tmpfile"
 
   # Step 2: discover and fill sister framework paths at deploy time (Frameworks
   # registry in the target .cursorrules). Sister dir names follow legacy
@@ -235,7 +235,7 @@ subst_cursorules() {
 write_cursorules() {
   if [[ "$1" == "force" ]] || [[ ! -f "$CURS_DEST" ]]; then
     subst_cursorules > "$CURS_DEST"
-    echo "  cursorules: wrote (subst AGENT_OS_SOURCE=$BIZ_ROOT)"
+    echo "  cursorules: wrote (subst AI_BIZ_SOURCE=$BIZ_ROOT)"
   else
     echo "  cursorules: skip (exists) — keeping existing target .cursorrules"
   fi
@@ -243,11 +243,22 @@ write_cursorules() {
 
 # Pre-scan: detect whether target already has a thin-client pointer set, so the
 # report can flag a stale source path (e.g. source moved) for --update.
+# Canonical name is AI_BIZ_SOURCE; a legacy AGENT_OS_SOURCE line counts only
+# when it resolves to a Business OS root (foreign Agent OS pointer is not ours).
 existing_source=""
 if [[ -f "$CURS_DEST" ]]; then
-  existing_source="$(grep -E '^AGENT_OS_SOURCE=' "$CURS_DEST" 2>/dev/null | head -1 | cut -d= -f2- || true)"
+  existing_source="$(grep -E '^AI_BIZ_SOURCE=' "$CURS_DEST" 2>/dev/null | head -1 | cut -d= -f2- || true)"
   if [[ -z "$existing_source" ]]; then
-    existing_source="$(grep -oE 'AGENT_OS_SOURCE=[^[:space:]`]+' "$CURS_DEST" 2>/dev/null | head -1 | cut -d= -f2- || true)"
+    existing_source="$(grep -oE 'AI_BIZ_SOURCE=[^[:space:]`]+' "$CURS_DEST" 2>/dev/null | head -1 | cut -d= -f2- || true)"
+  fi
+  if [[ -z "$existing_source" ]]; then
+    legacy_source="$(grep -E '^AGENT_OS_SOURCE=' "$CURS_DEST" 2>/dev/null | head -1 | cut -d= -f2- || true)"
+    if [[ -z "$legacy_source" ]]; then
+      legacy_source="$(grep -oE 'AGENT_OS_SOURCE=[^[:space:]`]+' "$CURS_DEST" 2>/dev/null | head -1 | cut -d= -f2- || true)"
+    fi
+    if [[ -n "$legacy_source" && "$legacy_source" != "REPLACE_BASICSOURCE" && -f "${legacy_source}/skills/biz-deploy-basic/skill.md" ]]; then
+      existing_source="$legacy_source"
+    fi
   fi
 fi
 
@@ -264,19 +275,21 @@ fi
 
 # --update: re-sync the source pointer and re-bake gate-table script paths.
 # Single source of truth: biz-cursorrules-verify.sh --fix — idempotent,
-# in-place, preserves all other target edits and tokens, and refuses to
-# rewrite a foreign framework's pointer (mixed Agent OS + Business OS repos).
-if [[ "$MODE" == "update" ]] && [[ -f "$CURS_DEST" ]] && grep -q 'AGENT_OS_SOURCE=' "$CURS_DEST"; then
+# in-place, preserves all other target edits and tokens, migrates a legacy
+# AGENT_OS_SOURCE biz pointer to AI_BIZ_SOURCE, and refuses to rewrite a
+# foreign framework's pointer (mixed Agent OS + Business OS repos).
+if [[ "$MODE" == "update" ]] && [[ -f "$CURS_DEST" ]] && grep -qE 'AI_BIZ_SOURCE=|AGENT_OS_SOURCE=' "$CURS_DEST"; then
   fix_rc=0
   BIZ_SOURCE="$BIZ_ROOT" bash "$BIZ_ROOT/scripts/biz-cursorrules-verify.sh" --fix --thin "$DEST_ROOT" || fix_rc=$?
   if [[ "$fix_rc" -ne 0 ]]; then
     echo "  cursorules: $fix_rc verification finding(s) not auto-repairable (see [FAIL] above)"
   fi
 fi
-# If --update AND existing .cursorrules came from a fat-client template (no
-# AGENT_OS_SOURCE line at all), flag it — the source-resolution section is a
-# merge candidate, handled by the agent (see skill § update-merge protocol).
-if [[ "$MODE" == "update" ]] && [[ -f "$CURS_DEST" ]] && ! grep -q 'AGENT_OS_SOURCE=' "$CURS_DEST"; then
+# If --update AND existing .cursorrules came from a fat-client template (neither
+# an AI_BIZ_SOURCE nor a legacy AGENT_OS_SOURCE line at all), flag it — the
+# source-resolution section is a merge candidate, handled by the agent (see
+# skill § update-merge protocol).
+if [[ "$MODE" == "update" ]] && [[ -f "$CURS_DEST" ]] && ! grep -qE 'AI_BIZ_SOURCE=|AGENT_OS_SOURCE=' "$CURS_DEST"; then
   echo "  cursorules: MERGE CANDIDATE — existing .cursorrules lacks the Source-resolution section"
   echo "    (agent merges the section from the current template; preserves target REPLACE tokens)"
 fi
@@ -312,20 +325,24 @@ if [[ "$MODE" == "update" ]]; then
     fi
   done
   echo "  (agent performs rules-aware merge — append new sections, preserve target"
-  echo "   customizations + REPLACE tokens + AGENT_OS_SOURCE. See skill biz-deploy-basic § update-merge.)"
+  echo "   customizations + REPLACE tokens + AI_BIZ_SOURCE. See skill biz-deploy-basic § update-merge.)"
 fi
 
 echo ""
 echo "=== Done: thin-client bootstrap (Business OS) → $DEST_ROOT ==="
 echo "  .cursorrules: $([ -f "$CURS_DEST" ] && echo present || echo MISSING)"
-echo "  AGENT_OS_SOURCE: $(grep -oE 'AGENT_OS_SOURCE=[^[:space:]`]*' "$CURS_DEST" 2>/dev/null | head -1 | cut -d= -f2- || echo '<unset — fat-client>')"
+src_pointer="$(grep -oE 'AI_BIZ_SOURCE=[^[:space:]`]*' "$CURS_DEST" 2>/dev/null | head -1 || true)"
+if [[ -z "$src_pointer" ]]; then
+  src_pointer="$(grep -oE 'AGENT_OS_SOURCE=[^[:space:]`]*' "$CURS_DEST" 2>/dev/null | head -1 || true)"
+fi
+echo "  source pointer: ${src_pointer:-<unset — fat-client>}"
 echo "  .work.biz/: $([ -d "${DEST_ROOT}/.work.biz" ] && echo present || echo MISSING)"
 echo "  skills (local): $([ -d "${DEST_ROOT}/.ai.biz/skills" ] && echo "present — fat-client (unexpected for basic)" || echo 'absent — thin-client (skills load from source)')"
 echo ""
 echo "Next steps in target project:"
-echo "  1. Edit ${DEST_ROOT}/.cursorrules — fill every REPLACE: token EXCEPT AGENT_OS_SOURCE (biz-deploy-basic set it)"
-echo "  2. Verify source is reachable:  test -d \"\$(grep -oE 'AGENT_OS_SOURCE=[^ ]*' $CURS_DEST | cut -d= -f2-)\""
-echo "  3. Run @biz-session start  (skill loads from \$AGENT_OS_SOURCE/skills/biz-session/skill.md)"
+echo "  1. Edit ${DEST_ROOT}/.cursorrules — fill every REPLACE: token EXCEPT AI_BIZ_SOURCE (biz-deploy-basic set it)"
+echo "  2. Verify source is reachable:  test -d \"\$(grep -oE 'AI_BIZ_SOURCE=[^ ]*' $CURS_DEST | cut -d= -f2-)\""
+echo "  3. Run @biz-session start  (skill loads from \$AI_BIZ_SOURCE/skills/biz-session/skill.md)"
 echo "  4. For project-tracking context: @biz-session context"
 
 # ── Post-deploy verification: every deploy proves the target .cursorrules ──

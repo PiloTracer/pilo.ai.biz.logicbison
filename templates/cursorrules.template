@@ -9,7 +9,7 @@ You are not a yes-machine. You are a trusted advisor whose sole objective is the
 # AI Agent Rules — REPLACE:PROJECT_NAME
 
 > **Bootstrap (fat-client):** Copy this file from `.ai.biz/templates/cursorrules.template` to the **project root** as `.cursorrules`, then replace every `REPLACE:` token below.
-> **Bootstrap (thin-client):** Run `@biz-deploy-basic` from the source `.ai.biz` — copies `.cursorrules` (with `AGENT_OS_SOURCE` pointer) + `.work.biz/` skeleton. Skills stay in the source and load at runtime. See § Source resolution below.
+> **Bootstrap (thin-client):** Run `@biz-deploy-basic` from the source `.ai.biz` — copies `.cursorrules` (with `AI_BIZ_SOURCE` pointer) + `.work.biz/` skeleton. Skills stay in the source and load at runtime. See § Source resolution below.
 
 ## Core Principles (ALWAYS APPLY)
 
@@ -75,7 +75,7 @@ Sister frameworks are siblings on disk; `.ai.<fw>` (legacy) / `pilo.ai.<fw>.logi
 | `.ai.soc` (Social OS) | `@soc-director` | REPLACE:AI_SOC_PATH (default `../.ai.soc`) | `skills/README.md` |
 | `.ai.ui` (UI Design OS) | `@ui-director` | REPLACE:AI_UI_PATH (default `../.ai.ui`) | `skills/README.md` |
 
-**Path resolution:** (1) use a filled path cell; `REPLACE:*`/empty → fall through. (2) Auto-discover: parent = `S/..` with S = this repo (self-hosted) or `$AGENT_OS_SOURCE` (thin); sister = `<S basename with <fw> inserted before its last .segment>` (e.g. `pilo.ai.ui.logicbison` for a `pilo.ai.logicbison` source; `.ai`-prefixed sources resolve `.ai.<fw>` directly), else legacy `.ai.<fw>`; missing = "not installed". (3) Before routing, verify the framework dir + its `skills/README.md` exist; if absent, route with `[degraded: <framework> not installed]` — never route into the void. If your source dir name breaks discovery, fill the path cells manually. (The `.ai` row — the Agent OS orchestrator — resolves the family-named root first, then legacy `../.ai`; if neither exists, ask the user for the correct path, never guess.)
+**Path resolution:** (1) use a filled path cell; `REPLACE:*`/empty → fall through. (2) Auto-discover: parent = `S/..` with S = this repo (self-hosted) or `$AI_BIZ_SOURCE` (thin); sister = `<S basename with <fw> inserted before its last .segment>` (e.g. `pilo.ai.ui.logicbison` for a `pilo.ai.logicbison` source; `.ai`-prefixed sources resolve `.ai.<fw>` directly), else legacy `.ai.<fw>`; missing = "not installed". (3) Before routing, verify the framework dir + its `skills/README.md` exist; if absent, route with `[degraded: <framework> not installed]` — never route into the void. If your source dir name breaks discovery, fill the path cells manually. (The `.ai` row — the Agent OS orchestrator — resolves the family-named root first, then legacy `../.ai`; if neither exists, ask the user for the correct path, never guess.)
 
 Read these at the start of every conversation:
 
@@ -127,13 +127,13 @@ Run before commit / before claiming completion:
 
 This repo was bootstrapped in one of two modes. The agent MUST apply the matching resolution rule before reading any framework path. Read this section at the start of every conversation.
 
-**Agent OS source (thin-client only — set by `@biz-deploy-basic`):**
+**Business OS source (thin-client only — set by `@biz-deploy-basic`):**
 
-AGENT_OS_SOURCE=REPLACE_BASICSOURCE
+AI_BIZ_SOURCE=REPLACE_BASICSOURCE
 
-*(If the line above still shows `REPLACE_BASICSOURCE`, the repo is **fat-client** — see below.)*
+*(If the line above still shows `REPLACE_BASICSOURCE`, the repo is **fat-client** — see below. Legacy installs used `AGENT_OS_SOURCE=` for this pointer: treat it as the Business OS pointer only when it resolves to a valid Business OS root, and migrate it to `AI_BIZ_SOURCE` via `@biz-deploy-basic update`.)*
 
-| Mode | Bootstrapped via | Where framework assets live | `AGENT_OS_SOURCE` |
+| Mode | Bootstrapped via | Where framework assets live | `AI_BIZ_SOURCE` |
 |------|------------------|----------------------------|-------------------|
 | **Fat-client** (vendored) | `@biz-deploy-files` or `biz-bootstrap init` | this repo's `.ai.biz/` | unset (token left as `REPLACE_BASICSOURCE`) |
 | **Thin-client** (remote) | `@biz-deploy-basic` | the **source** Business OS; this repo holds only `.cursorrules` + `.work.biz/` | set to an absolute path (e.g. `/mnt/work/Projects/.ai.biz`) |
@@ -141,10 +141,10 @@ AGENT_OS_SOURCE=REPLACE_BASICSOURCE
 **Resolution rule (agents MUST apply before reading any `.ai.biz/...` reference):**
 
 1. `.cursorrules` (this file) and `.work.biz/**` — read from the **local** project (this repo), always, in both modes.
-2. **Thin-client** (`AGENT_OS_SOURCE` is set and readable as a directory): read every other `.ai.biz/<path>` reference from `$AGENT_OS_SOURCE/<path>` — i.e. `skills/<id>/skill.md`, `skills/SKILL_DEPENDENCIES.md`, `standards/**`, `concepts/**`, `docs/**`, `scripts/**`, `templates/**`. **Never** assume a local `.ai.biz/` exists. When you invoke `@<skill>`, read `$AGENT_OS_SOURCE/skills/<id>/skill.md`; inside it, any `.ai.biz/<x>` reference resolves to `$AGENT_OS_SOURCE/<x>`.
-3. **Fat-client** (`AGENT_OS_SOURCE` is unset or still `REPLACE_BASICSOURCE`): read `.ai.biz/<path>` locally in this repo.
+2. **Thin-client** (`AI_BIZ_SOURCE` is set and readable as a directory): read every other `.ai.biz/<path>` reference from `$AI_BIZ_SOURCE/<path>` — i.e. `skills/<id>/skill.md`, `skills/SKILL_DEPENDENCIES.md`, `standards/**`, `concepts/**`, `docs/**`, `scripts/**`, `templates/**`. **Never** assume a local `.ai.biz/` exists. When you invoke `@<skill>`, read `$AI_BIZ_SOURCE/skills/<id>/skill.md`; inside it, any `.ai.biz/<x>` reference resolves to `$AI_BIZ_SOURCE/<x>`.
+3. **Fat-client** (`AI_BIZ_SOURCE` is unset or still `REPLACE_BASICSOURCE`): read `.ai.biz/<path>` locally in this repo.
 4. `.work.biz/...` references and project app code resolve locally in this repo in both modes.
-5. **Thin-client + unreachable source:** if `$AGENT_OS_SOURCE` is set but the directory does not exist or `skills/README.md` is unreadable, **stop** and report `business-os source unreachable: $AGENT_OS_SOURCE` — do **not** silently fall back to a local `.ai.biz/` (there isn't one) and do **not** guess a different path.
+5. **Thin-client + unreachable source:** if `$AI_BIZ_SOURCE` is set but the directory does not exist or `skills/README.md` is unreadable, **stop** and report `business-os source unreachable: $AI_BIZ_SOURCE` — do **not** silently fall back to a local `.ai.biz/` (there isn't one) and do **not** guess a different path.
 
 **First bootstrap in thin-client mode** is a chicken-and-egg escape: before `@biz-deploy-basic` runs, the target has no local skill to invoke. Bootstrap is initiated either (a) from the **source** repo — `@biz-deploy-basic - /abs/path/to/target` — or (b) by invoking the shell directly from the target: `bash /abs/path/to/source/scripts/biz-deploy-basic.sh .` After that, the source pointer in `.cursorrules` lets the local agent load `@biz-deploy-basic update` and every other skill from source.
 
@@ -152,14 +152,14 @@ AGENT_OS_SOURCE=REPLACE_BASICSOURCE
 
 ## Skills
 
-Reusable agent skills live under `skills/` (or `$AGENT_OS_SOURCE/skills/` in thin-client mode). Each skill is a subfolder containing a `skill.md` file.
+Reusable agent skills live under `skills/` (or `$AI_BIZ_SOURCE/skills/` in thin-client mode). Each skill is a subfolder containing a `skill.md` file.
 
 **Available skills:**
 
 | Skill | Folder | Purpose |
 |-------|--------|---------|
 | biz-deploy-files | `skills/biz-deploy-files/` | Deploy Business OS files into target project (fat-client) |
-| biz-deploy-basic | `skills/biz-deploy-basic/` | Thin-client bootstrap — copies `.cursorrules` (with `AGENT_OS_SOURCE` pointer) + `.work.biz/` skeleton; skills resolve from source at runtime. `@biz-deploy-basic`, `@biz-deploy-basic update`, `@biz-deploy-basic status` |
+| biz-deploy-basic | `skills/biz-deploy-basic/` | Thin-client bootstrap — copies `.cursorrules` (with `AI_BIZ_SOURCE` pointer) + `.work.biz/` skeleton; skills resolve from source at runtime. `@biz-deploy-basic`, `@biz-deploy-basic update`, `@biz-deploy-basic status` |
 | biz-bootstrap | `skills/biz-bootstrap/` | Scaffold `.work.biz/`, `.cursorrules` from templates |
 | biz-strategy | `skills/biz-strategy/` | Niche, offer, positioning, target buyer, operator profile (career) |
 | biz-brand | `skills/biz-brand/` | LinkedIn, website, brand presence |
