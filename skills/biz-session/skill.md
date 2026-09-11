@@ -32,6 +32,7 @@ description: >-
 - **Always** show the commit message — drafted, used for the commit, or `none — working tree clean`.
 - **`commit` / `commit push` (standalone):** run git add + commit + push **without** updating HANDOFF, NEXT, or UNKNOWNS. The session stays open. Use for mid-session checkpoints.
 - **`add` (standalone):** stage the commit scope and show the draft message, but do **not** commit.
+- **Host write guards (evidence / todo preconditions):** some agent hosts deny `git add` / `git commit` / file writes until (a) an acceptance-criteria todo is active for that write class and (b) the files being written or staged have fresh read evidence — a write invalidates earlier reads. Before every git step (C6b / M5 / I5), and after C5/C6 wrote the session files, re-read `.work.biz/context/HANDOFF.md`, `.work.biz/plans/NEXT.md`, and `.work.biz/plans/UNKNOWNS.md` with the file-read tool, and keep a todo item whose acceptance criterion is the new SHA (or "tree clean"). A host denial (e.g. `blocked: establish a concrete todo…`, `persistent read-evidence requirement…`) is retryable once — re-establish the todo + re-read, retry, and only then report the denial verbatim.
 - **Commit message format:** `BIZ-123: description` when a task ref is known, else `type: description` (per `.cursorrules`). Never commit with `type:` format when a ref is known or could reasonably be asked for.
 - **No `Co-authored-by:` trailers** and no agent attribution — hooks strip/reject them.
 - Every mode except `context` and `status` ends with a **completion checklist** — each item `pass` | `fail` | `skip` with evidence.
@@ -312,6 +313,8 @@ Rewrite the top sections (history moves to the sibling archive, it is never dele
 
 ### C6b — Git actions (only when `commit`/`push` requested)
 
+**Host-guard preconditions (before any staging):** after C5/C6 wrote HANDOFF/NEXT/UNKNOWNS, re-read all three with the file-read tool (the writes invalidated earlier read evidence), and keep a todo item whose acceptance criterion is "new SHA produced (or tree clean)". If the host still denies the git step, re-establish the todo + re-read once and retry; only after that retry fails, report the denial verbatim in C7.
+
 | Modifier | Action |
 |----------|--------|
 | *(none)* | Message only. The user runs git themselves from the draft. |
@@ -421,7 +424,7 @@ git log -1 --oneline
 - **M2 — Verification gate:** same as C2.
 - **M3 — Follow-ups:** same as C3.
 - **M4 — Commit message with task ref (always):** same extraction and format as C4. Always shown, even on a clean tree.
-- **M5 — Git actions:** same as C6b (default scope, HEREDOC, path-scoped commit, post-commit verification, push if requested). Agents MUST run shell git; no `Co-authored-by:` trailers. Clean tree → `none — working tree clean`, no empty commit.
+- **M5 — Git actions:** same as C6b (default scope, HEREDOC, path-scoped commit, post-commit verification, push if requested), including the C6b host-guard preconditions before staging. Agents MUST run shell git; no `Co-authored-by:` trailers. Clean tree → `none — working tree clean`, no empty commit. A host denial of the git step is retryable once.
 - **M6 — Commit report (mandatory output):**
 
 ```markdown
@@ -464,9 +467,10 @@ git log -1 --oneline
 `@biz-session add` — stage the commit scope without committing. Use to inspect exactly what a session commit would carry, or to pre-stage before an owner-driven commit.
 
 1. Run the C1 audit (incl. secrets scan; halt on match) and resolve the repo role (I0).
-2. Stage from the repo root: **target role** → `git add -A -- .work.biz`; **source role** → `git add -A` (whole repo).
-3. Report: the resolved role, staged paths (grouped by area), exclusions (secrets/tmp/protected), and the **draft commit message** per C4.
-4. State explicitly: staged but **not committed**; the session remains open; `git status -sb` evidence.
+2. Satisfy the C6b host-guard preconditions before staging: fresh read evidence for any `.work.biz/` file written this session + an active acceptance-criteria todo; a host denial is retryable once.
+3. Stage from the repo root: **target role** → `git add -A -- .work.biz`; **source role** → `git add -A` (whole repo).
+4. Report: the resolved role, staged paths (grouped by area), exclusions (secrets/tmp/protected), and the **draft commit message** per C4.
+5. State explicitly: staged but **not committed**; the session remains open; `git status -sb` evidence.
 
 Never stage outside the role's scope (target: `.work.biz/` only; source: repo-wide). Never commit from `add` — that is what `commit` is for.
 
@@ -618,6 +622,8 @@ To open a session, run `@biz-session start`.
 - Ignoring an unrecognized parameter silently — report it with a warning.
 - Adding `Co-authored-by:` trailers or agent attribution.
 - Putting secrets or real client data in HANDOFF.
+- Running `git add` / `git commit` immediately after writing HANDOFF/NEXT/UNKNOWNS without re-reading them and without an active acceptance-criteria todo — some hosts block the git step (evidence guard) and the close then reports a false fail.
+- Marking checklist #6/#7 failed on a host evidence-guard denial without one retry after re-establishing the todo + fresh reads.
 
 ---
 

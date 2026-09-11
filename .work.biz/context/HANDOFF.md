@@ -1,7 +1,18 @@
 # HANDOFF — Session Bookmark
 
-> **Date:** 2026-08-21
-> **Status:** Closed — 2026-08-21 — advisory capability shipped: `@biz-advisory` + `@biz-sources` (24th/25th skills) + BIZ-10 Advisory Patterns, calibrated on the rescue-team feedback case; `future-strategy` thin-client update merged + verified (family-path re-point, Source-resolution wiring); `biz-cursorrules-verify.sh` pipefail fix; released in CHANGELOG as v0.6.2; close commit push
+> **Date:** 2026-09-10
+> **Status:** Closed — 2026-09-10 — evidence-guard hardening: biz-session host-guard preconditions shipped; future-strategy sandbox allow_write fixed; close commit push
+
+---
+
+## Session summary (2026-09-10, evidence-guard hardening close)
+
+| Step | Status |
+|------|--------|
+| Investigated thin-client commit/push failures: confirmed "evidence guard" is the Reasonix host write precondition (todo + acceptance criteria + read evidence), not a Business OS feature; repo search + git history clean | Done |
+| Patched `skills/biz-session/skill.md`: host-guard preconditions before every git step (re-read HANDOFF/NEXT/UNKNOWNS, active acceptance-criteria todo) + retry-once; wired into C6b, M5, I5, hard rules, anti-patterns | Done |
+| Patched `future-strategy/reasonix.toml` `[sandbox] allow_write`: added its own `.work.biz/` and `.git/` (was LogicBison-only, blocking bash git/writes there) | Done |
+| Gates: framework-verify PASS (rsync `--no-g` shim for sandbox chgrp), touch-scope PASS (3 files, scope declared), blast-radius PASS (2 areas), gate-verify PASS (n/a) | Done |
 
 ---
 
@@ -75,6 +86,7 @@
 |---|------|----------|
 | 1 | Smoke-test `@biz-advisory` on `future-strategy` against its own feedback case (`.work.biz/feedback/20260820-small-rescue-team.md`): does a cold run clear the calibration bar (reframe, ranked options with precedent, anti-advice, decisive pick)? Gaps become new BIZ-10 patterns (UNKNOWNS #12) | High |
 | 1b | Smoke-test the biz-session verbs on a live target project: standalone `commit` (session stays open), `add` (stage-only), `close commit scoped`, task-ref extraction into `.work.biz/active-ref` | High |
+| 1c | Retry `future-strategy` close commit/push with the patched biz-session — `reasonix.toml` sandbox now allows its own `.work.biz/` + `.git/`; pending `.work.biz` changes + the `reasonix.toml` edit are uncommitted there | High |
 | 2 | Owner review/commit of the uncommitted `future-strategy` changes — the earlier slim-down (HANDOFF/NEXT/UNKNOWNS/CONTENT_STATUS + 17 status.md files + HANDOFF.archive.md) **plus today's thin-client update merge** (merged `.cursorrules`, `.work.biz` skeleton appends, new `strategy/README.md` + `reference/BRAND_STATUS.md`); its `PATHS.md` still carries stale `/mnt/work/Projects/.ai*` paths | High |
 | 3 | First `@biz-sources find` run on a live project — seed the catalog, verify the vetting step holds (UNKNOWNS #13) | Medium |
 | 4 | Validate pillar loop + quarterly alignment on real tracker data (needs ≥1 quarter of pillar-tagged publishes) | Medium |
@@ -129,6 +141,7 @@
 | 35 | **Pricing rules have one canonical home** — binding rules in `standards/20260621-PRICING-STANDARD.md` (fixed-price only, 50% upfront, never discount — reduce scope instead); post-delivery offer table canonical in `skills/biz-pricing/skill.md` § Post-Delivery Offers; `biz-proposal` points at both instead of restating them. |
 | 36 | **`biz-advisory` is counsel-only — it never moves gates.** When advice converges on a direction, the handoff is `@biz-strategy` / `@biz-market-validate`; certification stays with the gate writers. The rescue-team feedback case is its standing calibration bar. |
 | 37 | **The advisory-source catalog is per-project** (`.work.biz/research/sources.md`, curated by `@biz-sources`); the framework ships only verify-before-citing seeds — no source is cited as fact until fetched and dated. |
+| 38 | **Host write guards are a host feature, and biz-session pre-empts them** — before any git step, re-read the session files the close just wrote and keep an acceptance-criteria todo active; a host denial (`blocked: establish a concrete todo…`, `persistent read-evidence requirement…`) is retryable once before the checklist may mark git failed. |
 
 ---
 

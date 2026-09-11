@@ -1,18 +1,7 @@
-# Touch Scope — declared 2026-08-21 (advisory capability: biz-advisory + biz-sources + BIZ-10)
+# Touch Scope — declared 2026-09-10 (evidence-guard hardening: biz-session + thin-client sandbox)
 
-.cursorrules
-templates/cursorrules.template
-README.md
-START_HERE.md
-PROCESS_ROUTER.md
-CHANGELOG.md
-skills/README.md
-skills/SKILL_DEPENDENCIES.md
-skills/biz-director/skill.md
-skills/biz-advisory/
-skills/biz-sources/
-scripts/framework-verify.sh
-scripts/biz-cursorrules-verify.sh
-concepts/README.md
-concepts/advisory-patterns/
+skills/biz-session/skill.md
+.work.biz/context/HANDOFF.md
+.work.biz/plans/NEXT.md
+.work.biz/plans/UNKNOWNS.md
 .work.biz/touch-scope

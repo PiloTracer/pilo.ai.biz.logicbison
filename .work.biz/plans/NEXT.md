@@ -12,11 +12,12 @@
 
 ## Recommended next
 
-1. **Smoke-test `@biz-advisory` on `future-strategy`** against its own feedback case (`.work.biz/feedback/20260820-small-rescue-team.md`) — does a cold run clear the calibration bar (reframe pass, ranked options with precedent, anti-advice, decisive recommendation)? Gaps become new BIZ-10 patterns (UNKNOWNS #12).
-2. **Owner review/commit of the uncommitted `future-strategy` changes** — the earlier slim-down plus today's thin-client update merge (merged `.cursorrules` with family-path re-point + Source-resolution wiring, `.work.biz` skeleton appends, new `strategy/README.md` + `reference/BRAND_STATUS.md`); its `PATHS.md` still carries stale `/mnt/work/Projects/.ai*` paths.
-3. **First `@biz-sources find` run on a live project** — seed `.work.biz/research/sources.md`, confirm the vetting step holds (UNKNOWNS #13).
-4. **Smoke-test `@biz-archive` on a live target** (`future-strategy` once its uncommitted changes land) — `status` dry run, catch-up path for archived pieces missing `status.md`, tracker row removal.
-5. **Smoke-test the new biz-session verbs on a live target project** — standalone `commit` keeps the session open, `add` stages without committing, `close commit scoped` commits bookend files only, task-ref lands in `.work.biz/active-ref` and the commit subject.
+1. **Retry `future-strategy` close commit/push with the patched biz-session** — its `reasonix.toml` `[sandbox] allow_write` now includes `/mnt/work/Projects/future-strategy/.work.biz` and `/mnt/work/Projects/future-strategy/.git`; uncommitted there: pending `.work.biz` changes + the `reasonix.toml` edit.
+2. **Smoke-test `@biz-advisory` on `future-strategy`** against its own feedback case (`.work.biz/feedback/20260820-small-rescue-team.md`) — does a cold run clear the calibration bar (reframe pass, ranked options with precedent, anti-advice, decisive recommendation)? Gaps become new BIZ-10 patterns (UNKNOWNS #12).
+3. **Owner review/commit of the remaining uncommitted `future-strategy` changes** — the earlier slim-down plus the thin-client update merge (merged `.cursorrules` with family-path re-point + Source-resolution wiring, `.work.biz` skeleton appends, new `strategy/README.md` + `reference/BRAND_STATUS.md`); its `PATHS.md` still carries stale `/mnt/work/Projects/.ai*` paths.
+4. **First `@biz-sources find` run on a live project** — seed `.work.biz/research/sources.md`, confirm the vetting step holds (UNKNOWNS #13).
+5. **Smoke-test `@biz-archive` on a live target** (`future-strategy` once its uncommitted changes land) — `status` dry run, catch-up path for archived pieces missing `status.md`, tracker row removal.
+6. **Smoke-test the remaining biz-session verbs on a live target project** — standalone `commit` keeps the session open, `add` stages without committing, `close commit scoped` commits bookend files only; source-role close commit push was exercised 2026-09-10.
 
 ## Active tasks
 
@@ -31,18 +32,20 @@
 | 11 | Validate Content Status Protocol on a live target project | Pending | Run publish + `@biz-social log` cycle end-to-end, incl. pillar assignment + VOICE_RETRO entry |
 | 13 | Validate `@biz-strategy career` on a live project | Pending | Fill OPERATOR_PROFILE end-to-end; check the cross-check against certified strategy |
 | 14 | Validate pillar loop + quarterly alignment on real tracker data | Pending | Needs a project with ≥1 quarter of publishes tagged by pillar |
-| 16 | Smoke-test new biz-session verbs on a live project | Pending | standalone commit, add, close commit scoped, active-ref extraction; verify role detection in both a source checkout and a target project |
+| 16 | Smoke-test new biz-session verbs on a live project | Pending | Source-role close commit push exercised 2026-09-10 (host-guard patch); target-role standalone commit, add, close commit scoped still unvalidated |
 | 18 | Smoke-test `@biz-archive` on a live project | Pending | status dry run; catch-up for archived pieces missing status.md; verify tracker slim + aggregates stay truthful |
 | 19 | Owner decision: deletion candidates + full dedup refactor | Pending | Deletion candidates listed in HANDOFF pending #10; dedup tradeoff in UNKNOWNS #11 — needs explicit owner ask before any deletion |
 | 21 | Smoke-test registry fill on a live thin-client target | Done 2026-08-21 | `@biz-deploy-basic update` on `future-strategy`: sister tokens resolved at deploy, verifier validated the merged `.cursorrules` (PASS) after the pipefail fix; target's custom standalone layout (no registry rows) reports info-level "custom cell" notes by design |
 | 22 | Advisory capability: `@biz-advisory` + `@biz-sources` + BIZ-10 | Done 2026-08-21 | 24th/25th skills; mandatory reframe pass + anti-advice + decisive recommendation calibrated on the rescue-team feedback case; 10-pattern library in `concepts/advisory-patterns/`; source catalog at `.work.biz/research/sources.md` with verify-before-citing seeds; registered across 10 surfaces; v0.6.2 |
 | 23 | Smoke-test `@biz-advisory` on a live project | Pending | Calibration run against the rescue-team case (UNKNOWNS #12); gaps feed BIZ-10 |
 | 24 | First `@biz-sources find` run on a live project | Pending | Seed + vet the catalog (UNKNOWNS #13) |
+| 25 | Retry `future-strategy` close commit/push with patched biz-session | Pending | reasonix.toml sandbox now allows its own .work.biz + .git; pending .work.biz changes + reasonix.toml edit uncommitted there |
 
 ## Recently completed
 
 | # | What was done | Date |
 |---|---------------|------|
+| 0 | Evidence-guard hardening: biz-session host-guard preconditions + retry-once shipped (C6b/M5/I5); future-strategy reasonix.toml sandbox allow_write fixed; gates green | 2026-09-10 |
 | 0 | v0.6.2: `@biz-advisory` (situational counsel: reframe pass, ranked options with precedent, anti-advice, decisive pick) + `@biz-sources` (advisory-source curation) + BIZ-10 Advisory Patterns; `future-strategy` thin-client update merged + verified; `biz-cursorrules-verify.sh` pipefail fix | 2026-08-21 |
 | 0 | `biz-deploy-repo` removed (skill + script + all registry/routing/verifier references) per owner directive; 23 skills remain | 2026-08-19 |
 | 0 | v0.6.1: cross-framework sister discovery + Frameworks registry (sister-discovery.sh, deploy fill, verifier checks, framework-verify wiring) + Agent OS root check with ask-user fallback; biz.md gap list resolved | 2026-08-19 |
