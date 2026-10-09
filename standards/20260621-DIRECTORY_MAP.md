@@ -50,6 +50,9 @@ Stored in the consumer project. Never copied from source; owned by the user and 
 │   ├── assumption-ledger.md
 │   ├── linkedin-icp.md
 │   └── pricing.md             # Distilled price range
+├── decisions/
+│   └── DECISIONS.md           # Decision ledger: decisions, falsifiable expected outcomes,
+│                              # scored outcomes and calibration (CONVENTIONS § Decision loop)
 ├── pipeline/
 │   ├── pipeline_tracker.md    # Deal flow tracker
 │   ├── outreach-cadence.md    # Outreach sequence and follow-up rules
@@ -89,6 +92,8 @@ Stored in the consumer project. Never copied from source; owned by the user and 
 **Voice rule:** `.work.biz/reference/VOICE_PROFILE.md` is the canonical location for the owner's voice definition. Content skills read it there first, then fall back to the legacy paths `ideas/VOICE_STANDARD.md`, `reference/VOICE_STANDARD.md`, and `reference/voice-profile.md`. Do not scatter voice rules across scoped documents: a voice file scoped to one directory only applies when work happens in that directory, which is how LinkedIn-only voice discipline happens by accident.
 
 **Gate rule:** `.work.biz/gates.md` is the only authoritative record of readiness state. Each gate has exactly one promoting skill (see `skills/SKILL_DEPENDENCIES.md` § Gate Descriptions). Gated skills read it in their I0 pre-check; `scripts/gate-verify.sh` fails when a gate claims PASS without its evidence on disk.
+
+**Decision rule:** `.work.biz/decisions/DECISIONS.md` is the only authoritative record of what was decided and what was expected of it. It is **append-only**: a scored row is never rewritten, and superseding a decision appends a new row that marks the old one. Every consequential decision (money, more than a week of time, a price, a buyer, a primary channel, a public position) gets one row at decision time carrying a falsifiable expected outcome, a confidence, a reversibility class, a kill/review trigger, and a review date. `@biz-review quarterly` scores rows past their review date. The record rule, scoring rule, calibration rule, and empty-ledger warning are binding in `CONVENTIONS.md` § Decision loop. Do not scatter decisions across session notes, HANDOFF prose, or changelogs: a decision recorded only as prose can never be scored, which is the whole point of the ledger.
 
 ## Protected project files
 

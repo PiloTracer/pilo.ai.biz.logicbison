@@ -145,6 +145,54 @@ grep -q "HANDOFF.archive.md" "$AI_ROOT/skills/biz-session/skill.md" \
   || die "biz-session close does not implement the HANDOFF slim-down (Context budget)"
 ok "biz-archive skill + Archive rule + verb + directory map + templates all wired"
 
+note "Decision loop wiring (judgment record + calibration)"
+# The judgment loop only works if every surface agrees: the ledger template
+# exists with its required columns, the binding rules are documented, the
+# writing skills append rows, the review skill scores them, and the director can
+# route a user who cannot name a skill. A missing surface silently reverts the
+# framework to unscored advice — a failure mode with no visible symptom.
+[[ -f "$AI_ROOT/templates/work/decisions/DECISIONS.md.template" ]] \
+  || die "templates/work/decisions/DECISIONS.md.template missing (Decision loop)"
+grep -q '^## Decision loop' "$AI_ROOT/CONVENTIONS.md" \
+  || die "CONVENTIONS.md is missing the Decision loop section"
+grep -q '^### Evidence grades (A–D)' "$AI_ROOT/CONVENTIONS.md" \
+  || die "CONVENTIONS.md is missing the Evidence grades (A-D) subsection"
+grep -q '### Freshness' "$AI_ROOT/CONVENTIONS.md" \
+  || die "CONVENTIONS.md § Evidence discipline is missing the Freshness rule"
+grep -q "decisions/DECISIONS.md" "$AI_ROOT/standards/20260621-DIRECTORY_MAP.md" \
+  || die "standards/20260621-DIRECTORY_MAP.md does not canonize decisions/DECISIONS.md"
+for col in 'Expected outcome' 'Confidence' 'Reversibility' 'Kill / review trigger' 'Review by' 'Outcome' 'Lesson'; do
+  grep -q "$col" "$AI_ROOT/templates/work/decisions/DECISIONS.md.template" \
+    || die "decisions/DECISIONS.md.template is missing the '${col}' column"
+done
+for skill in biz-strategy biz-advisory biz-pricing biz-market-validate biz-proposal; do
+  grep -q "decisions/DECISIONS.md" "$AI_ROOT/skills/${skill}/skill.md" \
+    || die "skills/${skill}/skill.md does not write the decision ledger (Decision loop record rule)"
+done
+for check in 'Reality arithmetic' 'Outside view' 'Decision record'; do
+  grep -q "$check" "$AI_ROOT/skills/biz-strategy/skill.md" \
+    || die "skills/biz-strategy/skill.md certify checklist is missing '${check}'"
+done
+grep -q "Load-bearing" "$AI_ROOT/skills/biz-strategy/skill.md" \
+  || die "skills/biz-strategy/skill.md does not grade assumptions as load-bearing"
+grep -q "Decision audit" "$AI_ROOT/skills/biz-review/skill.md" \
+  || die "skills/biz-review/skill.md is missing the quarterly Decision audit"
+grep -q "Calibration" "$AI_ROOT/skills/biz-review/skill.md" \
+  || die "skills/biz-review/skill.md Decision audit does not update the Calibration table"
+grep -q "Evidence grades" "$AI_ROOT/skills/biz-sources/skill.md" \
+  || die "skills/biz-sources/skill.md does not grade catalog entries (Evidence grades)"
+grep -q "No-match default" "$AI_ROOT/skills/biz-director/skill.md" \
+  || die "skills/biz-director/skill.md is missing the no-match default (never dead-end routing)"
+grep -q "decisions/DECISIONS.md" "$AI_ROOT/skills/biz-director/skill.md" \
+  || die "skills/biz-director/skill.md does not load or route the decision ledger"
+grep -q '^| `decisions` |' "$AI_ROOT/skills/README.md" \
+  || die "skills/README.md verb table is missing the decisions entry (Decision loop)"
+grep -q "decisions/DECISIONS.md.template" "$AI_ROOT/templates/README.md" \
+  || die "templates/README.md is missing the decisions/DECISIONS.md row"
+grep -q "decisions/DECISIONS.md" "$AI_ROOT/templates/work/README.md.template" \
+  || die "work/README.md.template is missing the decisions/DECISIONS.md row"
+ok "decision loop: template + columns + conventions + writers + auditor + director routing all wired"
+
 note "Frameworks registry wiring (cross-framework discovery)"
 # The sister-framework registry only works if every surface agrees: the shared
 # discovery lib exists, the source .cursorrules and the deployed template carry

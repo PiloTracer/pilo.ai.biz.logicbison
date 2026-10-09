@@ -28,6 +28,7 @@ Or: `@biz-bootstrap init`
 | `.work.biz/pipeline/outreach-cadence.md` | `work/pipeline/outreach-cadence.md.template` |
 | `.work.biz/research/research_index.md` | `work/research/research_index.md.template` |
 | `.work.biz/strategy/README.md` | `work/strategy/README.md.template` |
+| `.work.biz/decisions/DECISIONS.md` | `work/decisions/DECISIONS.md.template` |
 | `.work.biz/reference/CONTENT_STATUS.md` | `work/reference/CONTENT_STATUS.md.template` |
 | `.work.biz/reference/BRAND_STATUS.md` | `work/reference/BRAND_STATUS.md.template` |
 | `.work.biz/reference/VOICE_PROFILE.md` | `work/reference/VOICE_PROFILE.md.template` |
@@ -41,7 +42,7 @@ Copied manually, not at bootstrap: `work/touch-scope.template` → `.work.biz/to
 
 **Sync rule:** this table, `templates/bootstrap.sh`, `scripts/biz-deploy-basic.sh` `WORK_FILES`, and `skills/biz-bootstrap/skill.md` § I1 must list the same set. `biz-deploy-basic --update` only offers files in `WORK_FILES`, so an omission there means an artifact is silently never updated on existing installs. The directory set is bound the same way: the `bootstrap.sh` dir loop and `WORK_DIRS` must match (`framework-verify.sh` checks both).
 
-Scaffolded as empty directories (no template): `.work.biz/` `context`, `plans`, `pipeline`, `research`, `drafts`, `strategy`, `reference`, `ideas`, `ideas.archive`.
+Scaffolded as empty directories (no template): `.work.biz/` `context`, `plans`, `pipeline`, `research`, `drafts`, `strategy`, `reference`, `ideas`, `ideas.archive`, `decisions`.
 
 ## `REPLACE:` checklist (`.cursorrules`)
 

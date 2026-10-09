@@ -1,7 +1,24 @@
 # HANDOFF — Session Bookmark
 
-> **Date:** 2026-09-10
-> **Status:** Closed — 2026-09-10 — evidence-guard hardening: biz-session host-guard preconditions shipped; future-strategy sandbox allow_write fixed; close commit push
+> **Date:** 2026-10-09
+> **Status:** Closed — 2026-10-09 — judgment-quality layer shipped: decision ledger + calibration loop, reality check (arithmetic + outside view), evidence grades A–D, load-bearing unknown gate, biz-director never-dead-end orchestration
+
+---
+
+## Session summary (2026-10-09, judgment-quality layer close)
+
+| Step | Status |
+|------|--------|
+| Audited the advice/planning layer for judgment-quality mechanisms: framework-wide absence of decision records, outcome tracking, base rates, pre-mortems, sensitivity, scenario analysis, and reversibility confirmed by grep plus a 10-file skill audit; BIZ-01–06 concept stubs found orphaned (no skill references any of them) | Done |
+| **Decision loop shipped** — `.work.biz/decisions/DECISIONS.md` + template (7 required columns + Calibration + Repeating-misses), `CONVENTIONS.md` § Decision loop (consequence test, record rule, scoring rule, calibration rule, empty-ledger warning); writers wired into `biz-strategy` (certify/amend), `biz-advisory` (step 8), `biz-pricing` (set/revise), `biz-market-validate` (go), `biz-proposal` (send); auditor added as `@biz-review quarterly` § Decision audit + weekly overdue flag + monthly dead-assumption cross-check | Done |
+| **Reality check shipped** — `biz-strategy` greenfield Element 8 (arithmetic table + outside view) and certify checks 11 Reality arithmetic, 12 Outside view, 13 Decision record; `biz-pricing` pre-quote reality check (margin / capacity / runway); `biz-advisory` outside-view step 4b + "does the math close" | Done |
+| **Evidence grades A–D + freshness** — CONVENTIONS § Evidence discipline extended (tier ladder, grade-the-claim rule, 18/12-month freshness); consumed by `biz-advisory` step 4, the assumption-ledger Grade column, `biz-pricing` anchors, `biz-market-validate` Signal grade, `biz-sources` catalog | Done |
+| **Load-bearing unknown gate** replaces the 30%-unknown count (certify check 3); ledger gains Load-bearing / If wrong / Grade columns; probe targets the largest blast radius first + new Reality question row | Done |
+| **`@biz-director` never dead-ends** — 5 new intent rows, 4-way judgment-route disambiguation, no-match default (one splitting question → `@biz-advisory` fallback → orientation fallback → gap detection), decision ledger in I0, completion contract requires the row | Done |
+| Manifest sync (rule #22): `decisions` dir + `decisions/DECISIONS.md` across bootstrap.sh, WORK_DIRS, WORK_FILES, templates/README, work/README.md.template, biz-bootstrap § I1/I2 (`empty ledger` warning), biz-deploy-basic; DIRECTORY_MAP canonized + Decision rule | Done |
+| Routing surfaces: PROCESS_ROUTER (5 rows + judgment-loop section), START_HERE (tree, strategy/generative tables, resume, reading order, anti-patterns), skills/README (5 rows + `decisions` entry), `.cursorrules` + template (`{DECISIONS}`, Before-Claiming-Completion items 3–5, refreshed rows) | Done |
+| `framework-verify.sh` — new "Decision loop wiring" block (template + 7 columns + conventions + 5 writers + auditor + director routing); bootstrap smoke test confirms `decisions/DECISIONS.md` scaffolds in a fresh target | Done |
+| Gates: framework-verify PASS (rsync `--no-g` shim for the sandbox chgrp issue), gate-verify PASS (n/a — no ledger), touch-scope PASS (25 files), blast-radius WARN (10 areas, cross-cutting by design — acknowledged) | Done |
 
 ---
 
@@ -60,25 +77,7 @@
 
 ---
 
-## Session summary (2026-08-19, close)
-
-| Step | Status |
-|------|--------|
-| Explored framework + `future-strategy` target: `ideas/` convention existed only in targets, nothing in the framework wrote or described it | Done |
-| Canonized `.work.biz/ideas/<subdir>/<piece>/` + `ideas.archive/` in DIRECTORY_MAP (+ Archive rule) and CONVENTIONS (Content Status Protocol → Archive rule) | Done |
-| New skill `skills/biz-archive/skill.md` (24th): `run` moves `published` pieces to `ideas.archive/` mirrored (`git mv` staged / `mv`), writes per-piece `status.md` publish record, verifies it, then removes the tracker row; `status` dry run; idempotent with catch-up; never commits/pushes/deletes | Done |
-| Tracker slims to active inventory: archived rows leave CONTENT_STATUS once per-piece status.md verified; lifetime aggregates stay truthful; no centralized `ideas.archive/status.md` (owner directive) | Done |
-| Context budget (CONVENTIONS): history moved never deleted — HANDOFF/NEXT/UNKNOWNS slim into sibling `*.archive.md` files; biz-session close C5/C6 performs the slim | Done |
-| Bootstrap pentad: `bootstrap.sh` dir loop + `WORK_DIRS` scaffold `ideas`/`ideas.archive`; biz-bootstrap, templates/README, biz-deploy-basic docs synced | Done |
-| Routing: skills/README (row + `archive` verb), biz-director (intent + gate-exempt), PROCESS_ROUTER, START_HERE, .cursorrules + template, root README (24 skills), SKILL_DEPENDENCIES (ungated utility) | Done |
-| framework-verify: archive wiring block (11 greps) + new WORK_DIRS↔bootstrap.sh symmetry check | Done |
-| Evidence-checked against `future-strategy` uncommitted slim-down (17 per-piece status.md, HANDOFF.archive.md) — framework matches the proven pattern; target repo not modified | Done |
-| Gates: framework-verify PASS, gate-verify PASS (n/a), touch-scope PASS, blast-radius WARN (11 areas, cross-cutting by design, acknowledged) | Done |
-| Round 1 committed by owner as `087981f`; round 2 via close commit push | Done |
-
----
-
-> Older session summaries (2026-08-13 and earlier) moved to `context/HANDOFF.archive.md` (Context budget).
+> Older session summaries (2026-08-19 close and earlier) moved to `context/HANDOFF.archive.md` (Context budget).
 
 ## Pending for next session
 
@@ -87,6 +86,10 @@
 | 1 | Smoke-test `@biz-advisory` on `future-strategy` against its own feedback case (`.work.biz/feedback/20260820-small-rescue-team.md`): does a cold run clear the calibration bar (reframe, ranked options with precedent, anti-advice, decisive pick)? Gaps become new BIZ-10 patterns (UNKNOWNS #12) | High |
 | 1b | Smoke-test the biz-session verbs on a live target project: standalone `commit` (session stays open), `add` (stage-only), `close commit scoped`, task-ref extraction into `.work.biz/active-ref` | High |
 | 1c | Retry `future-strategy` close commit/push with the patched biz-session — `reasonix.toml` sandbox now allows its own `.work.biz/` + `.git/`; pending `.work.biz` changes + the `reasonix.toml` edit are uncommitted there | High |
+| 1d | **First live decision-loop run** — exercise it end to end on a real project: `@biz-strategy certify` or `@biz-advisory advise` must append a row to `decisions/DECISIONS.md`, and `@biz-review quarterly` must score it and produce a calibration row (UNKNOWNS #15) | High |
+| 1e | Validate the reality check (certify checks 11–12) against a real strategy — does the arithmetic gate catch a genuinely unviable plan without blocking a viable one on missing data (UNKNOWNS #16) | High |
+| 1f | Validate the A–D evidence ladder in practice — does an agent actually discriminate between tiers, or does every claim land at B/C (UNKNOWNS #17) | Medium |
+| 1g | Tier 2, deliberately deferred: `@biz-market-validate` value-of-information gate + write the experiment result back into `strategy/assumption-ledger.md`; retire or upgrade the six orphaned `concepts/` stubs (BIZ-01–06, referenced by no skill); apply `biz-discovery`'s 84-day base rate to time-box live deals | Medium |
 | 2 | Owner review/commit of the uncommitted `future-strategy` changes — the earlier slim-down (HANDOFF/NEXT/UNKNOWNS/CONTENT_STATUS + 17 status.md files + HANDOFF.archive.md) **plus today's thin-client update merge** (merged `.cursorrules`, `.work.biz` skeleton appends, new `strategy/README.md` + `reference/BRAND_STATUS.md`); its `PATHS.md` still carries stale `/mnt/work/Projects/.ai*` paths | High |
 | 3 | First `@biz-sources find` run on a live project — seed the catalog, verify the vetting step holds (UNKNOWNS #13) | Medium |
 | 4 | Validate pillar loop + quarterly alignment on real tracker data (needs ≥1 quarter of pillar-tagged publishes) | Medium |
@@ -142,6 +145,13 @@
 | 36 | **`biz-advisory` is counsel-only — it never moves gates.** When advice converges on a direction, the handoff is `@biz-strategy` / `@biz-market-validate`; certification stays with the gate writers. The rescue-team feedback case is its standing calibration bar. |
 | 37 | **The advisory-source catalog is per-project** (`.work.biz/research/sources.md`, curated by `@biz-sources`); the framework ships only verify-before-citing seeds — no source is cited as fact until fetched and dated. |
 | 38 | **Host write guards are a host feature, and biz-session pre-empts them** — before any git step, re-read the session files the close just wrote and keep an acceptance-criteria todo active; a host denial (`blocked: establish a concrete todo…`, `persistent read-evidence requirement…`) is retryable once before the checklist may mark git failed. |
+| 39 | **The judgment loop is the missing third loop** — voice (`VOICE_PROFILE`→`VOICE_RETRO`) and assumptions (`@biz-review monthly`) were measured; decisions were not. `.work.biz/decisions/DECISIONS.md` closes it: append-only, one row per consequential decision (money, >1 week of time, a price, a buyer, a primary channel, a public position) with a falsifiable expected outcome, a confidence, a reversibility class, a kill/review trigger, and a review date. |
+| 40 | **A decision is only real if it can be wrong** — the ledger's Expected-outcome field must carry a number and a date (or an observable event). Prose decisions ("we'll focus on LinkedIn") are unfalsifiable and therefore unscorable; the record rule refuses them rather than storing them. |
+| 41 | **One writer per artifact, mirroring one-writer-per-gate** — five skills append decision rows (`biz-strategy certify`/`amend`, `biz-advisory advise`, `biz-pricing set`/`revise`, `biz-market-validate test`, `biz-proposal write`) but exactly one scores them (`@biz-review quarterly`). Scoring is never done by the skill that made the call. |
+| 42 | **Certification now requires arithmetic** — a strategy whose revenue ceiling at the floor price does not cover the income target before runway ends, or whose required prospects/week exceed the primary channel's realistic capacity, cannot certify. The fix is `probe`, not certifying anyway. |
+| 43 | **The 30%-unknown count was the wrong metric** — it weighted a trivial gap and an existential one equally. Replaced by the load-bearing test: no assumption anchoring buyer, problem, offer, primary channel, or price may be Unknown or rest on grade-C/D evidence; peripheral unknowns stay capped at 30%. |
+| 44 | **A citation is not a source quality** — evidence grades `A` (first-party/primary) / `B` (named third-party with method) / `C` (vendor, media, single anecdote) / `D` (memory, undated) are written next to the claim *in addition to* the citation. Grade the claim, not the author; syndicated copies are not corroboration. Freshness: 18 months, 12 in fast-moving domains. |
+| 45 | **`@biz-director` must never dead-end** — when no intent row matches, it asks one splitting question (never a menu of skill names), defaults to `@biz-advisory` for "what should I do / is this right" (whose hand-off *is* the orchestration), defaults to session+review status for orientation in disguise, and reaches gap detection only after that. |
 
 ---
 
@@ -159,3 +169,7 @@
 | LinkedIn text/carousel rules | `skills/biz-writing/skill.md` § LinkedIn post |
 | Strategy change mid-cycle | `@biz-strategy amend` then `@biz-strategy certify` |
 | Publish status tracker | `.work.biz/reference/CONTENT_STATUS.md` |
+| Decision ledger + calibration | `.work.biz/decisions/DECISIONS.md` · `@biz-review quarterly` |
+| Are the numbers realistic? | `@biz-strategy certify - why` · `@biz-strategy probe - reality` |
+| Evidence strength (grades A–D) | `CONVENTIONS.md` § Evidence grades · `@biz-sources find - <topic>` |
+| Decision-loop rules | `CONVENTIONS.md` § Decision loop |

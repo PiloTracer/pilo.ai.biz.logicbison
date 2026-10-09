@@ -38,9 +38,11 @@ Keep the operator's **evidence base** alive. Advice is only as good as what it d
 `.work.biz/research/sources.md` in the host project. If missing, create it with this structure (one `## <domain>` section per domain):
 
 ```
-| Source | Type | What it's good for | How to mine it | Verified | Freshness |
-|--------|------|--------------------|----------------|----------|-----------|
+| Source | Type | What it's good for | How to mine it | Grade | Verified | Freshness |
+|--------|------|--------------------|----------------|-------|----------|-----------|
 ```
+
+**Grade** is the evidence grade the source can support, per `CONVENTIONS.md` § Evidence grades: `A` first-party/primary (the operator's own data, a vendor's own live pricing page, filings) · `B` named third-party research stating method and sample · `C` vendor, consultancy, or media claim; single anecdote · `D` unsourced or undated. Grade the claim the source is being cited for, not the author — a practitioner is `A` on their own numbers and `C` on the market's. A source the framework cannot grade is a source whose claims cannot carry a decision.
 
 Domains (extend as needed): **Positioning & strategy** · **Pricing** · **Sales & outreach** · **Niche & market research** · **Productized / fractional services** · **AI-services market** · **Content & audience** · **Operator craft** (decision-making, writing, negotiation).
 
@@ -67,12 +69,13 @@ Never assert "the standard says X" from memory of this seed list — open the so
 1. **Frame the need.** Which decision will this source inform? (A source without a consumer question is hoarding.) Note the skill or decision that will use it.
 2. **Research.** Web-search the topic; prefer primary sources, recent dates, and sources that state their evidence. Gather 2–3× the final count as candidates.
 3. **Vet.** For each candidate: does it exist (fetch the page)? Does it actually say what's claimed? How fresh is it? Who pays the author (bias check)? Cut anything that fails.
-4. **Catalog entry.** Add the best 3–8 with a specific "what it's good for" and "how to mine it" (which chapter/section/search query inside the source answers the need).
-5. **Report** what was added, what was rejected and why (honesty over volume), and which domains remain thin.
+4. **Grade it.** Assign the `A`–`D` evidence grade the source can support for the claim it is being kept for (CONVENTIONS § Evidence grades). A catalog of grade-C sources is still useful — it just cannot be the foundation of a decision, and the grade is what stops it from quietly becoming one.
+5. **Catalog entry.** Add the best 3–8 with a specific "what it's good for" and "how to mine it" (which chapter/section/search query inside the source answers the need).
+6. **Report** what was added, what was rejected and why (honesty over volume), and which domains remain thin.
 
 ## I2 — `list` mode
 
-Render the catalog grouped by domain. Flag entries older than 12 months in fast-moving domains (AI-services, platform algorithms) as **re-verify before citing**.
+Render the catalog grouped by domain. Flag entries older than **18 months** — and older than **12 months** in fast-moving domains (AI services, platform algorithms, marketplaces) — as **re-verify before citing** (CONVENTIONS § Freshness). Report the grade mix per domain: a domain where every entry is grade C is a domain where decisions are currently resting on marketing.
 
 ## I3 — `add` mode
 
@@ -88,7 +91,8 @@ Report: total entries, per-domain coverage, thin/absent domains relative to the 
 
 - [ ] Every added entry was actually fetched/checked (no cataloged-from-memory)?
 - [ ] Each entry names the decision it serves and how to mine it?
-- [ ] Freshness recorded; fast-moving domains flagged?
+- [ ] Each entry carries an evidence grade (A–D) for the claim it supports?
+- [ ] Freshness recorded; stale entries flagged at the right threshold (18 months, 12 in fast-moving domains)?
 - [ ] Rejections reported honestly?
 - [ ] Claims cross-checked against binding standards where they overlap (pricing, conventions)?
 
@@ -97,8 +101,8 @@ Report: total entries, per-domain coverage, thin/absent domains relative to the 
 ## Completion gate
 
 1. Catalog written/updated at `.work.biz/research/sources.md`.
-2. Every entry verified or explicitly marked **Unverified**.
-3. Thin domains reported.
+2. Every entry verified or explicitly marked **Unverified**, and graded `A`–`D`.
+3. Thin domains reported, with the grade mix per domain.
 4. One concrete next step (e.g. "mine the positioning sources for the pending reframe via `@biz-advisory`").
 
 - **Operator handoff:** close every operator-facing report per the Operator handoff contract in `skills/SKILL_DEPENDENCIES.md` (Form A single line when nothing is needed; otherwise `**Needs your approval:**` with `path:L<n>` cites, `**Needs your answer:**`, and exactly one `**Next step:**`; omit empty sections).

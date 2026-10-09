@@ -147,6 +147,35 @@ Does the client have a clear, quantified problem?
 
 ---
 
+### Reality check before quoting
+
+Three numbers a price must survive before it goes into a proposal. Skip this and the three angles above produce a number that is defensible in conversation and unlivable in delivery.
+
+| Check | Calculation | Fail when |
+|-------|-------------|-----------|
+| **Delivered margin** | quoted price − (delivery weeks × weekly cost including non-billable time, tax set-aside, and tooling) | The margin is thin enough that a two-week overrun erases it. Overruns are the base case, not the exception — buffer for them in the scope, not in optimism. |
+| **Capacity** | concurrent engagements × delivery weeks vs available weeks in the period | The plan assumes more simultaneous work than the operator's hours support (compare `reference/OPERATOR_PROFILE.md`). |
+| **Runway fit** | payment schedule (50% upfront) vs months to first invoice | The upfront payment lands after the runway runs out. Then the price is academic; the schedule is the problem. |
+
+**Grade the anchors.** The Angle 1 client-value figure and the Angle 3 alternatives carry an evidence grade per `CONVENTIONS.md` § Evidence grades: the buyer's own stated numbers are `A` when you can test them and `C` when they are self-reported optimism; a live competitor pricing page is `A`; an unnamed "agencies charge $100k–$250k" aggregator is `C`. A price resting entirely on grade-C anchors is a guess wearing a table.
+
+### Record the pricing decision
+
+Append one row to `.work.biz/decisions/DECISIONS.md` when the quote goes out (create from `templates/work/decisions/DECISIONS.md.template` if missing). Pricing decisions are exactly the kind the ledger exists for: they are frequent, comparable, and scoreable, so after three or four of them the Calibration table starts telling the operator whether they are systematically underpricing.
+
+| Field | What goes in it |
+|-------|-----------------|
+| Decision | the quoted number and engagement type |
+| Options considered | the tiers offered, and the number you chose not to lead with |
+| Rationale | which angle bound the price, and the grade of its anchor |
+| Expected outcome | falsifiable — e.g. "won at or above $X by <date>", or "3 proposals sent at this price with ≥1 close" |
+| Confidence | % chance of closing at this price |
+| Reversibility | `two-way` before sending, `one-way` once the fixed-price contract is signed — treat the moment of signature as the door closing |
+| Kill / review trigger | e.g. "if 3 proposals at this price all lose on price, revise downward 10–25%" |
+| Review by | after the third proposal at this price, or at quarter end |
+
+---
+
 ### International Clients — Currency & Payment
 
 - **Always quote in USD.** It's the global standard for cross-border services.
@@ -220,8 +249,11 @@ If you win every proposal but the work isn't worth the price:
 Your pricing decision is correct when:
 - You can explain the price in 2 sentences (one for value, one for effort).
 - The price is between your effort-based floor × 1.3 and value-based ceiling × 0.3.
+- The reality check passes: delivered margin survives a two-week overrun, capacity holds, and the payment schedule lands inside runway.
+- The binding anchor is grade A or B, or you have said in the report that it is not.
 - You're not tempted to discount before the client objects.
 - You'd be happy to do the work at that price.
+- The decision row is appended with a falsifiable expected outcome and a review date.
 
 ---
 
@@ -235,6 +267,7 @@ Output a summary of the last pricing decision including:
 - Decision tree path taken
 - Currency and payment terms
 - Status (pending, quoted, won, lost, revised)
+- Decision ledger: the open pricing rows, their quoted numbers, confidence, and review dates; flag any row past its review date (`decisions/DECISIONS.md`)
 - Decisions and Open questions as separate numbered lists, never mixed
 - Exactly one `## Next action` section (or one line `Next action: none — <reason>` when nothing is needed)
 - Closing per the Operator handoff contract — Form A (`Next: nothing - work complete`) when nothing is needed; otherwise Form B (`**Needs your approval:**` and/or `**Needs your answer:**`, then exactly one `**Next step:**`).
@@ -244,11 +277,13 @@ Output a summary of the last pricing decision including:
 ### biz-pricing revise — Update Pricing Based on Feedback
 
 When market feedback, win/loss data, or changed circumstances demand a pricing revision:
-1. **Review win/loss data** — Are you winning too easily (price too low)? Losing too often (price too high, or wrong segment)?
-2. **Check competitive landscape** — Have market alternatives shifted? New entrants? New tools?
-3. **Adjust tiers** — Raise or lower by 10–25% based on evidence, not instinct.
-4. **Document the change** — Record old price, new price, and rationale.
-5. **Test for 3 proposals** — Run the new pricing for at least 3 proposals before further revision.
+
+1. **Score the open rows first.** Before re-pricing on instinct, read `decisions/DECISIONS.md` and settle every pricing row past its review date (`hit`/`partial`/`miss`/`unclear`). The ledger *is* the win/loss data; re-pricing without scoring it means revising a number whose track record was never read.
+2. **Review win/loss data with reasons** — Are you winning too easily (price too low)? Losing too often (price too high, or wrong segment)? **Record the loss reason**, not just the loss: "lost on price" and "lost on scope, timing, or trust" prescribe opposite changes, and a bare count cannot tell them apart. The loss reason is the `Lesson` on the decision row.
+3. **Check competitive landscape** — Have market alternatives shifted? New entrants? New tools? Re-verify any anchor older than 18 months (CONVENTIONS § Freshness).
+4. **Adjust tiers** — Raise or lower by 10–25% based on the scored evidence, not instinct.
+5. **Document the change and supersede the row** — Record old price, new price, and rationale; append a new decision row for the revision and mark the superseded row `superseded by D-{nnn}`. A revision with no superseding row leaves the ledger asserting a price you no longer charge.
+6. **Test for 3 proposals** — Run the new pricing for at least 3 proposals before further revision. Put that in the new row's `Review by`, so the test has a date rather than an intention.
 
 ---
 

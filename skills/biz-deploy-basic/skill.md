@@ -56,8 +56,8 @@ Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project 
 | Path | Source | If target exists |
 |------|--------|-------------------|
 | `.cursorrules` | `templates/cursorrules.template` with `AI_BIZ_SOURCE=<source>` substituted | skip (preserve); `--force` overwrites |
-| `.work.biz/README.md`, `gates.md`, `context/HANDOFF.md`, `plans/NEXT.md`, `plans/UNKNOWNS.md`, `pipeline/pipeline_tracker.md`, `pipeline/outreach-cadence.md`, `research/research_index.md`, `strategy/README.md`, `reference/CONTENT_STATUS.md`, `reference/BRAND_STATUS.md`, `reference/VOICE_PROFILE.md`, `reference/VOICE_RETRO.md`, `reference/OPERATOR_PROFILE.md`, `reference/PROJECTS.md` | `templates/work/*.template` (suffix stripped) | skip (preserve) |
-| `.work.biz/{context,plans,pipeline,research,drafts,strategy,reference,ideas,ideas.archive}/` | created empty dirs | skip (preserve) |
+| `.work.biz/README.md`, `gates.md`, `context/HANDOFF.md`, `plans/NEXT.md`, `plans/UNKNOWNS.md`, `pipeline/pipeline_tracker.md`, `pipeline/outreach-cadence.md`, `research/research_index.md`, `strategy/README.md`, `decisions/DECISIONS.md`, `reference/CONTENT_STATUS.md`, `reference/BRAND_STATUS.md`, `reference/VOICE_PROFILE.md`, `reference/VOICE_RETRO.md`, `reference/OPERATOR_PROFILE.md`, `reference/PROJECTS.md` | `templates/work/*.template` (suffix stripped) | skip (preserve) |
+| `.work.biz/{context,plans,pipeline,research,drafts,strategy,reference,ideas,ideas.archive,decisions}/` | created empty dirs | skip (preserve) |
 
 **Sync rule:** this list, `scripts/biz-deploy-basic.sh` `WORK_FILES`, `templates/bootstrap.sh`, `templates/README.md`, and `skills/biz-bootstrap/skill.md` § I1 must agree. `--update` only offers files in `WORK_FILES`, so an omission there means the artifact is silently never updated on an existing install. The directory set is bound the same way: the `bootstrap.sh` dir loop and `WORK_DIRS` must match (`framework-verify.sh` checks both).
 

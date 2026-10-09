@@ -52,6 +52,7 @@ Advice must fit the real operator, not a hypothetical one. Load in **priority or
 | `.work.biz/reference/OPERATOR_PROFILE.md` | Skills, proof points, constraints, risk tolerance, career stage |
 | `.work.biz/context/HANDOFF.md` | Recent direction; don't advise against it without saying so explicitly |
 | `.work.biz/plans/UNKNOWNS.md` | Open unknowns and blocked decisions |
+| `.work.biz/decisions/DECISIONS.md` | What was already decided and what it was expected to produce — never contradict a live decision without saying so explicitly |
 | `.work.biz/pipeline/pipeline_tracker.md` | Real commercial evidence — where the operator already wins |
 
 ### Priority 2 — Project identity
@@ -75,6 +76,7 @@ LOADED CONTEXT
   Assets:       <confirmed assets incl. underpriced ones>
   Constraints:  <runway / time / obligations — or "unspecified">
   Active strategy: <one line or "none">
+  Live decisions:  <open ledger rows this advice must respect, or "none">
   Gaps:         <what would materially change the advice>
 ```
 
@@ -84,7 +86,7 @@ Ask **one** consolidated question only if an unknown would materially change the
 
 ## I1 — `advise` mode
 
-Run all eight steps. Skipping the reframe pass (step 2) or the anti-advice (step 6) is the most common way this skill degrades into generic listicle output — both are mandatory.
+Run all eight steps in order (step 4b is part of the evidence pass, step 8 closes with the decision record). Skipping the reframe pass (step 2), the anti-advice (step 6), or the decision record (step 8) is the most common way this skill degrades — the first two into generic listicle output, the last into advice nobody can ever score.
 
 ### Step 1 — Frame the situation
 
@@ -111,17 +113,29 @@ Produce **≥5 genuinely distinct approaches**, ordered most → least promising
 **Positioning:** <the sentence to say — concrete, outcome-first>
 **Target buyer:** <specific role + company type + situation trigger>
 **Why it fits:** <trace to the confirmed assets, not hopes>
-**Evidence:** <market precedent or demand signal — researched, or marked Unverified>
+**Base rate:** <what normally happens to operators attempting this shape — graded, or marked directional>
+**Math:** <does it close? price × volume vs the income target before runway ends; prospects/week vs channel capacity>
+**Evidence:** <market precedent or demand signal — researched with an A–D grade, or marked Unverified>
 **First step:** <the smallest action that tests it this week>
 ```
 
 ### Step 4 — Evidence pass
 
-Every non-trivial market claim (demand exists, price ranges, "companies buy this") needs a citation from web research (competitor/marketplace pages, pricing pages, job-market signals) or an explicit **Unverified** mark. Precedent matters: advice is stronger when it can say "this purchasing model already exists — here are firms selling it."
+Every non-trivial market claim (demand exists, price ranges, "companies buy this") needs a citation from web research (competitor/marketplace pages, pricing pages, job-market signals) or an explicit **Unverified** mark, **and** an evidence grade from `CONVENTIONS.md` § Evidence grades: `A` first-party/primary (the operator's own pipeline, call notes, publish results) · `B` named third-party research with a stated method · `C` vendor/consultancy/media claim or single anecdote · `D` model memory or undated. Grade-C claims need an independent second source before they carry a recommendation; grade-D claims may never carry one alone.
+
+Precedent matters: advice is stronger when it can say "this purchasing model already exists — here are firms selling it." Precedent also needs a date, because a 2023 marketplace page is not evidence about 2026 pricing.
+
+### Step 4b — Outside view (base rate)
+
+Before ranking, name the reference class: operators in roughly this position attempting roughly this shape of move. State what normally happens to them — time to first revenue, share that never get paid, typical overrun against plan — with a grade, or explicitly marked `directional` when you can only reason about it. Then check the recommendation against it. A recommendation that requires beating the base rate is acceptable, but only with a stated reason: an unusual asset, a warm channel, an existing buyer relationship. "This time will be different" is not a reason.
 
 ### Step 5 — Rank + decide
 
 Rank the options by: speed to first revenue · fit with confirmed assets · buyer accessibility · defensibility. Then commit: **"What I would actually do"** — one primary direction, stated in ≤5 lines with the reasoning. Hedged "it depends" endings are a failure. If two tracks should run in parallel (e.g. income hedge + venture), say which is primary and why.
+
+State the decision's **reversibility** (one-way or two-way). A two-way door warrants speed; a one-way door warrants the evidence pass and the base rate before committing. Then state a **confidence** percentage — the number you would bet — because that is what makes the recommendation scoreable later.
+
+**Does the math close?** For the primary direction, show the arithmetic: price × realistic volume against the income target, and required prospects per week against the channel capacity the operator actually has. If it does not close, say so plainly and name the constraint that fails — a recommendation that cannot pay before runway ends is not a recommendation, it is a hope with a plan attached.
 
 ### Step 6 — Anti-advice (mandatory)
 
@@ -131,9 +145,24 @@ A short **"Do NOT"** list: the tempting moves that waste the next month — prem
 
 What happens in what order, and what runs in parallel. End with a concrete **30-day frame**: week-by-week actions across positioning, first-50-prospect outreach, entry-offer pricing, and (for teams) who sells. Offer to expand it into a full plan via `biz-strategy` / `biz-proposal` as applicable.
 
-### Step 8 — Assumption ledger + risks
+### Step 8 — Assumption ledger, risks, and the decision record
 
-Grade load-bearing assumptions Confirmed / Inferred / Unknown. List residual risks and the cheapest test for the riskiest one.
+Grade load-bearing assumptions Confirmed / Inferred / Unknown, and mark the largest `If wrong` blast radius. List residual risks and the cheapest test for the riskiest one.
+
+Then **record the recommendation as a decision** — a `pending` row would be worse than useless, so this is the last thing you do, not an optional extra. Append one row to `.work.biz/decisions/DECISIONS.md` (create it from `templates/work/decisions/DECISIONS.md.template` if missing — self-heal, never skip the record):
+
+| Field | What goes in it |
+|-------|-----------------|
+| Decision | the primary direction, one line |
+| Options considered | the ranked alternatives |
+| Rationale | why this one, traced to a confirmed asset or a graded evidence row |
+| Expected outcome | falsifiable — a number and a date, or an observable event |
+| Confidence | the percentage stated in Step 5 |
+| Reversibility | one-way / two-way |
+| Kill / review trigger | the evidence that would prove it wrong, and the action then |
+| Review by | when the expected outcome should be visible |
+
+Do not decide the trigger after the fact. The whole value of writing it now is that it cannot be quietly relaxed later.
 
 ### Output framing
 
@@ -157,11 +186,14 @@ Report: operator/team profile as loaded, active strategy presence, pipeline evid
 
 - [ ] Did I reframe at least twice, with usable "don't sell X — sell Y" sentences?
 - [ ] ≥5 distinct approaches, ranked, each traced to confirmed assets?
-- [ ] Every market claim cited from research or marked Unverified?
-- [ ] A decisive "what I would actually do" — no hedging mush?
+- [ ] Every market claim cited from research **and graded A–D**, or marked Unverified?
+- [ ] Did I name the reference class and what normally happens to it — before ranking?
+- [ ] Does the primary direction's arithmetic close (price × volume vs target, prospects/week vs channel capacity)?
+- [ ] A decisive "what I would actually do" — no hedging mush — with a confidence % and a reversibility class?
 - [ ] Anti-advice section present and specific to this operator?
 - [ ] Sequencing + parallel tracks where risk demands hedging?
 - [ ] Assumption ledger graded; cheapest test named for the riskiest unknown?
+- [ ] Decision row appended to `decisions/DECISIONS.md` with a falsifiable expected outcome and a review date?
 - [ ] Exactly one concrete next action?
 - [ ] Does the whole answer clear the calibration bar in the header (team-rescue example)?
 
@@ -172,11 +204,13 @@ If any box is unchecked, fix it before delivering.
 ## Completion gate (cannot be skipped)
 
 You may only claim the task complete when all are true:
-1. Context loaded per I0 and the summary emitted.
-2. Reframe pass, ≥5 ranked options, evidence pass, anti-advice, sequencing, and assumption ledger all delivered.
-3. One decisive recommendation with reasoning.
-4. A concrete 30-day next step proposed.
-5. Handoff offered to the right follow-on skill (`biz-strategy`, `biz-market-validate`, `biz-proposal`) when the advice converges.
+1. Context loaded per I0 (including open ledger rows) and the summary emitted.
+2. Reframe pass, ≥5 ranked options, evidence pass with grades, outside view, anti-advice, sequencing, and assumption ledger all delivered.
+3. The primary direction's arithmetic is shown and closes — or the failing constraint is named plainly.
+4. One decisive recommendation with reasoning, a confidence percentage, and a reversibility class.
+5. A concrete 30-day next step proposed.
+6. The decision row is appended to `.work.biz/decisions/DECISIONS.md` with a falsifiable expected outcome, a kill/review trigger, and a review date (CONVENTIONS § Decision loop).
+7. Handoff offered to the right follow-on skill (`biz-strategy`, `biz-market-validate`, `biz-proposal`) when the advice converges.
 
 - **Operator handoff:** close every operator-facing report per the Operator handoff contract in `skills/SKILL_DEPENDENCIES.md` (Form A single line when nothing is needed; otherwise `**Needs your approval:**` with `path:L<n>` cites, `**Needs your answer:**`, and exactly one `**Next step:**`; omit empty sections).
 - **Document clarity:** every generated document follows the Document clarity contract in `skills/SKILL_DEPENDENCIES.md` (Status/Needs header; separate Decisions / Open questions lists; exactly one `## Next action`; no leftover scaffolding).
@@ -187,7 +221,7 @@ You may only claim the task complete when all are true:
 
 | Mode | Time |
 |------|------|
-| `advise` | 30–60 min (incl. evidence pass) |
+| `advise` | 35–75 min (incl. evidence pass, outside view, arithmetic) |
 | `patterns` | 5–15 min |
 | `status` | < 2 min |
 
@@ -213,3 +247,4 @@ Feeds naturally into:
 | `@biz-strategy` | Formalize and certify the chosen direction |
 | `@biz-market-validate` | Test the top option before committing |
 | `@biz-sources` | Curate the advisory sources that keep this skill's evidence base current |
+| `@biz-review quarterly` | Scores the decision rows this skill writes — the loop that turns advice into calibration |

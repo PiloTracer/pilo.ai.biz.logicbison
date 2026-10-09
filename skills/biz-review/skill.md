@@ -2,13 +2,14 @@
 name: biz-review
 description: >-
   Weekly, monthly, and quarterly business review. Assess pipeline, content
-  performance, assumption health, and overall business health. biz-review weekly,
+  performance, assumption health, overall business health, and — quarterly —
+  score the decision ledger to calibrate judgment. biz-review weekly,
   biz-review monthly, biz-review quarterly, biz-review status.
 ---
 
 # biz-review
 
-**Purpose:** Regular structured review prevents drift. Weekly = tactical. Monthly = assumption truth. Quarterly = strategic.
+**Purpose:** Regular structured review prevents drift. Weekly = tactical. Monthly = assumption truth. Quarterly = strategic, and the only place a past recommendation is scored against what happened.
 
 ---
 
@@ -97,6 +98,7 @@ Score each stage 0 (blocked) → 5 (healthy):
 3. If anything was published this week, confirm `.work.biz/reference/CONTENT_STATUS.md` was updated. If the file is missing entirely, create it from `templates/work/reference/CONTENT_STATUS.md.template` and backfill the pieces known to be published (self-heal rule, see CONVENTIONS § Content Status Protocol) — a missing tracker means every future session loses the publish record.
 4. If anything was published this week, confirm `.work.biz/reference/VOICE_RETRO.md` carries an entry for it (or records the owner pass as waived). A publish with no retro entry means the voice loop did not run and voice convergence is being measured on a partial sample (see CONVENTIONS § Voice loop).
 5. Run the I0 reconciliation against `{WORK_BUSINESS_ROOT}/gates.md` -> flag any gate claiming PASS without evidence, and demote it.
+6. Read the decision ledger (`.work.biz/decisions/DECISIONS.md`) -> count rows past their `Review by` date still `pending`. Any overdue row is a one-line flag here; three or more means the judgment loop has stopped running and the quarterly audit is the fix. If the ledger is missing while NEXT/HANDOFF show consequential decisions this quarter, flag that too.
 
 Render findings as a short "Drift check" block in the review output (or "clean" if nothing found).
 
@@ -113,6 +115,7 @@ Certification is one-shot: it proves the strategy was consistent on the day it w
 | `strategy/assumption-ledger.md` | The claims under review |
 | `pipeline/pipeline_tracker.md` + `pipeline/*-tracker.md` | What buyers actually did since the last re-validation |
 | `reference/CONTENT_STATUS.md` (conversations column) | Which strategic messages produced conversations, not just reach |
+| `decisions/DECISIONS.md` | Open decisions this quarter's re-grading may have invalidated |
 | Discovery call notes logged in the pipeline tracker | What buyers actually said |
 
 ### Re-validation steps
@@ -128,6 +131,7 @@ Certification is one-shot: it proves the strategy was consistent on the day it w
    - A load-bearing assumption died → route to `@biz-strategy amend` now. Do not wait for the quarterly.
    - Only peripheral assumptions died → record them in `plans/NEXT.md` for the next amend cycle.
    - Nothing died → report the grade counts and set the next re-validation date.
+5. **Cross-check the decision ledger.** Any open (`pending`) decision row resting on a dead assumption is now betting on something known to be false. Flag it in the report; if the death was load-bearing, do not wait for the quarterly — the decision needs superseding, not scoring.
 
 ### Rules
 
@@ -188,6 +192,25 @@ Reach is a vanity metric; conversations are the only column that connects conten
 
 ---
 
+### Decision audit (quarterly, ~30 min)
+
+Assumptions are re-graded monthly and content is measured by pillar above. **Judgment is measured here or nowhere**: this is the only step in the framework that compares a past recommendation with what actually happened. Skip it and every skill in the framework can only get more confident, never more accurate.
+
+1. Read `.work.biz/decisions/DECISIONS.md`. Select every row whose `Review by` date has passed and whose `Outcome` is still `pending`.
+2. For each, gather what actually happened from the sources that can settle it: the pipeline tracker, `CONTENT_STATUS.md` conversations, won/lost records, revenue. Score honestly:
+   - `hit` — the expected outcome landed inside its window
+   - `partial` — right direction, wrong magnitude or timing
+   - `miss` — it did not happen
+   - `unclear` — the evidence cannot settle it. Say so rather than scoring a guess. An `unclear` row usually means the expected outcome was never falsifiable, and that is the lesson.
+3. Write a one-line `Lesson` per scored row about the **reasoning**, not the market. "We assumed a 5% reply rate with nothing behind it" is a lesson; "the market was slow" is an excuse. Never rewrite a scored row.
+4. Update the ledger's **Calibration** table: scored rows, hit rate, mean confidence, and gap per decision class. With fewer than three scored rows in a class, write `insufficient scored rows` and draw no conclusion.
+5. **Repeating misses:** three misses in one class is a rule problem, not bad luck. Amend the protocol or the strategy and record it in the ledger's Repeating-misses table. "I'll be more careful" is not a change.
+6. Report the debt: rows still `pending` past their review date.
+
+If the ledger is empty while the quarter plainly contained consequential decisions, say that in the report. A decision recorded only as prose can never be scored, and the missing record *is* the finding.
+
+---
+
 ## I3 — Data source
 
 All numbers come from your **pipeline tracker** (a spreadsheet, CRM, or `.ai.biz/` tracker file). If data isn't tracked, the first action is: *set up tracking for next week.*
@@ -207,6 +230,10 @@ All numbers come from your **pipeline tracker** (a spreadsheet, CRM, or `.ai.biz
 | 7 | Quarterly: content-strategy alignment aggregated by pillar; winners fed back toward amend | |
 | 8 | Quarterly: next quarter focus documented | |
 | 9 | Gate ledger reconciled — every PASS in `.work.biz/gates.md` has its evidence on disk | |
+| 10 | Weekly: overdue decision rows flagged | |
+| 11 | Quarterly: every pending row past its review date scored (`hit`/`partial`/`miss`/`unclear`) with a lesson | |
+| 12 | Quarterly: Calibration table updated per class, gap reported, `insufficient scored rows` where true | |
+| 13 | Quarterly: repeating miss classes (3+) converted into a recorded rule change | |
 
 - **Operator handoff:** close every operator-facing report per the Operator handoff contract in `skills/SKILL_DEPENDENCIES.md` (Form A single line when nothing is needed; otherwise `**Needs your approval:**` with `path:L<n>` cites, `**Needs your answer:**`, and exactly one `**Next step:**`; omit empty sections).
 - **Document clarity:** every generated document follows the Document clarity contract in `skills/SKILL_DEPENDENCIES.md` (Status/Needs header; separate Decisions / Open questions lists; exactly one `## Next action`; no leftover scaffolding).

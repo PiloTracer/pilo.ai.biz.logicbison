@@ -98,6 +98,7 @@ Read these at the start of every conversation:
 | `{HANDOFF}` | `.work.biz/context/HANDOFF.md` |
 | `{NEXT}` | `.work.biz/plans/NEXT.md` |
 | `{PIPELINE_TRACKER}` | `.work.biz/pipeline/pipeline_tracker.md` |
+| `{DECISIONS}` | `.work.biz/decisions/DECISIONS.md` |
 | `{SKILLS_ROOT}` | `skills/` |
 | `{CONCEPTS_ROOT}` | `concepts/` |
 | `{AGENT_RULES_FILE}` | **`.cursorrules` (this file)** |
@@ -161,7 +162,7 @@ Reusable agent skills live under `skills/` (or `$AI_BIZ_SOURCE/skills/` in thin-
 | biz-deploy-files | `skills/biz-deploy-files/` | Deploy Business OS files into target project (fat-client) |
 | biz-deploy-basic | `skills/biz-deploy-basic/` | Thin-client bootstrap — copies `.cursorrules` (with `AI_BIZ_SOURCE` pointer) + `.work.biz/` skeleton; skills resolve from source at runtime. `@biz-deploy-basic`, `@biz-deploy-basic update`, `@biz-deploy-basic status` |
 | biz-bootstrap | `skills/biz-bootstrap/` | Scaffold `.work.biz/`, `.cursorrules` from templates |
-| biz-strategy | `skills/biz-strategy/` | Niche, offer, positioning, target buyer, operator profile (career) |
+| biz-strategy | `skills/biz-strategy/` | Niche, offer, positioning, target buyer, operator profile (career); reality check (arithmetic + outside view) at certify |
 | biz-brand | `skills/biz-brand/` | LinkedIn, website, brand presence |
 | biz-pricing | `skills/biz-pricing/` | Value-based pricing framework |
 | biz-content | `skills/biz-content/` | LinkedIn content publishing and strategy |
@@ -171,7 +172,7 @@ Reusable agent skills live under `skills/` (or `$AI_BIZ_SOURCE/skills/` in thin-
 | biz-discovery | `skills/biz-discovery/` | Sales discovery calls |
 | biz-proposal | `skills/biz-proposal/` | Proposal writing and scoping |
 | biz-objections | `skills/biz-objections/` | Handle sales objections |
-| biz-review | `skills/biz-review/` | Weekly/monthly/quarterly business review |
+| biz-review | `skills/biz-review/` | Weekly/monthly/quarterly business review; quarterly includes the decision audit + calibration |
 | biz-market-validate | `skills/biz-market-validate/` | Test offers before committing |
 | biz-pipeline-diagnosis | `skills/biz-pipeline-diagnosis/` | Find and fix funnel bottlenecks |
 | biz-session | `skills/biz-session/` | Session open/close; HANDOFF, NEXT; `close commit [scoped] [push]`; standalone `commit` / `commit push` (no close) and `add` (stage only); `context` read-only load + uncommitted-aware. Aliased as `session-control` (`@session-control context`, `@session-control start`, etc.) |
@@ -181,7 +182,7 @@ Reusable agent skills live under `skills/` (or `$AI_BIZ_SOURCE/skills/` in thin-
 | biz-ideas | `skills/biz-ideas/` | Structured, stress-tested business/venture idea generation |
 | biz-archive | `skills/biz-archive/` | Archive published content pieces: `ideas/` → `ideas.archive/` (mirrored), tracker annotated, history preserved |
 | biz-products | `skills/biz-products/` | Buildable, stack-fit product/service concept generation + MVP scoping |
-| biz-advisory | `skills/biz-advisory/` | Situational business counsel: asset reframe pass, ranked options with market evidence, anti-advice, decisive recommendation + 30-day step |
+| biz-advisory | `skills/biz-advisory/` | Situational business counsel: asset reframe pass, ranked options with graded market evidence, base rate, arithmetic check, anti-advice, decisive recommendation + 30-day step; records the decision row |
 | biz-sources | `skills/biz-sources/` | Curate and mine business-advisory sources (positioning, pricing, sales, fractional/AI-services market) into a living catalog |
 
 **Usage:** When a task matches a skill's purpose, read `skill.md` and follow the workflow.
@@ -249,8 +250,10 @@ Creating or editing files in declared task scope is allowed. Prefer reversible e
 ### Before Claiming Completion
 1. Re-read the deliverable. Does it pass the "so what?" test?
 2. Check: is the advice specific enough to act on?
-3. Check: are the assumptions labeled (confirmed / inferred / unknown)?
-4. Report the actual analysis — not assumed conclusions.
+3. Check: are the assumptions labeled (confirmed / inferred / unknown), and is each load-bearing one graded `A`–`D`?
+4. Check the arithmetic: if the deliverable asserts revenue, price, capacity, or a timeline, does the math close, and is the timeline reconciled against a base rate (CONVENTIONS § Decision loop, § Evidence grades)?
+5. If a consequential recommendation was made, confirm it is recorded in `.work.biz/decisions/DECISIONS.md` with a falsifiable expected outcome, a confidence, a reversibility class, a kill/review trigger, and a review date. Advice that was never recorded can never be scored.
+6. Report the actual analysis — not assumed conclusions.
 
 ### On Weak Analysis
 - If you can't validate a key assumption, say so explicitly.

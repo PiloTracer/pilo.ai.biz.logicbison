@@ -2,6 +2,24 @@
 
 > **Context budget (CONVENTIONS):** history is moved, never deleted. Older session blocks live here; the live `context/HANDOFF.md` keeps the newest blocks and carries a pointer to this file. Newest-first.
 
+## Session summary (2026-08-19, close)
+
+| Step | Status |
+|------|--------|
+| Explored framework + `future-strategy` target: `ideas/` convention existed only in targets, nothing in the framework wrote or described it | Done |
+| Canonized `.work.biz/ideas/<subdir>/<piece>/` + `ideas.archive/` in DIRECTORY_MAP (+ Archive rule) and CONVENTIONS (Content Status Protocol → Archive rule) | Done |
+| New skill `skills/biz-archive/skill.md` (24th): `run` moves `published` pieces to `ideas.archive/` mirrored (`git mv` staged / `mv`), writes per-piece `status.md` publish record, verifies it, then removes the tracker row; `status` dry run; idempotent with catch-up; never commits/pushes/deletes | Done |
+| Tracker slims to active inventory: archived rows leave CONTENT_STATUS once per-piece status.md verified; lifetime aggregates stay truthful; no centralized `ideas.archive/status.md` (owner directive) | Done |
+| Context budget (CONVENTIONS): history moved never deleted — HANDOFF/NEXT/UNKNOWNS slim into sibling `*.archive.md` files; biz-session close C5/C6 performs the slim | Done |
+| Bootstrap pentad: `bootstrap.sh` dir loop + `WORK_DIRS` scaffold `ideas`/`ideas.archive`; biz-bootstrap, templates/README, biz-deploy-basic docs synced | Done |
+| Routing: skills/README (row + `archive` verb), biz-director (intent + gate-exempt), PROCESS_ROUTER, START_HERE, .cursorrules + template, root README (24 skills), SKILL_DEPENDENCIES (ungated utility) | Done |
+| framework-verify: archive wiring block (11 greps) + new WORK_DIRS↔bootstrap.sh symmetry check | Done |
+| Evidence-checked against `future-strategy` uncommitted slim-down (17 per-piece status.md, HANDOFF.archive.md) — framework matches the proven pattern; target repo not modified | Done |
+| Gates: framework-verify PASS, gate-verify PASS (n/a), touch-scope PASS, blast-radius WARN (11 areas, cross-cutting by design, acknowledged) | Done |
+| Round 1 committed by owner as `087981f`; round 2 via close commit push | Done |
+
+---
+
 ## Session summary (2026-08-13, close)
 
 | Step | Status |

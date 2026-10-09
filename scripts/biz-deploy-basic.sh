@@ -129,6 +129,7 @@ WORK_FILES=(
   "README.md" "context/HANDOFF.md" "plans/NEXT.md" "plans/UNKNOWNS.md"
   "pipeline/pipeline_tracker.md" "pipeline/outreach-cadence.md"
   "research/research_index.md" "strategy/README.md" "gates.md"
+  "decisions/DECISIONS.md"
   "reference/CONTENT_STATUS.md" "reference/BRAND_STATUS.md"
   "reference/VOICE_PROFILE.md" "reference/VOICE_RETRO.md"
   "reference/OPERATOR_PROFILE.md" "reference/PROJECTS.md"
@@ -136,7 +137,7 @@ WORK_FILES=(
 # Must match the dir loop in templates/bootstrap.sh (framework-verify checks this).
 WORK_DIRS=(
   "context" "plans" "pipeline" "research" "drafts" "strategy" "reference"
-  "ideas" "ideas.archive"
+  "ideas" "ideas.archive" "decisions"
 )
 
 echo "=== biz-deploy-basic (Business OS) → $DEST_ROOT (thin-client bootstrap) ==="

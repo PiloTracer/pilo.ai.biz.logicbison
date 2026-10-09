@@ -27,9 +27,9 @@ Portable, tool-agnostic business workflows. Each skill is a folder with `skill.m
 | biz-deploy-basic | `biz-deploy-basic/` | Thin-client bootstrap (`.cursorrules` + `.work.biz/`); skills load via `AI_BIZ_SOURCE` (legacy pointer name: `AGENT_OS_SOURCE`) |
 | biz-deploy-files | `biz-deploy-files/` | Deploy `.ai.biz/` files into target project |
 | biz-bootstrap | `biz-bootstrap/` | Scaffold `.work.biz/`, `.cursorrules` from templates |
-| biz-strategy | `biz-strategy/` | Define niche, offer, positioning; profile the operator (`career`); certifies **strategy-ready** |
+| biz-strategy | `biz-strategy/` | Define niche, offer, positioning; profile the operator (`career`); reality check (arithmetic + outside view); certifies **strategy-ready** and records it as a decision |
 | biz-brand | `biz-brand/` | Audit/overhaul LinkedIn, website, brand presence |
-| biz-pricing | `biz-pricing/` | Value-based pricing for any engagement |
+| biz-pricing | `biz-pricing/` | Value-based pricing for any engagement; reality check (margin, capacity, runway); records each quote as a decision |
 | biz-content | `biz-content/` | LinkedIn publishing ops: publish, plan, 30-day challenge (#CreateImpact), tracker |
 | biz-youtube | `biz-youtube/` | YouTube publishing ops: publish, plan, 30-day challenge, analytics status |
 | biz-community | `biz-community/` | Community engagement without selling |
@@ -37,7 +37,7 @@ Portable, tool-agnostic business workflows. Each skill is a folder with `skill.m
 | biz-discovery | `biz-discovery/` | Sales discovery calls |
 | biz-proposal | `biz-proposal/` | Proposal writing and scoping |
 | biz-objections | `biz-objections/` | Handle sales objections |
-| biz-review | `biz-review/` | Weekly/monthly/quarterly business review (monthly = assumption re-validation) |
+| biz-review | `biz-review/` | Weekly/monthly/quarterly business review (monthly = assumption re-validation; quarterly = content-by-pillar + **decision audit/calibration**) |
 | biz-market-validate | `biz-market-validate/` | Test offers before committing |
 | biz-pipeline-diagnosis | `biz-pipeline-diagnosis/` | Find and fix funnel bottlenecks |
 | biz-session | `biz-session/` | Session bookends + scoped git: `start` / `close` / `status` / `context`; `close commit [scoped] [push]`; standalone `commit` / `commit push` (no close) and `add` (stage only). Scope: `.work.biz/` in target projects, repo-wide in the Business OS source repo. Aliased as `session-control` |
@@ -47,8 +47,8 @@ Portable, tool-agnostic business workflows. Each skill is a folder with `skill.m
 | biz-ideas | `biz-ideas/` | Structured, stress-tested business/venture idea generation; archetypes + assumption ledger |
 | biz-archive | `biz-archive/` | Archive published content pieces: `ideas/` → `ideas.archive/` (mirrored), tracker annotated, history preserved |
 | biz-products | `biz-products/` | Buildable, stack-fit product/service concepts + MVP scoping + prioritization matrix |
-| biz-advisory | `biz-advisory/` | Situational business counsel: asset reframe pass, ranked options with evidence, anti-advice, decisive recommendation |
-| biz-sources | `biz-sources/` | Curate and mine business-advisory sources into a living catalog (`.work.biz/research/sources.md`) |
+| biz-advisory | `biz-advisory/` | Situational business counsel: asset reframe pass, ranked options with **graded** evidence, base rate, arithmetic check, anti-advice, decisive recommendation; records the decision row |
+| biz-sources | `biz-sources/` | Curate and mine business-advisory sources into a living catalog (`.work.biz/research/sources.md`), each **graded A–D** with freshness |
 
 **Typical flow (greenfield):** `@biz-bootstrap init` → `@biz-strategy greenfield` → `@biz-strategy certify` → `@biz-brand audit` → `@biz-pricing set` → `@biz-community find` → `@biz-social strategy` → `@biz-social write` → `@biz-youtube plan` → ...
 
@@ -83,7 +83,7 @@ Portable, tool-agnostic business workflows. Each skill is a folder with `skill.m
 | `find` | Find communities to join (biz-community) |
 | `weekly` | Weekly business review (biz-review) |
 | `monthly` | Monthly assumption re-validation: re-grade the assumption ledger, route dead load-bearing assumptions to amend (biz-review) |
-| `quarterly` | Quarterly strategic review incl. content-strategy alignment by pillar (biz-review) |
+| `quarterly` | Quarterly strategic review: content-strategy alignment by pillar **and the Decision audit** — score the decision ledger, update calibration, convert repeating miss classes into rule changes (biz-review) |
 | `career` | Probe the operator (skills, proof points, constraints, risk, stage); fill `reference/OPERATOR_PROFILE.md`; career-direction read (biz-strategy) |
 | `roleplay` | Practice objection handling (biz-objections) |
 | `close` / `start` | Session bookends |
@@ -109,3 +109,4 @@ Portable, tool-agnostic business workflows. Each skill is a folder with `skill.m
 | `advise` | Full situational advisory pass: reframe, ranked options, evidence, anti-advice, decisive recommendation (biz-advisory) |
 | `patterns` | List/apply the advisory pattern library, BIZ-10 (biz-advisory) |
 | `list` | Show the curated advisory-source catalog (biz-sources) |
+| `decisions` | The decision ledger (`.work.biz/decisions/DECISIONS.md`): every consequential decision with a falsifiable expected outcome, a confidence, a reversibility class, a kill/review trigger, and a review date. Written by `@biz-strategy certify`/`amend`, `@biz-advisory advise`, `@biz-pricing set`, `@biz-market-validate test`, `@biz-proposal write`; scored by `@biz-review quarterly` (CONVENTIONS § Decision loop) |

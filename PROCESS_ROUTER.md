@@ -58,9 +58,18 @@
 | Situational business advice ("what should I do?") | `@biz-advisory - <situation>` |
 | Advisory reframe patterns (BIZ-10) | `@biz-advisory patterns` |
 | Find / curate business-advisory sources | `@biz-sources find - <topic>` · `@biz-sources list` |
+| Check whether a plan is realistic / the numbers add up | `@biz-strategy certify - why` (read-only) · `@biz-strategy probe - reality` · `@biz-strategy certify` |
+| Ask what normally happens to plans like yours (base rate) | `@biz-strategy probe - reality` · `@biz-advisory - <situation>` |
+| Record a decision you've made | append to `decisions/DECISIONS.md` (or `@biz-advisory` to frame it first) |
+| Find out whether past decisions were right / your calibration | `@biz-review quarterly` (Decision audit) |
+| Check how strong a piece of evidence is | `@biz-sources find - <topic>` (grade + freshness) · `@biz-market-validate design` if it needs a test |
 
 ## Readiness states
 
 `strategy-ready → brand-ready → pipeline-ready → sales-ready → active-deal`
 
 Only `@biz-strategy certify` can mark **strategy-ready**. Only `@biz-review status` can mark **pipeline-ready**.
+
+## Judgment loop
+
+Every consequential decision (money, more than a week of time, a price, a buyer, a primary channel, a public position) is recorded in `.work.biz/decisions/DECISIONS.md` with a falsifiable expected outcome, a confidence, a reversibility class, a kill/review trigger, and a review date. `@biz-review quarterly` scores them and reports calibration. Rules: `CONVENTIONS.md` § Decision loop.

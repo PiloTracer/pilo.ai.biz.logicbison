@@ -42,7 +42,15 @@ Every strategy decision rests on a mix of:
 | **Inferred** | Reasonable but unverified | Flag for probe mode. Test before certifying. |
 | **Unknown** | No evidence either way | Gap to fill. May block certification. |
 
-Rule of thumb: If more than 30% of your strategy assumptions are "unknown", run `@biz-strategy probe` before certifying.
+Every row is graded twice more, because "how sure are we" is not the same question as "how much does it matter":
+
+| Field | Question | Why it exists |
+|-------|----------|---------------|
+| **Load-bearing** | Does this anchor the buyer, the problem, the offer, the primary channel, or the price? | A load-bearing Unknown is disqualifying however few there are; a peripheral Unknown is tolerable. Counting unknowns weights a trivial gap and an existential one equally. |
+| **If wrong** | What breaks if this is false? | The sensitivity pass. The row with the largest blast radius is the one to test first, however confident it feels. |
+| **Evidence grade** | `A` / `B` / `C` / `D` per `CONVENTIONS.md` § Evidence grades | A citation is not a source quality. A grade-C claim cannot be the foundation of a certified strategy. |
+
+Rule of thumb: run `@biz-strategy probe` before certifying whenever a **load-bearing** assumption is Unknown, or rests on grade-C/D evidence. A peripheral unknown count above 30% is a smell, not a blocker.
 
 ### Geography (Where You Operate)
 
@@ -60,7 +68,7 @@ Choice constrains channel, price, and offer structure.
 
 | User says | Mode |
 |-----------|------|
-| `@biz-strategy greenfield` | Generate full strategy from scratch. Walk through all 6 elements. |
+| `@biz-strategy greenfield` | Generate full strategy from scratch. Walk through all 8 elements. |
 | `@biz-strategy greenfield - from <file>` | Generate strategy using an existing document as seed. |
 | `@biz-strategy probe` | Adaptive gap-filling questioning. Targets unknown/inferred assumptions. |
 | `@biz-strategy probe - <element>` | Probe a specific element (person, problem, offer, channel, price, geography). |
@@ -90,6 +98,7 @@ All strategy files live under `{WORK_BUSINESS_ROOT}` (`.work.biz/`):
 | `strategy/pricing.md` | Distilled price range from the Price element |
 | `strategy/certification.md` | Gate certification record (certify mode writes here) |
 | `strategy/changelog.md` | Append-only record of strategy changes (amend mode writes here; reconcile mode appends entries marked **(correction)**) |
+| `decisions/DECISIONS.md` | Decision ledger — outside `strategy/` on purpose, because it records judgment rather than positioning. `certify` appends the certified strategy as a decision; `amend` appends the superseding row (CONVENTIONS § Decision loop) |
 
 - **Document clarity:** every generated document follows the Document clarity contract in `skills/SKILL_DEPENDENCIES.md` (Status/Needs header; separate Decisions / Open questions lists; exactly one `## Next action`; no leftover scaffolding).
 
@@ -109,7 +118,7 @@ Every file this skill writes (the strategy docs above, `strategy/certification.m
 
 ## I1 — Greenfield mode
 
-Walk through all 6 elements in sequence. Each produces a section for `strategy/one-pager.md`. After each element, summarize the choice before proceeding.
+Walk through all 8 elements in sequence. Each produces a section for `strategy/one-pager.md`. After each element, summarize the choice before proceeding.
 
 **Operator profile first:** if `{WORK_BUSINESS_ROOT}/reference/OPERATOR_PROFILE.md` exists, read it before starting; it constrains the offer (what the operator can deliver), the channel (available hours), and the price (runway floor). If it does not exist, offer `@biz-strategy career` before Element 1 and proceed either way: greenfield works without it, but every element is sharper with it.
 
@@ -240,25 +249,57 @@ Walk through:
 
 ### Element 7: Assumption Ledger (Build)
 
-After the 6 elements are drafted, build the assumption ledger:
+After the first 6 elements are drafted, build the assumption ledger:
 
 1. For each element, list every factual claim underpinning the decision.
 2. Grade each: **Confirmed** (direct evidence), **Inferred** (reasonable but not verified), **Unknown** (no evidence).
-3. Write to `strategy/assumption-ledger.md`.
+3. Mark each **load-bearing** (yes/no): does it anchor the buyer, the problem, the offer, the primary channel, or the price?
+4. Record **If wrong** — what breaks if the claim is false. This is the sensitivity ranking: test the largest blast radius first.
+5. Grade the **evidence**: `A`/`B`/`C`/`D` per `CONVENTIONS.md` § Evidence grades.
+6. Write to `strategy/assumption-ledger.md`.
 
 **Ledger format:**
 
 ```markdown
-| Category | Assumption | Evidence | Element |
-|----------|-----------|----------|---------|
-| Confirmed | [assumption] | [file, source, or observation] | [element] |
-| Inferred | [assumption] | [what makes it reasonable] | [element] |
-| Unknown | [assumption] | [gap description] | [element] |
+| Category | Assumption | Load-bearing | If wrong | Evidence | Grade | Element |
+|----------|-----------|--------------|----------|----------|-------|---------|
+| Confirmed | [assumption] | yes/no | [what breaks] | [file, source, or observation] | A | [element] |
+| Inferred | [assumption] | yes/no | [what breaks] | [what makes it reasonable] | C | [element] |
+| Unknown | [assumption] | yes/no | [what breaks] | [gap description] | — | [element] |
 ```
+
+---
+
+### Element 8: Reality Check (arithmetic + outside view)
+
+A strategy can be internally consistent and still be arithmetically impossible. This is the element that decides whether the other seven are a plan or a wish. Both parts are mandatory and both live in `strategy/one-pager.md` under `## Reality check`.
+
+**A. Does the math close?** Show the arithmetic, not a conclusion:
+
+| Line | Calculation | Figure | Tag |
+|------|-------------|--------|-----|
+| Capacity | available hours/week × weeks per quarter ÷ delivery hours per engagement | | |
+| Revenue ceiling | concurrent engagements × price at the **floor** of the range | | |
+| Required deals | target revenue ÷ average deal size | | |
+| Required proposals | required deals ÷ close rate | | |
+| Required conversations | required proposals ÷ proposals-per-conversation rate | | |
+| Required prospects/week | required conversations ÷ weeks ÷ conversation rate | | |
+| Channel capacity | prospects/week the primary channel can actually produce (compare against the channel minimums in Element 4) | | |
+| Runway | months to first revenue vs the runway recorded in `reference/OPERATOR_PROFILE.md` | | |
+
+Every figure carries its Document clarity tag: `measured` (you have the number), `estimated` (reasoned from something real), `assumption` (a guess), `unknown` (no basis). Conversion rates that come from the operator's own pipeline are grade A; ones borrowed from a blog are grade C and must be labeled as such.
+
+**The strategy fails certification** when the required prospects exceed the primary channel's realistic capacity, or the revenue ceiling at the floor price does not cover the income target before runway ends. The fix is `@biz-strategy probe` on the buyer, price, or channel — not certifying anyway.
+
+**B. Outside view (base rate).** Name the reference class — operators attempting this shape of business, at this price band, through this channel. State what normally happens to them: time to first revenue, typical overrun against plan. Grade the evidence, or mark it `directional` when you can only reason about it. Then reconcile your own timeline against it: if your plan is materially faster than the base rate, say why with something better than optimism; if slower, say what you are trading away.
+
+The outside view is the antidote to the planning fallacy. An inside view assembled from your own plan always looks achievable, because it is built entirely out of your own intentions.
+
+**Output:** append `## Reality check` (parts A and B) to `strategy/one-pager.md`.
 
 ### Greenfield completion
 
-When all 6 elements + ledger are written:
+When all 8 elements + ledger are written:
 
 ```text
 ✓ Strategy one-pager:    {WORK_BUSINESS_ROOT}/strategy/one-pager.md
@@ -267,6 +308,8 @@ When all 6 elements + ledger are written:
 ✓ Channel plan:          {WORK_BUSINESS_ROOT}/strategy/channel-plan.md
 ✓ Pricing:               {WORK_BUSINESS_ROOT}/strategy/pricing.md
 ✓ Assumption ledger:     {WORK_BUSINESS_ROOT}/strategy/assumption-ledger.md
+✓ Reality check:         {WORK_BUSINESS_ROOT}/strategy/one-pager.md § Reality check
+                         (arithmetic closes + outside view stated)
 
 Next: @biz-strategy certify  (validate consistency and promote gate)
 ```
@@ -279,7 +322,7 @@ Adaptive questioning to fill gaps. When assumptions are "inferred" or "unknown",
 
 **Probe behavior:**
 
-1. If no element specified, scan `strategy/assumption-ledger.md` for the highest-severity gap (unknown > inferred). Probe that.
+1. If no element specified, pick the highest-severity gap in this order: a **load-bearing** assumption before a peripheral one, then the largest `If wrong` blast radius, then Unknown before Inferred. Probe that.
 2. If element specified (`@biz-strategy probe - person`), probe only that element.
 3. Ask ONE question at a time. Wait for answer before next question.
 4. After 3-5 answers, summarize the updated picture and propose a revision.
@@ -294,6 +337,7 @@ Adaptive questioning to fill gaps. When assumptions are "inferred" or "unknown",
 | **Channel** | "Where does your buyer currently get advice?" "Which platform have you been most active on historically?" "What content format does your buyer consume?" "If you could only do ONE channel for 90 days, which?" "If YouTube is primary, can you produce 1 long-form video/week (or 4–7 Shorts/week) for 6 months?" |
 | **Price** | "What number would make you excited to take the project?" "What number would make them say yes without negotiation?" "What does the alternative (agency / hire / build in-house) cost?" |
 | **Geography** | "Where are your last 5 clients or employers based?" "Can you legally invoice a client in that country?" "What timezone overlap do you need for the work style you prefer?" |
+| **Reality** | "How many hours a week are genuinely available for billable delivery, not business development?" "How many weeks does one engagement actually take you, end to end?" "What close rate have you actually observed, not hoped for?" "How many qualified prospects per week can your primary channel realistically produce?" "How many months of runway, and by when do you need the first invoice?" "What normally happens to operators attempting this shape, at this price band, through this channel?" |
 
 **Probe completion:** When all assumption-ledger gaps tagged "unknown" are resolved to at least "inferred", or when remaining unknowns are explicitly flagged as acceptable risk.
 
@@ -324,6 +368,7 @@ Strategy changes between certifications: an owner grill locks new positioning, a
 4. **Flag dependent artifacts stale.** List what must be reviewed against the new strategy: LinkedIn headline/About, website copy, pricing, queued-content buyers and CTAs, `plans/strategy_*.md`. Record the stale list in `{WORK_BUSINESS_ROOT}/plans/NEXT.md`.
 5. **Require re-certification.** Amend never certifies. Downstream gated work (brand, pricing, content publish) pauses until `@biz-strategy certify` passes again.
 6. **Demote the gates.** In `{WORK_BUSINESS_ROOT}/gates.md`, set `strategy-ready` to `NOT MET` with `**Certified:** —`, and cascade: every downstream gate (`brand-ready`, `pipeline-ready`, `sales-ready`) also demotes to `NOT MET`, because each one rests on the positioning that just changed. Leave `active-deal` alone — a live deal survives a positioning change. Without this step the gate ledger keeps asserting PASS against superseded strategy, and gated skills run on stale positioning.
+7. **Supersede the decision row.** Append a new row to `decisions/DECISIONS.md` for the amended direction, and set the superseded strategy row's `Outcome` to `superseded by D-{nnn}`. The old row is never rewritten: the point of the ledger is that you can see what you used to believe and what it cost. The next `@biz-strategy certify` appends its own row per check 13.
 
 ---
 
@@ -439,7 +484,7 @@ Each check must pass. First failure stops the check.
 |---|-------|------------------|---------|
 | 1 | **Files exist** | All 6 strategy files present | Any file missing |
 | 2 | **Ledger complete** | All elements have at least one assumption recorded | An element has zero entries |
-| 3 | **Unknown tolerance** | Unknown assumptions ≤ 30% of total | More than 30% unknown (run probe first) |
+| 3 | **Load-bearing assumptions** | No load-bearing assumption is Unknown, and none rests on grade-C/D evidence. Peripheral Unknowns are ≤ 30% of all rows. | Any load-bearing row is Unknown (run `@biz-strategy probe`), or a load-bearing row's only support is a grade-C/D source, or peripheral Unknowns exceed 30% of rows |
 | 4 | **Internal consistency** | Each element constrains and is constrained by the others | Person can't afford price. Channel doesn't reach person. Problem doesn't match offer. Geography blocks channel. |
 | 5 | **Person specificity** | Primary buyer is a specific person, not a demographic. Secondary/opportunistic audiences are allowed only if the primary stays singular and the rules for them are explicit. | "Small business owners" (too vague) vs "Seed-stage SaaS founders who raised $500k and need their MVP built" (specific). Multiple co-equal buyers with no primary. |
 | 6 | **Problem sharpness** | Problem is the root cause, stated in under 14 words | Problem is vague ("they need help with technology") or stated as a solution ("they need a website") |
@@ -447,6 +492,9 @@ Each check must pass. First failure stops the check.
 | 8 | **Channel primary** | One primary channel identified. Others are secondary. | 3+ channels listed as equal priority. No primary channel named. |
 | 9 | **Price range** | Range is 2-4x spread. Floor covers minimum viable rate. | Range is wider than 4x. Floor below minimum viable rate. |
 | 10 | **Geography defined** | Geography is explicit (local, regional, or global). | No geography stated. "Everywhere" without timezone/language constraints. |
+| 11 | **Reality arithmetic** | `one-pager.md` § Reality check A is present and closes: capacity → revenue ceiling at the floor price covers the income target; required prospects/week ≤ the primary channel's realistic capacity; first revenue lands inside runway. Every figure carries a `measured`/`estimated`/`assumption`/`unknown` tag. | Section missing, arithmetic absent, numbers do not close, a load-bearing figure is `assumption`/`unknown`, or a conversion rate is used without stating its source |
+| 12 | **Outside view** | `one-pager.md` § Reality check B names the reference class, states what normally happens to it (graded, or marked `directional`), and reconciles the plan's timeline against it — explaining any material difference. | Section missing, a timeline asserted with no reference class, or the plan is materially faster than the base rate with no stated reason |
+| 13 | **Decision record** | The certified strategy is appended to `decisions/DECISIONS.md` as one row with a falsifiable expected outcome, a confidence, a reversibility class, a kill/review trigger, and a review date (`CONVENTIONS.md` § Decision loop). | No row appended, or the row lacks any of the five required fields |
 
 ### Consistency check: Element web
 
@@ -491,10 +539,13 @@ If all checks pass:
 1. Write `strategy/certification.md` with:
    - Date of certification
    - Check results (all pass)
-   - Assumption ledger summary (counts: confirmed, inferred, unknown)
+   - Assumption ledger summary (counts: confirmed, inferred, unknown; load-bearing rows and their grades; the largest `If wrong` blast radius)
+   - Reality check summary (revenue ceiling at floor price vs target, required prospects/week vs channel capacity, runway verdict, reference class and how the timeline compares)
    - Certified by: `@biz-strategy certify`
 
-2. Promote **strategy-ready** gate in `{WORK_BUSINESS_ROOT}/gates.md`, replacing the existing `## strategy-ready` section in place and leaving every other gate section untouched:
+2. Append the certification to the decision ledger — one row in `{WORK_BUSINESS_ROOT}/decisions/DECISIONS.md` (create from `templates/work/decisions/DECISIONS.md.template` if missing; self-heal, never skip the record). Required fields per `CONVENTIONS.md` § Decision loop: a falsifiable **expected outcome** with a number and a date, a **confidence** %, a **reversibility** class, a **kill/review trigger**, and a **review by** date. A certified strategy with no falsifiable expectation is a certified opinion; if the operator cannot state one, say so plainly in the report — that is itself a finding.
+
+3. Promote **strategy-ready** gate in `{WORK_BUSINESS_ROOT}/gates.md`, replacing the existing `## strategy-ready` section in place and leaving every other gate section untouched:
 
 ```markdown
 ## strategy-ready
@@ -507,11 +558,14 @@ If all checks pass:
 
 If `gates.md` does not exist, create it from `templates/work/gates.md.template` first, then promote. Keep all five fields — `scripts/gate-verify.sh` checks the `Evidence` path when `Status` is PASS.
 
-3. Output:
+4. Output:
 
 ```text
 ✓ CERTIFIED: strategy-ready
-  All 10 checks passed. No critical consistency failures.
+  All 13 checks passed. No critical consistency failures.
+  Arithmetic closes: {revenue ceiling at floor price} vs target {target}; {required prospects/week} prospects/week vs channel capacity.
+  Reference class: {base rate stated, or "directional"}
+  Decision logged: D-{nnn} — expected {expected outcome}, review by {date}
   Next: @biz-brand audit  (audit LinkedIn + website alignment)
          @biz-pricing set  (set specific prices for engagements)
 ```
@@ -525,7 +579,8 @@ If any check fails:
   Failed at check #{n}: {check name}
   Reason: {specific failure}
   To proceed: {specific action — e.g., "Run @biz-strategy probe - person to clarify the buyer"}
-  Current unknown count: {n} of {total} ({pct}%) — {'must be ≤30%' if over}
+  Assumption state: {n} load-bearing unknown ({which}) · {n} of {total} peripheral unknown ({pct}%)
+  Arithmetic: {closes | does not close — which line}
 ```
 
 Do NOT write `certification.md`. Do NOT promote the gate.
@@ -549,6 +604,8 @@ Strategy status — {WORK_BUSINESS_ROOT}/strategy/
   Channel plan:         {exists/missing}
   Assumption ledger:    {exists/missing}
   Certification:        {exists/missing}
+  Reality check:        {present (arithmetic closes/does not close · reference class stated/directional/missing) / missing}
+  Decision ledger:      {n decisions — n open, n past review date / missing - the judgment loop is not running}
 
   Gate: strategy-ready  {PASS / FAIL / NOT ATTEMPTED}
 
@@ -558,6 +615,8 @@ Strategy status — {WORK_BUSINESS_ROOT}/strategy/
 
   Assumption summary:
     Confirmed: {n}   Inferred: {n}   Unknown: {n}   ({pct}% unknown — {'pass' if ≤30% else 'over threshold'})
+    Load-bearing unknown: {n} {('— blocking: <which>' if n>0 else '— none')}
+    Weakest evidence: {the load-bearing row with the lowest grade, or none}
 
   Element summary:
     Person:   {defined/missing} — {one-line summary if defined}
@@ -566,6 +625,7 @@ Strategy status — {WORK_BUSINESS_ROOT}/strategy/
     Channel:  {defined/missing}
     Price:    {defined/missing}
     Geography: {defined/missing}
+    Reality:  {defined/missing} — {arithmetic verdict + reference class}
 
   Quick actions:
     @biz-strategy greenfield        (if missing or wants full rewrite)
@@ -649,4 +709,5 @@ See `SKILL_DEPENDENCIES.md` for the full gate graph.
 - `{WORK_BUSINESS_ROOT}/gates.md`
 - `.ai.biz/skills/SKILL_DEPENDENCIES.md`
 - `{WORK_BUSINESS_ROOT}/strategy/changelog.md` (append-only amend and reconcile log)
+- `{WORK_BUSINESS_ROOT}/decisions/DECISIONS.md` (decision ledger; certify and amend append rows here)
 - `{WORK_BUSINESS_ROOT}/reference/OPERATOR_PROFILE.md` (operator skills, proof points, constraints; written by career mode)

@@ -145,6 +145,9 @@ Binding pricing rules live in `standards/20260621-PRICING-STANDARD.md` (fixed pr
 | Closed-lost | Count |
 | Total pipeline value | $ |
 | Stale (no response >10 days) | Count |
+| Open decision rows | Count, and any past their review date (`decisions/DECISIONS.md`) |
+
+**A count of losses is not a diagnosis.** Every closed-lost row needs a **loss reason** recorded on its decision row: `price` · `scope` · `timing` · `trust/fit` · `no decision` · `went in-house`. "5+ proposals with zero closes" cannot separate a pricing problem from a qualification or proposal problem until the reasons are written down, and the three prescribe opposite fixes. When three losses share a reason, that is the class to act on (CONVENTIONS § Decision loop).
 
 Close per the Operator handoff contract: Form A single line (`Next: nothing - work complete`) when nothing is needed; otherwise Form B — `**Needs your approval:**` with `path:L<n>` cites and/or `**Needs your answer:**`, then exactly one `**Next step:**`. Omit empty sections.
 
@@ -221,7 +224,7 @@ If proposals go out but never close:
 4. **Your proposal is too long.** 3 pages max. If it's longer, they won't read it. Cut half.
 5. **You didn't address the real objection.** Ask "is there anything in the proposal that didn't make sense or felt off?"
 6. **The follow-up is wrong.** Don't ask "did you have a chance to review?" Ask "is there anything that didn't make sense?"
-7. **You're sending proposals to unqualified prospects.** If you've sent 5+ proposals with zero closes, the problem is pre-proposal qualification, not the proposal itself.
+7. **You're sending proposals to unqualified prospects.** If you've sent 5+ proposals with zero closes, read the **loss reasons** on the decision rows before changing anything: a majority of `price` means the pitch or the segment, a majority of `scope`/`trust` means pre-proposal qualification is the problem, and `no decision` means follow-up is. One count, three different fixes.
 
 ---
 
@@ -232,7 +235,10 @@ A proposal is ready to send when:
 - Out-of-scope items are explicitly listed (this is your scope-creep shield)
 - The price is between your effort-based floor × 1.3 and value-based ceiling × 0.3
 - There's a 7-day expiration date
+- Every proof claim (case study, "we did this before", a metric) traces to a real entry in `reference/PROJECTS.md` with a number. A claim you cannot source is grade D — cut it or de-claim it; a proposal that oversells is a delivery problem with a signature on it
 - You'd say yes if you received this proposal
+
+**On send, append a decision row.** A sent proposal is a prediction with a price on it: one row in `.work/biz/decisions/DECISIONS.md` (create from `templates/work/decisions/DECISIONS.md.template` if missing) carrying the quoted number, the expected outcome ("signed by <date>" or "closed-won at $X by <date>"), a confidence %, a reversibility class (`two-way` until it is signed, `one-way` after), a kill/review trigger (when to stop chasing), and a review date. When it resolves, the `Outcome` and the **loss reason** are what make the next proposal better — see the `status` section above.
 
 ---
 

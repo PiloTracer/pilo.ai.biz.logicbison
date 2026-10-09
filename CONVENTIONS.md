@@ -31,6 +31,7 @@
 - `reference/VOICE_PROFILE.md` — canonical voice definition (binding for all content skills)
 - `reference/VOICE_RETRO.md` — draft vs owner edits; amend the voice profile when an edit class repeats three times
 - `strategy/` — strategy artifacts (canonical location; see Document naming below)
+- `decisions/DECISIONS.md` — decision ledger: what was decided, the falsifiable expected outcome, and what actually happened (see Decision loop)
 
 ## Content Status Protocol (binding for all content skills)
 
@@ -109,6 +110,44 @@ If `VOICE_PROFILE.md` exists but is still a skeleton (`<` placeholders remain, o
 
 When the same edit class appears three times in `VOICE_RETRO.md`, amend `VOICE_PROFILE.md` instead of letting the owner make the same correction forever. `@biz-review weekly` checks retro coverage against publishes; `@biz-review quarterly` reads the trend row.
 
+## Decision loop (binding on every skill that reaches a recommendation)
+
+The framework measures two things and learns from both: voice (`VOICE_PROFILE` → `VOICE_RETRO`, § Voice loop) and assumptions (`@biz-review monthly` re-grades the ledger against accumulated evidence). Neither one scores *judgment*. A strategy can be internally consistent, fully evidenced, and still be a bad call — and nothing in the framework could ever tell, because the decision itself was never recorded in a form that could be wrong.
+
+`decisions/DECISIONS.md` closes that loop. It is the record of what was decided and what was expected; `@biz-review quarterly` is the measurement. Without it, advice can only get more confident, never more accurate.
+
+### Consequence test (what must be recorded)
+
+Append a row when the decision is **consequential**: it commits money, more than a week of the operator's time, a price, a buyer segment, a primary channel, a public position, or the operator's reputation. Small reversible experiments do not need a row — the experiment *result* is already its own record.
+
+`@biz-market-validate` decisions qualify: a go decision commits the operator to a direction, so it is recorded even when the experiment was cheap.
+
+### Record rule
+
+The skill that reaches the decision appends exactly one row **at decision time**, before the outcome is knowable. A row without all five of these is not a record:
+
+1. **Expected outcome** — falsifiable: a number and a date, or an observable event. "Grow the business" is not an outcome.
+2. **Confidence** — the percentage that would have been bet at the time. Without it, the eventual hit rate has nothing to be compared against, and calibration is impossible.
+3. **Reversibility** — `two-way` (cheap to undo) or `one-way` (costly or impossible). One-way decisions earn more evidence and more analysis; two-way decisions should be made fast.
+4. **Kill / review trigger** — the evidence that would prove it wrong, and the action then, written before commitment.
+5. **Review by** — the ISO date the row must be scored.
+
+Writers: `@biz-advisory advise` (every decisive recommendation), `@biz-strategy certify` (the certified strategy) and `amend` (the superseding row), `@biz-pricing set` (each quote), `@biz-market-validate test` (each go/kill), `@biz-proposal write` (each proposal sent), `@biz-review quarterly` (the quarter's focus), `@biz-ideas` / `@biz-products` (a chosen direction, not each generated option).
+
+### Scoring rule
+
+`@biz-review quarterly` scores every row past its `Review by` date with an `Outcome` (`hit` · `partial` · `miss` · `unclear`) and a one-line `Lesson` about the *reasoning*, not the market. Rows are never rewritten; superseding a decision appends a new row and marks the old one `superseded by D-NNN`.
+
+### Calibration rule
+
+When three or more rows in a class are scored, the ledger's Calibration table reports hit rate against mean confidence. **Gap = mean confidence − hit rate**: a positive gap is over-confidence on that class, a negative gap means upside is being left on the table. Fewer than three scored rows is not calibration — say `insufficient scored rows` and draw no conclusion.
+
+Three misses in the same class are a *rule* problem: amend the protocol or the strategy, exactly as three repeats of a voice edit class amend `VOICE_PROFILE.md`. Recording the amendment is part of the loop.
+
+### Empty-ledger warning
+
+A missing or skeleton ledger is treated as absent, and the skills that write it say so in their context summary rather than silently skipping the record. `@biz-review weekly` flags rows past their review date; a `pending` row past `Review by` is a debt, and three of them mean the loop has stopped running.
+
 ## Evidence discipline (binding on framework docs and produced content)
 
 A statistic that states something about the world (market size, behavior rates, benchmarks, conversion figures) must carry one of exactly two marks, in the same sentence or line:
@@ -117,6 +156,29 @@ A statistic that states something about the world (market size, behavior rates, 
 2. **An explicit directional marker** — `directional`, `rule of thumb`, `hypothesis to validate`, or `Unverified`, stating that the figure is a heuristic, not a measured fact.
 
 Numbers that are advice rather than claims are exempt by nature and need no marker: buffers ("add 20–30% for unknowns"), format specs ("7–10 slides"), cadence guidance, and price-math examples. The test is: does this number assert how the world *is*, or prescribe what the operator should *do*? Only the first kind needs a citation or a directional marker.
+
+### Evidence grades (A–D)
+
+A citation says a source exists. It does not say the source is worth anything. Whenever a claim **carries a decision** — it is the reason to pick a buyer, a price, a channel, or a direction — it also carries a grade, in the same line:
+
+| Grade | Source | Standing |
+|-------|--------|----------|
+| **A** | First-party or primary: your own pipeline, call notes, publish results, your own experiments, filings or regulator data, the vendor's own live pricing page | May carry a decision alone |
+| **B** | Named third-party research with a stated method and sample (a dated industry study, a marketplace's own published data) | May carry a decision when the population matches yours — say how it matches |
+| **C** | Vendor, consultancy, or media claim; a single anecdote; an unnamed aggregator | Corroborate with an independent second source or an A-grade signal before it carries a decision |
+| **D** | Model memory, an undated figure, or anything failing the two marks above | May never carry a decision alone. Mark `Unverified` and gather evidence first |
+
+Grade the *claim*, not the author: the same person is A on their own pricing page and C on a market-size estimate. Two copies of one origin are one source — syndicated coverage is not corroboration.
+
+The grade is written next to the claim (`A` · `B` · `C` · `D`) **in addition to** the citation or directional marker, never instead of it.
+
+### Freshness
+
+A market claim has a shelf life. Figures about prices, demand, platform mechanics, or buyer behaviour older than **18 months** are re-verified before they carry a decision; fast-moving domains (AI services, platform algorithms, marketplaces) are re-verified at **12 months**. `@biz-sources list` flags stale entries; `@biz-review monthly` re-verifies the ones a live decision depends on.
+
+### Where grades are consumed
+
+`@biz-advisory` step 4 (evidence pass), the `strategy/assumption-ledger.md` Evidence column, `@biz-pricing` price anchors, `@biz-market-validate` experiment design, and `@biz-sources` catalog entries all carry the grade. A claim graded C or D is a candidate for `@biz-sources find` and `@biz-market-validate` — it is not a foundation.
 
 This applies to skills, standards, and concepts (framework prose) as much as to produced content. It is enforced by review, not by a machine check: a grep-based uncited-statistic scanner was evaluated (2026-08-10) and rejected because it cannot tell a claim from advice and drowns real findings in false positives. When prose review finds an unmarked claim, fix it the way `biz-referrals` was fixed: find the source, or de-claim the number into directional language.
 

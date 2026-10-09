@@ -57,6 +57,7 @@ Entry point for setting up Business OS in any project. Creates the `.work.biz/` 
    | `.work.biz/pipeline/outreach-cadence.md` | `templates/work/pipeline/outreach-cadence.md.template` |
    | `.work.biz/research/research_index.md` | `templates/work/research/research_index.md.template` |
    | `.work.biz/strategy/README.md` | `templates/work/strategy/README.md.template` |
+   | `.work.biz/decisions/DECISIONS.md` | `templates/work/decisions/DECISIONS.md.template` — decision ledger: decisions with falsifiable expected outcomes, scored by `@biz-review quarterly` (CONVENTIONS § Decision loop) |
    | `.work.biz/reference/CONTENT_STATUS.md` | `templates/work/reference/CONTENT_STATUS.md.template` — canonical publish/status tracker across all content types; prevents recommending already-published content |
    | `.work.biz/reference/BRAND_STATUS.md` | `templates/work/reference/BRAND_STATUS.md.template` — brand audit history and overhaul log; evidence for the `brand-ready` gate |
    | `.work.biz/reference/VOICE_PROFILE.md` | `templates/work/reference/VOICE_PROFILE.md.template` — how this owner sounds; binding for every content skill on every platform. Ships as a skeleton the owner must fill |
@@ -98,6 +99,7 @@ Read-only report of the current bootstrap state:
 | `.work.biz/pipeline/outreach-cadence.md` exists | `ls "$WORK_DIR/pipeline/outreach-cadence.md"` |
 | `.work.biz/research/research_index.md` exists | `ls "$WORK_DIR/research/research_index.md"` |
 | `.work.biz/strategy/README.md` exists | `ls "$WORK_DIR/strategy/README.md"` |
+| `.work.biz/decisions/DECISIONS.md` exists | `ls "$WORK_DIR/decisions/DECISIONS.md"`; report `empty ledger` when it has no `D-NNN` rows — decisions then cannot be scored, so the judgment loop is not running |
 | `.work.biz/reference/CONTENT_STATUS.md` exists | `ls "$WORK_DIR/reference/CONTENT_STATUS.md"` |
 | `.work.biz/reference/BRAND_STATUS.md` exists | `ls "$WORK_DIR/reference/BRAND_STATUS.md"` |
 | `.work.biz/reference/VOICE_PROFILE.md` exists and is filled in | `ls "$WORK_DIR/reference/VOICE_PROFILE.md"`; report `skeleton` if `<` placeholders remain, and warn: content skills fall back to generic human-voice defaults until it is filled |

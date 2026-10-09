@@ -47,6 +47,12 @@
        │
        ├── "What should I do? (situation advice)"  ──► `@biz-advisory - <situation>`
        │
+       ├── "Is this plan realistic? / does the math work?"  ──► §3 · `@biz-strategy certify - why`
+       │
+       ├── "Were our past decisions right? / how accurate have we been?"  ──► `@biz-review quarterly`
+       │
+       ├── "Record this decision"  ──► `.work.biz/decisions/DECISIONS.md` (or `@biz-advisory` to frame it)
+       │
        ├── "I need better sources / where to learn"  ──► `@biz-sources find - <topic>`
        │
        ├── "I have a sales conversation"         ──► §5 Sales
@@ -73,6 +79,7 @@
 | One-paragraph status (no writes) | `@biz-session status` |
 | Free-text request / don't know skill | `@biz-director - <describe what you want>` · `@x-director - <describe what you want>` (cross-framework) |
 | Are we still in strategy or executing? | `@biz-strategy status` **or** `@biz-review status` |
+| Any decisions due for review? | Read `.work.biz/decisions/DECISIONS.md`, or run `@biz-review weekly` (flags rows past their review date) |
 
 ---
 
@@ -87,6 +94,9 @@
 | To check if strategy is done | `@biz-strategy status` then `@biz-strategy certify` |
 | To set pricing for an engagement | `@biz-pricing set` |
 | To test if your offer/niche works | `@biz-market-validate test` |
+| To check the plan is arithmetically possible (capacity, demand, runway) | `@biz-strategy certify - why` then `@biz-strategy probe - reality` |
+| To know what normally happens to plans like yours (base rate / outside view) | `@biz-strategy probe - reality` |
+| To grade how strong a piece of evidence is | `@biz-sources find - <topic>` (`A`–`D` grade + freshness) |
 
 ---
 
@@ -130,6 +140,9 @@ These project-aware generative skills run any time — even before bootstrap. Th
 | Situational advice — "what should I do?" | `@biz-advisory - <situation>` |
 | Advisory reframe patterns (BIZ-10) | `@biz-advisory patterns` |
 | Curate advisory / evidence sources | `@biz-sources find - <topic>` · `@biz-sources list` |
+| Record a decision you've made | append to `.work.biz/decisions/DECISIONS.md` (or `@biz-advisory` to frame it first) |
+| Score past decisions / see your calibration | `@biz-review quarterly` (Decision audit) |
+| Check whether overdue decisions need scoring | `@biz-review weekly` (§ Drift check) |
 
 ---
 
@@ -176,6 +189,7 @@ These project-aware generative skills run any time — even before bootstrap. Th
 | 6 | `skills/README.md` | Registered skills |
 | 7 | The specific `skill.md` you're invoking | Verbs and gates |
 | 8 | The specific standard | Binding rules |
+| 9 | `.work.biz/decisions/DECISIONS.md` | Open decisions and their review dates — read before advising, pricing, or routing |
 
 ---
 
@@ -196,3 +210,7 @@ These project-aware generative skills run any time — even before bootstrap. Th
 - AI attribution markers in any artifact
 - Logging real client data in planning docs
 - Inventing a resolution for a blocker — pause and ask
+- Recording a consequential decision as prose with no falsifiable expected outcome — it can never be scored, and unscored advice only gets more confident, never more accurate
+- Leaving decision rows past their review date, or letting `@biz-review quarterly` skip the Decision audit
+- Certifying a strategy whose arithmetic does not close, or whose timeline is asserted with no reference class
+- Grading evidence by "it has a citation" — a citation is not a source quality (`A`–`D`, CONVENTIONS § Evidence grades)

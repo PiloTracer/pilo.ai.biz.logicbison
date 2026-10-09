@@ -1,7 +1,31 @@
-# Touch Scope — declared 2026-09-10 (evidence-guard hardening: biz-session + thin-client sandbox)
+# Touch Scope — declared 2026-10-09 (judgment-quality layer: decision loop, evidence grades, reality arithmetic, biz-director orchestration)
 
-skills/biz-session/skill.md
+CONVENTIONS.md
+standards/20260621-DIRECTORY_MAP.md
+templates/work/decisions/DECISIONS.md.template
+templates/work/README.md.template
+templates/README.md
+templates/bootstrap.sh
+templates/cursorrules.template
+scripts/biz-deploy-basic.sh
+scripts/framework-verify.sh
+skills/biz-strategy/skill.md
+skills/biz-advisory/skill.md
+skills/biz-review/skill.md
+skills/biz-pricing/skill.md
+skills/biz-market-validate/skill.md
+skills/biz-proposal/skill.md
+skills/biz-sources/skill.md
+skills/biz-director/skill.md
+skills/biz-bootstrap/skill.md
+skills/biz-deploy-basic/skill.md
+skills/README.md
+START_HERE.md
+PROCESS_ROUTER.md
+.cursorrules
+CHANGELOG.md
+.work.biz/touch-scope
 .work.biz/context/HANDOFF.md
+.work.biz/context/HANDOFF.archive.md
 .work.biz/plans/NEXT.md
 .work.biz/plans/UNKNOWNS.md
-.work.biz/touch-scope
