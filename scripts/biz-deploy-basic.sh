@@ -27,7 +27,8 @@
 #   bash scripts/biz-deploy-basic.sh <target-path>              # no-overwrite (skip existing)
 #   bash scripts/biz-deploy-basic.sh [status] [target-path]     # read-only report (+ verify)
 #   bash scripts/biz-deploy-basic.sh <target-path> [--update]   # no-overwrite + repair + merge candidates
-#   bash scripts/biz-deploy-basic.sh <target-path> [--force]    # overwrite local scaffold (legacy)
+#   bash scripts/biz-deploy-basic.sh <target-path> [--force confirm-overwrite-cursorrules]
+#                                                           # overwrite scaffold (explicit opt-in; blocked without the token)
 #   BIZ_SOURCE=/path/to/source-root bash scripts/biz-deploy-basic.sh <target-path>
 #
 # Argument forms are equivalent: verbs accept the '--' prefix or bare form
@@ -43,16 +44,18 @@ set -euo pipefail
 # become the target directory.
 MODE=""
 RAW_TARGET=""
+CONFIRM_OVERWRITE=0
 for arg in "$@"; do
   [[ "$arg" == "-" || "$arg" == "--" ]] && continue
   tok="${arg#--}"
   case "$tok" in
     status|update|force|skip) MODE="$tok" ;;
+    confirm-overwrite-cursorrules) CONFIRM_OVERWRITE=1 ;;
     /*|./*|../*|~*|*/*|.)
       if [[ -z "$RAW_TARGET" ]]; then RAW_TARGET="$arg"
       else echo "ERROR: multiple target paths: '$RAW_TARGET' and '$arg'" >&2; exit 2; fi ;;
     *) echo "ERROR: unknown argument: $arg" >&2
-       echo "Usage: $0 [status] <target-path> [--force|--update] (path must contain '/'; use ./name for local dirs)" >&2
+       echo "Usage: $0 [status] <target-path> [--force confirm-overwrite-cursorrules|--update] (path must contain '/'; use ./name for local dirs)" >&2
        exit 2 ;;
   esac
 done
@@ -142,7 +145,7 @@ WORK_DIRS=(
 
 echo "=== biz-deploy-basic (Business OS) → $DEST_ROOT (thin-client bootstrap) ==="
 echo "  source: $BIZ_ROOT"
-echo "  mode:   $MODE (no-overwrite by default)"
+echo "  mode:   $MODE (no-overwrite by default; force needs confirm-overwrite-cursorrules)"
 
 if [[ -d "${DEST_ROOT}/.ai.biz/skills" ]]; then
   echo "  WARN: target has local .ai.biz/skills/ directory (fat-client leak)"
@@ -263,8 +266,19 @@ if [[ -f "$CURS_DEST" ]]; then
   fi
 fi
 
-# Step 1: .cursorrules
+# Step 1: .cursorrules — force overwrites wholesale, and only after the operator
+# has named `confirm-overwrite-cursorrules` (a replace destroys every sister
+# framework's block in the file — same guard as Agent OS / UI Design OS).
 if [[ "$MODE" == "force" ]]; then
+  if [[ -f "$CURS_DEST" && "$CONFIRM_OVERWRITE" -ne 1 ]]; then
+    lost="$(grep -oE '(SOC_DESIGN_OS_BEGIN|UI_DESIGN_OS_BEGIN|FLUTTER_AGENT_OS_BEGIN|MLT_DESIGN_OS_BEGIN|Core Principles|Source resolution)' "$CURS_DEST" 2>/dev/null | sort -u | paste -sd, - | sed 's/,/, /g' || true)"
+    echo "  BLOCKED: --force would replace .cursorrules wholesale ($(wc -l < "$CURS_DEST") lines)"
+    [[ -n "$lost" ]] && echo "    content that would be LOST: ${lost}"
+    echo "    to proceed, name the confirmation token explicitly:"
+    echo "      bash ${BIZ_ROOT}/scripts/biz-deploy-basic.sh ${DEST_ROOT} --force confirm-overwrite-cursorrules"
+    echo "    otherwise use --update (self-heal + merge candidates) — the normal, non-destructive path."
+    exit 1
+  fi
   write_cursorules force
 else
   if [[ -f "$CURS_DEST" ]]; then

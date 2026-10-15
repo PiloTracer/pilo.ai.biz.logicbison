@@ -1,7 +1,22 @@
 # HANDOFF — Session Bookmark
 
-> **Date:** 2026-10-09
-> **Status:** Closed — 2026-10-09 — judgment-quality layer shipped: decision ledger + calibration loop, reality check (arithmetic + outside view), evidence grades A–D, load-bearing unknown gate, biz-director never-dead-end orchestration
+> **Date:** 2026-10-15
+> **Status:** Closed — 2026-10-15 — deploy reliability: `--force` wholesale `.cursorrules` replace gated behind the explicit `confirm-overwrite-cursorrules` token (blocked + lost-content report otherwise); skill doc updated; owner-invoked `@ai-director` pass across all 7 framework siblings (this repo's share: the force token — env override `BIZ_SOURCE` and script-path bake+verify already existed)
+
+---
+
+## Session summary (2026-10-15, deploy-reliability close)
+
+| Step | Status |
+|------|--------|
+| Audit share of `.work/feedback/20261015-deploy-configure-cohabitate.md/` (in `pilo.ai.logicbison`): biz had `BIZ_SOURCE` override + `bash scripts/` bake/verify already; the gap was an unguarded force overwrite | Done |
+| `scripts/biz-deploy-basic.sh`: arg token `confirm-overwrite-cursorrules`; force on existing `.cursorrules` → BLOCKED exit 1 + lost-content listing unless the token is named; default skip unchanged | Done |
+| `skills/biz-deploy-basic/skill.md`: force row, flag-equivalence note, leak-block, step 3, idempotency, checklist (6 spots) | Done |
+| Evidence: force blocked/token/skip matrix on mktemp targets; `framework-verify` PASS | Done |
+
+**Verify in-repo:** `bash scripts/framework-verify.sh` · `bash scripts/biz-deploy-basic.sh /tmp/t --force` (expect BLOCKED exit 1) · append the token to overwrite.
+
+**Prior sessions below are historical.**
 
 ---
 

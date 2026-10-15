@@ -55,7 +55,7 @@ Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project 
 
 | Path | Source | If target exists |
 |------|--------|-------------------|
-| `.cursorrules` | `templates/cursorrules.template` with `AI_BIZ_SOURCE=<source>` substituted | skip (preserve); `--force` overwrites |
+| `.cursorrules` | `templates/cursorrules.template` with `AI_BIZ_SOURCE=<source>` substituted | skip (preserve); `--force` overwrites **only** with the explicit `confirm-overwrite-cursorrules` token (blocked + lost-content report otherwise) |
 | `.work.biz/README.md`, `gates.md`, `context/HANDOFF.md`, `plans/NEXT.md`, `plans/UNKNOWNS.md`, `pipeline/pipeline_tracker.md`, `pipeline/outreach-cadence.md`, `research/research_index.md`, `strategy/README.md`, `decisions/DECISIONS.md`, `reference/CONTENT_STATUS.md`, `reference/BRAND_STATUS.md`, `reference/VOICE_PROFILE.md`, `reference/VOICE_RETRO.md`, `reference/OPERATOR_PROFILE.md`, `reference/PROJECTS.md` | `templates/work/*.template` (suffix stripped) | skip (preserve) |
 | `.work.biz/{context,plans,pipeline,research,drafts,strategy,reference,ideas,ideas.archive,decisions}/` | created empty dirs | skip (preserve) |
 
@@ -72,7 +72,7 @@ Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project 
 | Source `templates/cursorrules.template` missing | **Block**: source is not a valid `.ai.biz` framework root |
 | Source `skills/` directory missing | **Block**: source is not a valid `.ai.biz` framework root |
 | Target dir does not exist | **Block**: report missing path |
-| Target already has local `.ai.biz/skills/` | **Block** fat-client leak (use `--force` to override, or remove local `.ai.biz/` first) |
+| Target already has local `.ai.biz/skills/` | **Block** fat-client leak (use `--force` with `confirm-overwrite-cursorrules` when `.cursorrules` exists, or remove local `.ai.biz/` first) |
 | Target `.cursorrules` exists + lacks `AI_BIZ_SOURCE=` line (and no legacy `AGENT_OS_SOURCE=` line) | In `update` mode → flag as **MERGE CANDIDATE** (the Source-resolution section is missing); in default mode → skip (preserve) and report that source-resolution is not wired. |
 
 ---
@@ -81,14 +81,14 @@ Thin-client deploy of the `.ai.biz` (Business OS) framework. The target project 
 
 1. Resolve source `BIZ_ROOT` (explicit `BIZ_SOURCE` env, else script's parent). Validate `templates/cursorrules.template` + `skills/` exist.
 2. Resolve target = `REPO_ROOT` of the consumer (cwd for in-place, or the named path for outbound).
-3. Write `.cursorrules` into the target from the template, substituting `AI_BIZ_SOURCE=REPLACE_BASICSOURCE` → `AI_BIZ_SOURCE=<absolute BIZ_ROOT>` and baking `bash scripts/<name>` → `bash <BIZ_ROOT>/scripts/<name>` (Change-safety gate table + git-hooks install line — these commands live inside `.cursorrules` itself, so the skill-level source-resolution rule doesn't cover them). **No-overwrite** if `.cursorrules` exists; `--force` overwrites.
+3. Write `.cursorrules` into the target from the template, substituting `AI_BIZ_SOURCE=REPLACE_BASICSOURCE` → `AI_BIZ_SOURCE=<absolute BIZ_ROOT>` and baking `bash scripts/<name>` → `bash <BIZ_ROOT>/scripts/<name>` (Change-safety gate table + git-hooks install line — these commands live inside `.cursorrules` itself, so the skill-level source-resolution rule doesn't cover them). **No-overwrite** if `.cursorrules` exists; `--force` overwrites **only** when the operator names `confirm-overwrite-cursorrules` — otherwise BLOCKED (exit 1) with the content that would be lost.
 4. Create `.work.biz/` skeleton by copying template files and creating directory structure. `copy_if_missing` enforces no-overwrite.
 5. **Post-deploy verification** (every mode): the script runs `scripts/biz-cursorrules-verify.sh` against the target and surfaces any `[FAIL]` findings. In `update` mode unrepairable findings fail the deploy; in `skip`/`force` they are reported as pre-existing with the repair hint.
 6. Report: source pointer value, `.work.biz/` presence, fat-client leak check, next steps — close per the Operator handoff contract (Form A when nothing is needed, Form B otherwise).
 
 **No local `opencode.json`.** When co-installed with Agent OS, register skills via parent `.ai/opencode.json`.
 
-**Idempotent re-run.** Safe to re-run; no-overwrite preserves target customizations. The source pointer is re-synced only in `update` mode (or `--force`).
+**Idempotent re-run.** Safe to re-run; no-overwrite preserves target customizations. The source pointer is re-synced only in `update` mode (or `--force confirm-overwrite-cursorrules`).
 
 ---
 
@@ -155,7 +155,7 @@ Flags accept `--` or bare form (`fix` ≡ `--fix`); path may appear in any posit
 | 3 | Target `.cursorrules` exists with valid `AI_BIZ_SOURCE` (resolves to a Business OS root) | |
 | 4 | Source-resolution section present in target `.cursorrules` | |
 | 5 | `.work.biz/` skeleton present (HANDOFF, NEXT, UNKNOWNS at minimum) | |
-| 6 | No-overwrite honored (existing target files preserved; `--force` only when explicitly requested) | |
+| 6 | No-overwrite honored (existing target files preserved; `--force` only with the explicit `confirm-overwrite-cursorrules` token) | |
 | 7 | `update`: source pointer re-synced if stale; script paths baked; merge candidate list produced; no wholesale replaces; foreign-framework pointer left untouched | |
 | 8 | Fat-client leak checked (no unexpected local `.ai.biz/skills/`) | |
 | 9 | Post-deploy verification ran (`biz-cursorrules-verify.sh`); `[FAIL]` findings surfaced or repaired | |
