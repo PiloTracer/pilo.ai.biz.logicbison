@@ -87,11 +87,14 @@
 
 | You need… | Run |
 |-----------|-----|
+| To choose between several plausible directions, or to compare your current play against alternatives | `@biz-strategy design` |
 | To start a brand-new business plan | `@biz-strategy greenfield` |
 | Agent should ask questions until it truly understands your situation | `@biz-strategy probe` |
 | To profile your skills, proof points, constraints and get a career read | `@biz-strategy career` |
+| To search for a job, elaborate your resume/CV, prep an interview, or evaluate an offer | `@biz-career search` · `resume` · `interview` · `negotiate` |
 | To re-validate the strategy's assumptions (monthly) | `@biz-review monthly` |
 | To check if strategy is done | `@biz-strategy status` then `@biz-strategy certify` |
+| To find out whether the option you rejected would have been better | `@biz-review quarterly` (counterfactual audit) |
 | To set pricing for an engagement | `@biz-pricing set` |
 | To test if your offer/niche works | `@biz-market-validate test` |
 | To check the plan is arithmetically possible (capacity, demand, runway) | `@biz-strategy certify - why` then `@biz-strategy probe - reality` |

@@ -1,6 +1,6 @@
 # Strategy
 
-Strategy artifacts live here. Produced by `@biz-strategy greenfield` and certified by `@biz-strategy certify`.
+Strategy artifacts live here. **Designed** by `@biz-strategy design`, written by `@biz-strategy greenfield`, certified by `@biz-strategy certify`.
 
 | File | Purpose | Produced by |
 |------|---------|-------------|
@@ -10,5 +10,8 @@ Strategy artifacts live here. Produced by `@biz-strategy greenfield` and certifi
 | `channel-plan.md` | Primary channel + supporting channels | `@biz-strategy greenfield` |
 | `pricing.md` | Distilled price range | `@biz-strategy greenfield` |
 | `assumption-ledger.md` | Confirmed, inferred, and unknown assumptions | `@biz-strategy greenfield` |
+| `situation-audit.md` | Six graded lenses: assets, demand signals, constraints, traction, timing, identity | `@biz-strategy design` |
+| `design-record.md` | Candidate plays, pre-set weights, graded scores, ranking, sensitivity, WWHTBT, pre-mortem, moat, breakeven worksheet, rejected plays with re-entry conditions | `@biz-strategy design` |
+| `one-pager.md` § `## Strategy bets` | Chosen bet, kill signal, review date | `@biz-strategy design` (then `greenfield`) |
 | `certification.md` | Gate certification record | `@biz-strategy certify` |
 | `linkedin-icp.md` | LinkedIn Ideal Customer Profile | `@biz-social icp` |

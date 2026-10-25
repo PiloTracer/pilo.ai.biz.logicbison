@@ -4,7 +4,7 @@
 
 | Phase | Status |
 |-------|--------|
-| Strategy | Pending (host project); framework amend + gate self-checks shipped |
+| Strategy | Pending (host project); framework design mode + certify checks 14–17 shipped |
 | Brand | Pending (gated on strategy-ready) |
 | Pipeline | Pending |
 | Sales | Pending |
@@ -12,15 +12,18 @@
 
 ## Recommended next
 
-1. **First live decision-loop run** — on a real project, `@biz-strategy certify` or `@biz-advisory advise` must append a row to `decisions/DECISIONS.md`, and `@biz-review quarterly` must score it into the Calibration table. This is the one test that decides whether the judgment layer works or becomes another empty artifact (UNKNOWNS #15).
-2. **Validate the reality check** (`biz-strategy` certify checks 11–12) on a real strategy — does the arithmetic gate catch a genuinely unviable plan without blocking a viable one on missing data (UNKNOWNS #16).
-3. **Retry `future-strategy` close commit/push with the patched biz-session** — its `reasonix.toml` `[sandbox] allow_write` now includes `/mnt/work/Projects/future-strategy/.work.biz` and `/mnt/work/Projects/future-strategy/.git`; uncommitted there: pending `.work.biz` changes + the `reasonix.toml` edit.
-4. **Smoke-test `@biz-advisory` on `future-strategy`** against its own feedback case (`.work.biz/feedback/20260820-small-rescue-team.md`) — does a cold run clear the calibration bar (reframe pass, ranked options with precedent, anti-advice, decisive recommendation)? Gaps become new BIZ-10 patterns (UNKNOWNS #12).
-5. **Owner review/commit of the remaining uncommitted `future-strategy` changes** — the earlier slim-down plus the thin-client update merge (merged `.cursorrules` with family-path re-point + Source-resolution wiring, `.work.biz` skeleton appends, new `strategy/README.md` + `reference/BRAND_STATUS.md`); its `PATHS.md` still carries stale `/mnt/work/Projects/.ai*` paths.
-6. **First `@biz-sources find` run on a live project** — seed `.work.biz/research/sources.md` and confirm both the vetting step and the new A–D grading step hold (UNKNOWNS #13, #17).
-7. **Smoke-test `@biz-archive` on a live target** (`future-strategy` once its uncommitted changes land) — `status` dry run, catch-up path for archived pieces missing `status.md`, tracker row removal.
-8. **Smoke-test the remaining biz-session verbs on a live target project** — standalone `commit` keeps the session open, `add` stages without committing, `close commit scoped` commits bookend files only; source-role close commit push was exercised 2026-09-10.
 
+1. **Validate design mode + career skill on one live project** — one `@biz-strategy design` run and one `@biz-career resume` run on a real project; both must produce artifacts a reader can audit (a ranking, an evidence ladder) and neither may invent a number. Gaps found in either are rubric/method findings, not operator findings (UNKNOWNS #19, #20) The design run must let a reader audit the ranking, and `certify` must then pass checks 14–17 without a full greenfield rewrite.
+2. **Refresh or expire the verified source catalog before it looks vetted but is not** — Ladders (2018) and the AER result (2004 data) are already outside the freshness window; `@biz-sources list` should flag stale rows and the first quarterly review updates or removes each (UNKNOWNS #21).
+3. **Fleet re-wiring — 1 of 15 done (mendarion), 14 remaining by explicit owner instruction** — `mendarion update` verified: 111 insertions / 0 deletions, block paired, `.work.biz/` scaffolded, verifier PASS. The owner chose to validate one repo rather than batch the rest; the remaining `absent` repos (cabox, fun, opportunity-radar, pilo-mail, pizote, system-billing, tools, tools-dashboard, tools-ecards, tools-password-generator, tools-rfp, tools-rizervox, tools-teleprompt, tools-transcript) are unchanged and will each take one `update` when the owner wants them wired. Original measurement note: — read-only `status` across the 21 consumer repos: **6 wired** by hand merge (`legacy`, 0 FAILs: affiliate-b2b, affiliate-pro, future-strategy, LogicBison, system-erp, tools-project) and **15 with no Business OS wiring at all** (`absent`; 13 of them also missing `.work.biz/` skeleton). Every `absent` repo now becomes wired with one `biz-deploy-basic update` (managed block only, foreign content untouched). Secondary finding: `tools-rfp` and `tools-teleprompt` carry STALE `.ai.ui`/`.ai.soc` registry cells (`../.ai.ui`, `../.ai.soc` — no such symlinks on this host), which any `update` repoints. This is the evidence that the merge works where it matters, not only on fixtures.
+4. **First live decision-loop run** — on a real project, `@biz-strategy certify` or `@biz-advisory advise` must append a row to `decisions/DECISIONS.md`, and `@biz-review quarterly` must score it into the Calibration table. This is the one test that decides whether the judgment layer works or becomes another empty artifact (UNKNOWNS #15).
+5. **Validate the reality check** (`biz-strategy` certify checks 11–12) on a real strategy — does the arithmetic gate catch a genuinely unviable plan without blocking a viable one on missing data (UNKNOWNS #16).
+6. **Retry `future-strategy` close commit/push with the patched biz-session** — its `reasonix.toml` `[sandbox] allow_write` now includes `/mnt/work/Projects/future-strategy/.work.biz` and `/mnt/work/Projects/future-strategy/.git`; uncommitted there: pending `.work.biz` changes + the `reasonix.toml` edit.
+7. **Smoke-test `@biz-advisory` on `future-strategy`** against its own feedback case (`.work.biz/feedback/20260820-small-rescue-team.md`) — does a cold run clear the calibration bar (reframe pass, ranked options with precedent, anti-advice, decisive recommendation)? Gaps become new BIZ-10 patterns (UNKNOWNS #12).
+8. **Owner review/commit of the remaining uncommitted `future-strategy` changes** — the earlier slim-down plus the thin-client update merge (merged `.cursorrules` with family-path re-point + Source-resolution wiring, `.work.biz` skeleton appends, new `strategy/README.md` + `reference/BRAND_STATUS.md`); its `PATHS.md` still carries stale `/mnt/work/Projects/.ai*` paths.
+9. **First `@biz-sources find` run on a live project** — seed `.work.biz/research/sources.md` and confirm both the vetting step and the new A–D grading step hold (UNKNOWNS #13, #17).
+10. **Smoke-test `@biz-archive` on a live target** (`future-strategy` once its uncommitted changes land) — `status` dry run, catch-up path for archived pieces missing `status.md`, tracker row removal.
+11. **Smoke-test the remaining biz-session verbs on a live target project** — standalone `commit` keeps the session open, `add` stages without committing, `close commit scoped` commits bookend files only; source-role close commit push was exercised 2026-09-10.
 ## Active tasks
 
 | # | Task | Status | Notes |

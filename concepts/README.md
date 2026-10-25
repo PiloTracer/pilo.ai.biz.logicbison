@@ -16,6 +16,9 @@ Business concept prompts that guide strategic thinking and decision-making. Each
 | BIZ-08 | LinkedIn ICP | Calibrating LinkedIn content to the buyer who engages on-platform (titles, hooks, formats) |
 | BIZ-09 | Content Topic Buckets | Balancing the content mix across four buckets |
 | BIZ-10 | Advisory Patterns | Reframing underpriced assets in messy "what should I do?" situations |
+| BIZ-11 | Strategy Design | Choosing *which* play to run: situation audit, business-model archetypes, alternatives map, weighted scoring, WWHTBT, pre-mortem, moat, breakeven/sensitivity |
+| BIZ-12 | IT Services Strategy | When the product is IT capability: buying motions, IT offer archetypes, pricing architecture, proof an IT buyer accepts, differentiation by constraint, sales motion per archetype |
+| BIZ-13 | Career Search | The job-search funnel, channel selection without invented conversion rates, how a resume is actually read, evidence-recovery instead of fabrication, structured-interview scoring, negotiation as a pre-commitment |
 
 ### Trigger Table
 
@@ -30,3 +33,6 @@ Business concept prompts that guide strategic thinking and decision-making. Each
 | Deals aren't closing | BIZ-05 Sales Process |
 | Delivery is bottleneck | BIZ-06 Operations |
 | Content mix is lopsided — one topic dominates | BIZ-09 Content Topic Buckets |
+| Several directions are plausible and nothing ranks them | BIZ-11 Strategy Design (`@biz-strategy design`) |
+| The offer is IT/software work and the buying motion is unclear | BIZ-12 IT Services Strategy |
+| Searching for a job, rewriting a CV, or preparing an interview | BIZ-13 Career Search (`@biz-career`) |

@@ -48,18 +48,19 @@ if [[ -z "$RAW_TARGET" ]]; then
   fi
 fi
 
+# pwd -P: one physical source → one baked path, whatever name it is reached by.
 if [[ -n "${BIZ_SOURCE:-}" ]]; then
-  BIZ_ROOT="$(cd "$BIZ_SOURCE" && pwd)"
+  BIZ_ROOT="$(cd "$BIZ_SOURCE" && pwd -P)"
 else
-  BIZ_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  BIZ_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 fi
 
 # ── Status mode (read-only) ───────────────────────────────────────────
 if [[ "$MODE" == "status" ]]; then
   if [[ "$RAW_TARGET" == "." || "$RAW_TARGET" == "$PWD" ]]; then
-    DEST_ROOT="$(pwd)"
+    DEST_ROOT="$(pwd -P)"
   else
-    DEST_ROOT="$(cd "$RAW_TARGET" && pwd)"
+    DEST_ROOT="$(cd "$RAW_TARGET" && pwd -P)"
   fi
   echo "=== biz-deploy-files status → $DEST_ROOT ==="
   if [[ -d "${DEST_ROOT}/.ai.biz/skills" ]]; then
@@ -137,9 +138,9 @@ if [[ "$MODE" != "force" ]]; then
 fi
 
 if [[ "$MODE" == "force" ]]; then
-  rsync -a --files-from="$TMP_LIST" "$BIZ_ROOT"/ "$DEST_DIR"/
+  rsync -rlptD --files-from="$TMP_LIST" "$BIZ_ROOT"/ "$DEST_DIR"/
 else
-  rsync -a --ignore-existing --files-from="$TMP_LIST" "$BIZ_ROOT"/ "$DEST_DIR"/
+  rsync -rlptD --ignore-existing --files-from="$TMP_LIST" "$BIZ_ROOT"/ "$DEST_DIR"/
 fi
 
 COPIED=$((COUNT - SKIPPED))
@@ -163,6 +164,41 @@ if [[ "$RAW_TARGET" == "." || "$RAW_TARGET" == "$PWD" ]]; then
   rm -f /tmp/biz-deploy-files-scaffold.$$.log
   SCAFFOLD_DONE=1
 fi
+
+# .cursorrules at the repo root (PARENT of the vendored .ai.biz/).
+#   absent  → the fat-client managed block, so the project is wired immediately
+#   owned by another OS framework → append ONLY the managed block, never replace
+#   managed → refresh on update, leave alone otherwise
+MERGE_SH="${BIZ_ROOT}/scripts/biz-cursorrules-merge.sh"
+CURS_ROOT="$PARENT"
+curs_state="none"
+if [[ -f "${CURS_ROOT}/.cursorrules" ]]; then
+  curs_state="$(bash "$MERGE_SH" "$CURS_ROOT" --state 2>/dev/null || echo unknown)"
+fi
+echo ""
+echo "--- .cursorrules (${CURS_ROOT}) ---"
+case "$curs_state" in
+  present)
+    if [[ "$MODE" == "update" ]]; then
+      bash "$MERGE_SH" "$CURS_ROOT" --refresh --layout fat | sed 's/^/  /'
+    else
+      echo "  managed Business OS block present — left as is (--update refreshes it)"
+    fi
+    ;;
+  legacy)
+    echo "  Business OS already wired without managed markers — left as is"
+    ;;
+  unterminated)
+    echo "  WARN: unmatched Business OS marker in ${CURS_ROOT}/.cursorrules — repair by hand" >&2
+    ;;
+  none|absent)
+    if [[ -f "$MERGE_SH" ]]; then
+      bash "$MERGE_SH" "$CURS_ROOT" --layout fat | sed 's/^/  /'
+    fi
+    ;;
+  *)
+    echo "  state unknown — .cursorrules left untouched" ;;
+esac
 
 echo ""
 echo "=== Done: files deployed to $DEST_DIR ==="

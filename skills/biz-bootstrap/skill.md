@@ -34,7 +34,7 @@ Entry point for setting up Business OS in any project. Creates the `.work.biz/` 
 | Condition | Action |
 |-----------|--------|
 | `.ai.biz/` is not present in project root | **Block**: report; bootstrap requires Business OS framework installed |
-| `.cursorrules` already exists at project root | Report existing; skip copy (remove manually to regenerate) |
+| `.cursorrules` already exists at project root | Report existing; skip copy. If it belongs to another OS framework, do **not** overwrite it — append the managed block instead (`bash .ai.biz/scripts/biz-cursorrules-merge.sh <project> --layout fat`, see `COHABITATION.md`) |
 | `.work.biz/` already exists | Report existing; do not overwrite |
 | `templates/bootstrap.sh` or `templates/cursorrules.template` missing | **Block**: report missing template path |
 
@@ -43,7 +43,7 @@ Entry point for setting up Business OS in any project. Creates the `.work.biz/` 
 ## I1 — Init mode
 
 1. **Pre-check** that `.ai.biz/templates/` exists and contains `bootstrap.sh`, `cursorrules.template`, and `work/` template files.
-2. **Create `.cursorrules`** — copy `templates/cursorrules.template` to project root (skip if already present).
+2. **Create `.cursorrules`** — copy `templates/cursorrules.template` to project root (skip if already present). When a file already exists and carries no Business OS wiring, append the managed block with `biz-cursorrules-merge.sh --layout fat` instead of skipping silently: a skipped file means the project has `.work.biz/` and no rules that mention it.
 3. **Create `.work.biz/` skeleton** — create directories and copy template files:
 
    | Output | Source template |

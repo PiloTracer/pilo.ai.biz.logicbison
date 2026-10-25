@@ -24,9 +24,11 @@
 # Override the source with BIZ_SOURCE=/abs/path/to/source-root if needed.
 #
 # Usage:
-#   bash scripts/biz-deploy-basic.sh <target-path>              # no-overwrite (skip existing)
+#   bash scripts/biz-deploy-basic.sh <target-path>              # no-overwrite (write .cursorrules when absent,
+#                                                               #  otherwise append the managed Business OS block)
 #   bash scripts/biz-deploy-basic.sh [status] [target-path]     # read-only report (+ verify)
-#   bash scripts/biz-deploy-basic.sh <target-path> [--update]   # no-overwrite + repair + merge candidates
+#   bash scripts/biz-deploy-basic.sh <target-path> [--update]   # no-overwrite + block refresh + repair + merge candidates
+#   bash scripts/biz-deploy-basic.sh <target-path> [--no-merge] # never touch an existing .cursorrules
 #   bash scripts/biz-deploy-basic.sh <target-path> [--force confirm-overwrite-cursorrules]
 #                                                           # overwrite scaffold (explicit opt-in; blocked without the token)
 #   BIZ_SOURCE=/path/to/source-root bash scripts/biz-deploy-basic.sh <target-path>
@@ -35,6 +37,13 @@
 # (`update` ≡ `--update`, `status` ≡ `--status`), '-' / '--' separators are
 # ignored, and the target path may appear in any position:
 #   biz-deploy-basic.sh /path update   ≡   biz-deploy-basic.sh /path --update
+#
+# .cursorrules in a target that already runs another OS framework: the file is
+# never replaced. Business OS owns only the region between
+# `<!-- BIZ_DESIGN_OS_BEGIN -->` and `<!-- BIZ_DESIGN_OS_END -->`, which this
+# script appends once and refreshes in place afterwards
+# (scripts/biz-cursorrules-merge.sh). Everything outside the markers is another
+# framework's rules and is left byte-for-byte intact.
 #
 set -euo pipefail
 
@@ -45,43 +54,53 @@ set -euo pipefail
 MODE=""
 RAW_TARGET=""
 CONFIRM_OVERWRITE=0
+NO_MERGE=0
 for arg in "$@"; do
   [[ "$arg" == "-" || "$arg" == "--" ]] && continue
   tok="${arg#--}"
   case "$tok" in
     status|update|force|skip) MODE="$tok" ;;
+    merge|merge-block) MODE="merge" ;;
+    no-merge) NO_MERGE=1 ;;
     confirm-overwrite-cursorrules) CONFIRM_OVERWRITE=1 ;;
     /*|./*|../*|~*|*/*|.)
       if [[ -z "$RAW_TARGET" ]]; then RAW_TARGET="$arg"
       else echo "ERROR: multiple target paths: '$RAW_TARGET' and '$arg'" >&2; exit 2; fi ;;
     *) echo "ERROR: unknown argument: $arg" >&2
-       echo "Usage: $0 [status] <target-path> [--force confirm-overwrite-cursorrules|--update] (path must contain '/'; use ./name for local dirs)" >&2
+       echo "Usage: $0 [status] <target-path> [--force confirm-overwrite-cursorrules|--update|--no-merge] (path must contain '/'; use ./name for local dirs)" >&2
        exit 2 ;;
   esac
 done
-MODE="${MODE:-skip}"
+# Default mode wires an existing .cursorrules by appending the managed block.
+# `skip` is retained as the explicit spelling of the old no-touch behaviour.
+[[ "$NO_MERGE" -eq 1 && -z "$MODE" ]] && MODE="skip"
+MODE="${MODE:-merge}"
 if [[ -z "$RAW_TARGET" ]]; then
   if [[ "$MODE" == "status" ]]; then
     RAW_TARGET="."
   else
-    echo "Usage: $0 [status] <target-path> [--force|--update]" >&2
+    echo "Usage: $0 [status] <target-path> [--force|--update|--no-merge]" >&2
     exit 2
   fi
 fi
 
 # Source Business OS root: explicit override wins, else derive from script location.
+# pwd -P canonicalises the path so a source reachable under two names (a real
+# directory plus a legacy `.ai.biz` symlink) always bakes ONE pointer into
+# targets, and that pointer is the directory the framework actually lives in.
 if [[ -n "${BIZ_SOURCE:-}" ]]; then
-  BIZ_ROOT="$(cd "$BIZ_SOURCE" && pwd)"
+  BIZ_ROOT="$(cd "$BIZ_SOURCE" && pwd -P)"
 else
-  BIZ_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  BIZ_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 fi
+MERGE_SH="${BIZ_ROOT}/scripts/biz-cursorrules-merge.sh"
 
 # ── Status mode (read-only) ───────────────────────────────────────────
 if [[ "$MODE" == "status" ]]; then
   if [[ "$RAW_TARGET" == "." || "$RAW_TARGET" == "$PWD" ]]; then
-    DEST_ROOT="$(pwd)"
+    DEST_ROOT="$(pwd -P)"
   else
-    DEST_ROOT="$(cd "$RAW_TARGET" && pwd)"
+    DEST_ROOT="$(cd "$RAW_TARGET" && pwd -P)"
   fi
   CURS_DEST="${DEST_ROOT}/.cursorrules"
   status_rc=0
@@ -95,6 +114,9 @@ if [[ "$MODE" == "status" ]]; then
     echo "  .cursorrules: MISSING"
     status_rc=1
   fi
+  if [[ -f "$CURS_DEST" ]]; then
+    echo "  .cursorrules block: $(bash "$MERGE_SH" "$DEST_ROOT" --state 2>/dev/null || echo unknown) (managed region: BIZ_DESIGN_OS_BEGIN/END)"
+  fi
   [[ -d "${DEST_ROOT}/.work.biz/context" ]] && echo "  .work.biz/: present" || echo "  .work.biz/: missing"
   [[ -d "${DEST_ROOT}/.ai.biz/skills" ]] && echo "  local .ai.biz/skills/: present (WARN — fat-client leak)" || echo "  local .ai.biz/skills/: absent (thin-client ok)"
   exit "$status_rc"
@@ -102,9 +124,9 @@ fi
 
 # Target = repo root of the consumer (the dir that will hold .cursorrules + .work.biz/).
 if [[ "$RAW_TARGET" == "." || "$RAW_TARGET" == "$PWD" ]]; then
-  DEST_ROOT="$(pwd)"
+  DEST_ROOT="$(pwd -P)"
 else
-  DEST_ROOT="$(cd "$RAW_TARGET" && pwd)"
+  DEST_ROOT="$(cd "$RAW_TARGET" && pwd -P)"
 fi
 
 if [[ ! -d "$DEST_ROOT" ]]; then
@@ -145,7 +167,13 @@ WORK_DIRS=(
 
 echo "=== biz-deploy-basic (Business OS) → $DEST_ROOT (thin-client bootstrap) ==="
 echo "  source: $BIZ_ROOT"
-echo "  mode:   $MODE (no-overwrite by default; force needs confirm-overwrite-cursorrules)"
+case "$MODE" in
+  merge)  echo "  mode:   merge (no-overwrite; write the file when absent, otherwise append only the managed block)" ;;
+  update) echo "  mode:   update (no-overwrite; refresh the managed block + repair pointer/paths in place)" ;;
+  skip)   echo "  mode:   skip (no-overwrite; an existing .cursorrules is never touched)" ;;
+  force)  echo "  mode:   force (overwrites the scaffold; requires confirm-overwrite-cursorrules when .cursorrules exists)" ;;
+  *)      echo "  mode:   $MODE" ;;
+esac
 
 if [[ -d "${DEST_ROOT}/.ai.biz/skills" ]]; then
   echo "  WARN: target has local .ai.biz/skills/ directory (fat-client leak)"
@@ -229,6 +257,15 @@ subst_cursorules() {
     fi
   fi
 
+  # Step 2b: the registry's self row. The template carries "*this directory*"
+  # because that is correct for the self-hosted source and for fat-client
+  # installs; a thin-client target holds no framework files, so the row must
+  # name the source root or it misroutes business work into the consumer repo.
+  perl -i -pe "s{^\| \`\.ai\.biz\` \(Business OS\) \| \`\@biz-director\` \| \*this directory\* \|}{| \`.ai.biz\` (Business OS) | \`\@biz-director\` | ${BIZ_ROOT_ESC} (source root) |}" "$tmpfile"
+  if grep -q '\*this directory\*' "$tmpfile"; then
+    echo "  frameworks: WARN self row (.ai.biz) is still '*this directory*' — template row shape changed; check templates/cursorrules.template" >&2
+  fi
+
   # Step 3: bake resolved script paths (Change-safety gate table + hook install)
   perl -i -pe "s{bash (?<!/)scripts/}{bash ${BIZ_ROOT_ESC}/scripts/}g" "$tmpfile"
 
@@ -236,12 +273,14 @@ subst_cursorules() {
   rm -f "$tmpfile"
 }
 
+WROTE_TEMPLATE=0
 write_cursorules() {
   if [[ "$1" == "force" ]] || [[ ! -f "$CURS_DEST" ]]; then
     subst_cursorules > "$CURS_DEST"
-    echo "  cursorules: wrote (subst AI_BIZ_SOURCE=$BIZ_ROOT)"
+    WROTE_TEMPLATE=1
+    echo "  cursorrules: wrote (subst AI_BIZ_SOURCE=$BIZ_ROOT)"
   else
-    echo "  cursorules: skip (exists) — keeping existing target .cursorrules"
+    echo "  cursorrules: skip (exists) — keeping existing target .cursorrules"
   fi
 }
 
@@ -266,47 +305,75 @@ if [[ -f "$CURS_DEST" ]]; then
   fi
 fi
 
-# Step 1: .cursorrules — force overwrites wholesale, and only after the operator
-# has named `confirm-overwrite-cursorrules` (a replace destroys every sister
-# framework's block in the file — same guard as Agent OS / UI Design OS).
+# Step 1: .cursorrules — four shapes, one rule: never destroy another
+# framework's rules.
+#   absent / none       → write the full thin-client template
+#   managed block       → skip (default) or refresh in place (--update)
+#   legacy (no markers) → leave alone; report the migration candidate
+#   unterminated        → refuse to touch the file
+# --force still replaces wholesale, and only after the operator names
+# `confirm-overwrite-cursorrules` (a replace destroys every sister framework's
+# block in the file — same guard as Agent OS / UI Design OS).
+curs_state="none"
+[[ -f "$CURS_DEST" ]] && curs_state="$(bash "$MERGE_SH" "$DEST_ROOT" --state 2>/dev/null || echo unknown)"
+state_before="$curs_state"
+echo "  cursorrules: state=${curs_state}"
+
 if [[ "$MODE" == "force" ]]; then
   if [[ -f "$CURS_DEST" && "$CONFIRM_OVERWRITE" -ne 1 ]]; then
-    lost="$(grep -oE '(SOC_DESIGN_OS_BEGIN|UI_DESIGN_OS_BEGIN|FLUTTER_AGENT_OS_BEGIN|MLT_DESIGN_OS_BEGIN|Core Principles|Source resolution)' "$CURS_DEST" 2>/dev/null | sort -u | paste -sd, - | sed 's/,/, /g' || true)"
+    lost="$(grep -oE '(BIZ_DESIGN_OS_BEGIN|SOC_DESIGN_OS_BEGIN|UI_DESIGN_OS_BEGIN|FLUTTER_AGENT_OS_BEGIN|MLT_DESIGN_OS_BEGIN|Core Principles|Source resolution)' "$CURS_DEST" 2>/dev/null | sort -u | paste -sd, - | sed 's/,/, /g' || true)"
     echo "  BLOCKED: --force would replace .cursorrules wholesale ($(wc -l < "$CURS_DEST") lines)"
     [[ -n "$lost" ]] && echo "    content that would be LOST: ${lost}"
     echo "    to proceed, name the confirmation token explicitly:"
     echo "      bash ${BIZ_ROOT}/scripts/biz-deploy-basic.sh ${DEST_ROOT} --force confirm-overwrite-cursorrules"
-    echo "    otherwise use --update (self-heal + merge candidates) — the normal, non-destructive path."
+    echo "    otherwise use --update (in-place refresh) — the normal, non-destructive path."
     exit 1
   fi
   write_cursorules force
 else
-  if [[ -f "$CURS_DEST" ]]; then
-    echo "  cursorules: skip (exists) — keeping existing target .cursorrules"
-  else
-    write_cursorules skip
-  fi
-fi
-
-# --update: re-sync the source pointer and re-bake gate-table script paths.
-# Single source of truth: biz-cursorrules-verify.sh --fix — idempotent,
-# in-place, preserves all other target edits and tokens, migrates a legacy
-# AGENT_OS_SOURCE biz pointer to AI_BIZ_SOURCE, and refuses to rewrite a
-# foreign framework's pointer (mixed Agent OS + Business OS repos).
-if [[ "$MODE" == "update" ]] && [[ -f "$CURS_DEST" ]] && grep -qE 'AI_BIZ_SOURCE=|AGENT_OS_SOURCE=' "$CURS_DEST"; then
-  fix_rc=0
-  BIZ_SOURCE="$BIZ_ROOT" bash "$BIZ_ROOT/scripts/biz-cursorrules-verify.sh" --fix --thin "$DEST_ROOT" || fix_rc=$?
-  if [[ "$fix_rc" -ne 0 ]]; then
-    echo "  cursorules: $fix_rc verification finding(s) not auto-repairable (see [FAIL] above)"
-  fi
-fi
-# If --update AND existing .cursorrules came from a fat-client template (neither
-# an AI_BIZ_SOURCE nor a legacy AGENT_OS_SOURCE line at all), flag it — the
-# source-resolution section is a merge candidate, handled by the agent (see
-# skill § update-merge protocol).
-if [[ "$MODE" == "update" ]] && [[ -f "$CURS_DEST" ]] && ! grep -qE 'AI_BIZ_SOURCE=|AGENT_OS_SOURCE=' "$CURS_DEST"; then
-  echo "  cursorules: MERGE CANDIDATE — existing .cursorrules lacks the Source-resolution section"
-  echo "    (agent merges the section from the current template; preserves target REPLACE tokens)"
+  case "$curs_state" in
+    none|absent)
+      if [[ "$NO_MERGE" -eq 1 || "$MODE" == "skip" ]]; then
+        [[ "$NO_MERGE" -eq 1 ]] && why="--no-merge" || why="skip verb"
+        echo "  cursorrules: skip (${why}) — .cursorrules untouched"
+      elif [[ -f "$CURS_DEST" ]]; then
+        # A foreign framework's file: append the managed block, change nothing else.
+        if ! mout="$(bash "$MERGE_SH" "$DEST_ROOT" --layout thin 2>&1)"; then
+          printf '%s\n' "$mout" | sed 's/^/  /'
+          echo "  BLOCKED: could not write ${CURS_DEST} — the target is unwritable (permissions, read-only mount, or sandbox)." >&2
+          echo "    Nothing else was written. Re-run with write access to the target." >&2
+          exit 1
+        fi
+        printf '%s\n' "$mout" | sed 's/^/  /'
+      else
+        write_cursorules skip
+      fi
+      ;;
+    present)
+      if [[ "$MODE" == "update" ]]; then
+        if ! mout="$(bash "$MERGE_SH" "$DEST_ROOT" --refresh --layout thin 2>&1)"; then
+          printf '%s\n' "$mout" | sed 's/^/  /'
+          echo "  BLOCKED: could not refresh ${CURS_DEST} — the target is unwritable." >&2
+          exit 1
+        fi
+        printf '%s\n' "$mout" | sed 's/^/  /'
+      else
+        echo "  cursorrules: managed block already present — left as is (--update refreshes it)"
+      fi
+      ;;
+    legacy)
+      echo "  cursorrules: Business OS already wired without managed markers — left as is"
+      echo "    (hand merge or standalone file; --update repairs the pointer and script paths in place)"
+      ;;
+    unterminated)
+      echo "  BLOCKED: unmatched Business OS marker in ${CURS_DEST}" >&2
+      grep -nxF -e '<!-- BIZ_DESIGN_OS_BEGIN -->' -e '<!-- BIZ_DESIGN_OS_END -->' "$CURS_DEST" | sed 's/^/    /' >&2 || true
+      echo "    repair the marker pair (or restore from git), then re-run." >&2
+      exit 1
+      ;;
+    *)
+      echo "  cursorrules: state unknown — leaving .cursorrules untouched" ;;
+  esac
 fi
 
 # Step 2: .work.biz/ skeleton via bootstrap.sh (no-overwrite).
@@ -316,18 +383,57 @@ BOOTSTRAP_SKIP_CURSERRULES=1 REPO_ROOT="$DEST_ROOT" BIZ_SOURCE="$BIZ_ROOT" \
 grep -E '(created:|skip )' /tmp/biz-deploy-basic-scaffold.$$.log | sed 's/^/  work: /' || true
 rm -f /tmp/biz-deploy-basic-scaffold.$$.log
 
+# Re-read the state now that this run may have written or refreshed the block.
+[[ -f "$CURS_DEST" ]] && curs_state="$(bash "$MERGE_SH" "$DEST_ROOT" --state 2>/dev/null || echo unknown)"
+
+# --update: re-sync the source pointer and re-bake gate-table script paths.
+# Single source of truth: biz-cursorrules-verify.sh --fix — idempotent,
+# in-place, preserves all other target edits and tokens, migrates a legacy
+# AGENT_OS_SOURCE biz pointer to AI_BIZ_SOURCE, and refuses to rewrite a
+# foreign framework's pointer (mixed Agent OS + Business OS repos).
+if [[ "$MODE" == "update" ]] && [[ -f "$CURS_DEST" ]] && grep -qE 'AI_BIZ_SOURCE=|AGENT_OS_SOURCE=|BIZ_DESIGN_OS_BEGIN' "$CURS_DEST"; then
+  fix_rc=0
+  BIZ_SOURCE="$BIZ_ROOT" bash "$BIZ_ROOT/scripts/biz-cursorrules-verify.sh" --fix --thin "$DEST_ROOT" || fix_rc=$?
+  if [[ "$fix_rc" -ne 0 ]]; then
+    echo "  cursorrules: verifier exited ${fix_rc} during --fix — review the [FAIL] lines above"
+    echo "    (findings that are not mechanical pointer/path repairs need the agent merge below)"
+  fi
+fi
+# If --update AND existing .cursorrules came from a fat-client template (neither
+# an AI_BIZ_SOURCE nor a legacy AGENT_OS_SOURCE line at all), flag it — the
+# source-resolution section is a merge candidate, handled by the agent (see
+# skill § update-merge protocol).
+if [[ "$MODE" == "update" ]] && [[ -f "$CURS_DEST" ]] && ! grep -qE 'AI_BIZ_SOURCE=|AGENT_OS_SOURCE=|BIZ_DESIGN_OS_BEGIN' "$CURS_DEST"; then
+  echo "  cursorrules: MERGE CANDIDATE — existing .cursorrules lacks the Business OS block"
+  echo "    (run without --no-merge to append the managed block; target content is preserved)"
+fi
+
 # Step 3: --update — list existing-but-differing files as merge candidates.
 if [[ "$MODE" == "update" ]]; then
   echo ""
   echo "=== update merge candidates ==="
-  # .cursorrules vs the freshly-substituted template
+  # .cursorrules: a managed block is refreshed mechanically above, so only the
+  # standalone / hand-merged shapes need an agent diff against the template.
   if [[ -f "$CURS_DEST" ]]; then
-    tmp_cur="$(mktemp)"
-    subst_cursorules > "$tmp_cur"
-    if ! cmp -s "$tmp_cur" "$CURS_DEST"; then
-      echo "  merge: .cursorrules  (differs from current template-with-source)"
-    fi
-    rm -f "$tmp_cur"
+    case "$curs_state" in
+      present)
+        if [[ "$state_before" == "absent" || "$state_before" == "none" ]]; then
+          echo "  .cursorrules: managed block appended this run — no agent merge needed"
+        elif [[ "$MODE" == "update" ]]; then
+          echo "  .cursorrules: managed block refreshed this run — no agent merge needed"
+        else
+          echo "  .cursorrules: managed block present — left as is, no agent merge needed"
+        fi ;;
+      none)
+        echo "  .cursorrules: full template written by this run" ;;
+      *)
+        tmp_cur="$(mktemp)"
+        subst_cursorules > "$tmp_cur"
+        if ! cmp -s "$tmp_cur" "$CURS_DEST"; then
+          echo "  merge: .cursorrules  (standalone/hand-merged; differs from current template-with-source)"
+        fi
+        rm -f "$tmp_cur" ;;
+    esac
   fi
   # .work.biz/ skeleton files vs source templates
   TPL_WORK="${BIZ_ROOT}/templates/work"
@@ -355,7 +461,13 @@ echo "  .work.biz/: $([ -d "${DEST_ROOT}/.work.biz" ] && echo present || echo MI
 echo "  skills (local): $([ -d "${DEST_ROOT}/.ai.biz/skills" ] && echo "present — fat-client (unexpected for basic)" || echo 'absent — thin-client (skills load from source)')"
 echo ""
 echo "Next steps in target project:"
-echo "  1. Edit ${DEST_ROOT}/.cursorrules — fill every REPLACE: token EXCEPT AI_BIZ_SOURCE (biz-deploy-basic set it)"
+if [[ "$WROTE_TEMPLATE" -eq 1 ]]; then
+  echo "  1. Edit ${DEST_ROOT}/.cursorrules — fill every REPLACE: token EXCEPT AI_BIZ_SOURCE (biz-deploy-basic set it)"
+elif [[ "$curs_state" == "present" || "$curs_state" == "legacy" ]]; then
+  echo "  1. ${CURS_DEST} — Business OS wiring is in place; no REPLACE: tokens to fill"
+else
+  echo "  1. ${CURS_DEST} — left untouched (skip); Business OS is NOT wired until the block is merged: re-run without --no-merge/skip"
+fi
 echo "  2. Verify source is reachable:  test -d \"\$(grep -oE 'AI_BIZ_SOURCE=[^ ]*' $CURS_DEST | cut -d= -f2-)\""
 echo "  3. Run @biz-session start  (skill loads from \$AI_BIZ_SOURCE/skills/biz-session/skill.md)"
 echo "  4. For project-tracking context: @biz-session context"

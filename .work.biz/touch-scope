@@ -1,42 +1,54 @@
-# Touch Scope — declared 2026-10-15 (deploy reliability: confirm-overwrite-cursorrules
-# force token in biz-deploy-basic.sh; skill.md force-token docs; HANDOFF session record.
-# Owner-invoked @ai-director pass from the 20261015 cohabitation audit in
-# pilo.ai.logicbison .work/feedback/. Prior scope (2026-10-09 judgment-quality layer)
-# preserved below — its files remain allowed until the next scope rewrite.)
+# Touch Scope — declared 2026-10-25 (release v0.7.0)
 #
-# --- 2026-10-15 additions ---
-scripts/biz-deploy-basic.sh
-skills/biz-deploy-basic/skill.md
-.work.biz/context/HANDOFF.md
+# Session: cohabitation deploy (managed .cursorrules block) + strategy design mode +
+# @biz-career + BIZ-12/13 playbooks + verified source catalog. This is a framework
+# RELEASE, so the boundary is deliberately wide: the change is cross-surface by
+# design (a deploy script change must reach the skill doc, the templates, the
+# routing docs and the verifier, or the framework drifts). Declared here so the
+# blast-radius result is a known cost, not an accident.
+#
+# Prior scopes (2026-10-15 deploy reliability, 2026-10-09 judgment-quality layer)
+# are closed; their entries are not carried forward.
+
+.cursorrules
 .work.biz/touch-scope
-#
-# --- 2026-10-09 (still allowed) ---
+.work.biz/context/HANDOFF.md
+.work.biz/plans/NEXT.md
+.work.biz/plans/UNKNOWNS.md
+CHANGELOG.md
+COHABITATION.md
 CONVENTIONS.md
-standards/20260621-DIRECTORY_MAP.md
-templates/work/decisions/DECISIONS.md.template
-templates/work/README.md.template
-templates/README.md
-templates/bootstrap.sh
-templates/cursorrules.template
+README.md
+START_HERE.md
+PROCESS_ROUTER.md
+
+# deploy surface
+scripts/biz-cursorrules-merge.sh
+scripts/biz-cursorrules-verify.sh
 scripts/biz-deploy-basic.sh
+scripts/biz-deploy-files.sh
 scripts/framework-verify.sh
+templates/cursorrules.biz.snippet.template
+templates/cursorrules.template
+templates/README.md
+templates/work/strategy/README.md.template
+
+# strategy design surface
+concepts/README.md
+concepts/strategy-design/
+concepts/it-services-strategy/
+concepts/career-search/
 skills/biz-strategy/skill.md
-skills/biz-advisory/skill.md
 skills/biz-review/skill.md
-skills/biz-pricing/skill.md
-skills/biz-market-validate/skill.md
-skills/biz-proposal/skill.md
-skills/biz-sources/skill.md
+
+# career surface
+skills/biz-career/skill.md
+skills/SKILL_DEPENDENCIES.md
+skills/README.md
 skills/biz-director/skill.md
 skills/biz-bootstrap/skill.md
 skills/biz-deploy-basic/skill.md
-skills/README.md
-START_HERE.md
-PROCESS_ROUTER.md
-.cursorrules
-CHANGELOG.md
-.work.biz/touch-scope
-.work.biz/context/HANDOFF.md
-.work.biz/context/HANDOFF.archive.md
-.work.biz/plans/NEXT.md
-.work.biz/plans/UNKNOWNS.md
+skills/biz-sources/skill.md
+
+# sources of record
+docs/sources/

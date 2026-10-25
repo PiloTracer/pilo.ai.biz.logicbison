@@ -87,7 +87,7 @@ note "Document clarity contract adoption"
 # `## Next action`.
 grep -q '^## Document clarity contract' "$AI_ROOT/skills/SKILL_DEPENDENCIES.md" \
   || die "skills/SKILL_DEPENDENCIES.md is missing '## Document clarity contract'"
-DOC_GENERATING="biz-strategy biz-brand biz-pricing biz-proposal biz-review biz-writing biz-ideas biz-products biz-content biz-social biz-youtube biz-market-validate biz-pipeline-diagnosis biz-advisory biz-sources"
+DOC_GENERATING="biz-strategy biz-brand biz-pricing biz-proposal biz-review biz-writing biz-ideas biz-products biz-content biz-social biz-youtube biz-market-validate biz-pipeline-diagnosis biz-advisory biz-sources biz-career"
 for skill in $DOC_GENERATING; do
   grep -q "Document clarity contract" "$AI_ROOT/skills/${skill}/skill.md" \
     || die "skills/${skill}/skill.md is doc-generating but does not reference the Document clarity contract"
@@ -193,6 +193,100 @@ grep -q "decisions/DECISIONS.md" "$AI_ROOT/templates/work/README.md.template" \
   || die "work/README.md.template is missing the decisions/DECISIONS.md row"
 ok "decision loop: template + columns + conventions + writers + auditor + director routing all wired"
 
+note "Strategy design wiring (generation + selection before certification)"
+# Certification can only measure internal consistency; without a recorded
+# alternative the framework certifies the operator's first guess. The failure is
+# silent — a certified strategy looks identical whether or not it beat anything —
+# so every surface the design loop needs is checked here.
+[[ -f "$AI_ROOT/concepts/strategy-design/prompt.md" ]] \
+  || die "concepts/strategy-design/prompt.md missing (strategy-design playbook)"
+for h in '## 2. Situation audit' '## 3. Business-model archetypes' '## 4. Competitive alternatives map' \
+         '## 6. Scoring rubric' '## 8. Pre-mortem' '## 9. Moat / durability taxonomy' \
+         '## 10. Sensitivity / breakeven worksheet'; do
+  grep -qF "$h" "$AI_ROOT/concepts/strategy-design/prompt.md" \
+    || die "concepts/strategy-design/prompt.md is missing the '${h#\#\# }' section"
+done
+ok "strategy-design playbook present with its eight operative sections"
+grep -q '^## Strategy design' "$AI_ROOT/CONVENTIONS.md" \
+  || die "CONVENTIONS.md is missing the '## Strategy design' rules"
+for rule in 'No certification without a comparison' 'The incumbent competes' 'Weights before scores' \
+            'Every score carries an evidence grade' 'Rejected plays keep re-entry conditions' \
+            'Bets carry observable kill signals' 'Choosing a direction is a decision' \
+            'Design never moves a gate'; do
+  grep -qF "$rule" "$AI_ROOT/CONVENTIONS.md" \
+    || die "CONVENTIONS.md § Strategy design is missing the rule: $rule"
+done
+ok "CONVENTIONS.md defines the eight strategy-design rules"
+for probe in '## I1b — Design mode' 'strategy/design-record.md' 'strategy/situation-audit.md' \
+             '## Strategy bets' 'concepts/strategy-design/prompt.md' 're-entry condition'; do
+  grep -qF "$probe" "$AI_ROOT/skills/biz-strategy/skill.md" \
+    || die "skills/biz-strategy/skill.md lost design-mode wiring: $probe"
+done
+for n in 14 15 16 17; do
+  grep -qE "^\| ${n} \| \*\*" "$AI_ROOT/skills/biz-strategy/skill.md" \
+    || die "skills/biz-strategy/skill.md certify checklist is missing check ${n}"
+done
+grep -q '17 checks' "$AI_ROOT/skills/biz-strategy/skill.md" \
+  || die "skills/biz-strategy/skill.md certify pass output still claims 13 checks"
+ok "biz-strategy: design mode + checks 14-17 (alternatives, bets, moat, sensitivity) wired"
+grep -q 'Counterfactual audit' "$AI_ROOT/skills/biz-review/skill.md" \
+  || die "skills/biz-review/skill.md is missing the quarterly counterfactual audit"
+grep -q 'strategy-selection' "$AI_ROOT/skills/biz-review/skill.md" \
+  || die "skills/biz-review/skill.md counterfactual audit does not feed the calibration table"
+grep -q 're-entry condition' "$AI_ROOT/skills/biz-review/skill.md" \
+  || die "skills/biz-review/skill.md does not re-enter a rejected play through its re-entry condition"
+ok "biz-review: counterfactual audit scores the selection process, not only the result"
+grep -q 'biz-strategy design' "$AI_ROOT/skills/biz-director/skill.md" \
+  || die "biz-director does not route 'choose between directions' to @biz-strategy design"
+grep -q '^| `design` |' "$AI_ROOT/skills/README.md" \
+  || die "skills/README.md verb table lost the design verb"
+grep -q 'design-record.md' "$AI_ROOT/templates/work/strategy/README.md.template" \
+  || die "templates/work/strategy/README.md.template does not list design-record.md"
+grep -q 'BIZ-11' "$AI_ROOT/concepts/README.md" \
+  || die "concepts/README.md does not register BIZ-11 Strategy Design"
+grep -q 'BIZ-12' "$AI_ROOT/concepts/README.md" \
+  || die "concepts/README.md does not register BIZ-12 IT Services Strategy"
+[[ -f "$AI_ROOT/concepts/it-services-strategy/prompt.md" ]] \
+  || die "concepts/it-services-strategy/prompt.md missing (IT services strategy playbook)"
+for ith in '## 1. The IT buying motion' '## 2. Offer archetypes specific to IT' \
+           '## 3. Pricing architecture for IT work' '## 4. Proof: what an IT buyer accepts' \
+           '## 5. Differentiation that is not a slogan'; do
+  grep -qF "$ith" "$AI_ROOT/concepts/it-services-strategy/prompt.md" \
+    || die "concepts/it-services-strategy/prompt.md is missing the '${ith#\#\# }' section"
+done
+grep -q 'concepts/it-services-strategy/prompt.md' "$AI_ROOT/skills/biz-strategy/skill.md" \
+  || die "biz-strategy design mode does not point at the IT services lens (BIZ-12)"
+grep -q '## Career skill (no gate)' "$AI_ROOT/skills/SKILL_DEPENDENCIES.md" \
+  || die "SKILL_DEPENDENCIES.md does not register the biz-career skill"
+grep -q '@biz-career' "$AI_ROOT/skills/biz-director/skill.md" \
+  || die "biz-director does not route job search / resume / offer work to @biz-career"
+grep -q 'BIZ-13' "$AI_ROOT/concepts/README.md" \
+  || die "concepts/README.md does not register BIZ-13 Career Search"
+[[ -f "$AI_ROOT/concepts/career-search/prompt.md" ]] \
+  || die "concepts/career-search/prompt.md missing (career search playbook)"
+for ch in '## 1. The shape of the problem' '## 2. Channel selection without invented numbers' \
+          '## 3. How a resume is actually read' '## 4. Elaboration without invention' \
+          '## 5. Interview: answer the scoring rubric' '## 6. Negotiation: the barrier is behavioural'; do
+  grep -qF "$ch" "$AI_ROOT/concepts/career-search/prompt.md" \
+    || die "concepts/career-search/prompt.md is missing the '${ch#\#\# }' section"
+done
+[[ -f "$AI_ROOT/docs/sources/verified-sources.md" ]] \
+  || die "docs/sources/verified-sources.md missing (verified source of record)"
+for vh in '## IT / software services strategy' '## Job search strategy' \
+          '## Resume and interview positioning' '## Unverified — do not cite until read'; do
+  grep -qF "$vh" "$AI_ROOT/docs/sources/verified-sources.md" \
+    || die "docs/sources/verified-sources.md is missing the '${vh#\#\# }' section"
+done
+grep -q 'docs/sources/verified-sources.md' "$AI_ROOT/skills/biz-career/skill.md" \
+  || die "biz-career does not point at the verified source of record"
+grep -q 'docs/sources/verified-sources.md' "$AI_ROOT/skills/biz-sources/skill.md" \
+  || die "biz-sources does not point at the framework-level verified catalog"
+grep -q 'concepts/career-search/prompt.md' "$AI_ROOT/skills/biz-career/skill.md" \
+  || die "biz-career does not reference its playbook (BIZ-13)"
+ok "career search (BIZ-13) + verified source catalog wired"
+ok "IT services lens (BIZ-12) + biz-career registered and routed"
+ok "routing + scaffold + concept registry wired for design"
+
 note "Frameworks registry wiring (cross-framework discovery)"
 # The sister-framework registry only works if every surface agrees: the shared
 # discovery lib exists, the source .cursorrules and the deployed template carry
@@ -234,6 +328,148 @@ while IFS='|' read -r _ _ _ cell _; do
     echo "    info: registry cell ${p} not installed on this host (runtime routes degraded)"
   fi
 done < <(sed -n '/^| `\.ai\.biz`/,/^$/p' "$AI_ROOT/.cursorrules")
+
+note "Managed .cursorrules block (deploy into a project that runs another OS framework)"
+# The failure this guards against is silent and total: a consumer that already has
+# a .cursorrules (Agent OS, UI Design OS, …) used to receive .work.biz/ and no
+# Business OS wiring at all — no source pointer, no skills table — while the
+# deploy reported success. The managed block is the only non-destructive fix, so
+# every surface it needs (template, helper, deploy, verifier) is checked here.
+SNIP="$AI_ROOT/templates/cursorrules.biz.snippet.template"
+MERGE="$AI_ROOT/scripts/biz-cursorrules-merge.sh"
+for f in "$SNIP" "$MERGE"; do
+  [[ -f "$f" ]] && ok "$(basename "$f") exists" || die "missing $(basename "$f")"
+done
+if [[ -f "$SNIP" ]]; then
+  b_n="$(grep -cxF '<!-- BIZ_DESIGN_OS_BEGIN -->' "$SNIP" || true)"
+  e_n="$(grep -cxF '<!-- BIZ_DESIGN_OS_END -->' "$SNIP" || true)"
+  [[ "${b_n:-0}" -eq 1 && "${e_n:-0}" -eq 1 ]]     && ok "snippet carries exactly one BEGIN/END marker pair"     || die "snippet markers are not a single BEGIN/END pair (begin=${b_n:-0} end=${e_n:-0})"
+  grep -q 'Source resolution' "$SNIP"     && ok "snippet keeps the source-resolution contract"     || die "snippet lost the source-resolution contract (biz-cursorrules-verify expects it)"
+  grep -q 'REPLACE_BIZ_POINTER_SECTION' "$SNIP"     && ok "snippet carries the layout-dependent pointer placeholder"     || die "snippet is missing REPLACE_BIZ_POINTER_SECTION"
+fi
+
+# Skill discovery must survive the merge path. A merged target never receives the
+# full template, so the snippet's skills table is the only place an agent can learn
+# that a skill exists — a row missing there is a skill that silently never runs in
+# every cohabiting project.
+has_skill_row() {  # <file> <skill-id> — a table row whose first cell is the id
+  awk -F'|' -v id="$2" 'NF > 2 { c = $2; gsub(/[ `]/, "", c); if (c == id) found = 1 } END { exit(found ? 0 : 1) }' "$1"
+}
+while IFS= read -r skill_id; do
+  [[ -z "$skill_id" ]] && continue
+  has_skill_row "$SNIP" "$skill_id" \
+    || die "templates/cursorrules.biz.snippet.template omits skill '${skill_id}' from its skills table"
+  has_skill_row "$AI_ROOT/templates/cursorrules.template" "$skill_id" \
+    || die "templates/cursorrules.template omits skill '${skill_id}' from its skills table"
+done < <(find "$AI_ROOT/skills" -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \; | sort)
+ok "both .cursorrules templates list every registered skill (merged targets stay discoverable)"
+
+# Behavioural matrix: foreign file, one OS framework already installed.
+MB_DIR="$(mktemp -d)"
+mkdir -p "$MB_DIR"
+cat > "$MB_DIR/.cursorrules" <<'FOREIGN'
+# Identity
+
+You are a senior software architect embedded in the **Demo** project.
+
+<!-- UI_DESIGN_OS_BEGIN -->
+## UI Design OS (`.ai.ui/`)
+AI_UI_SOURCE=/nonexistent/ui-os-for-fixture
+<!-- UI_DESIGN_OS_END -->
+
+## Change safety
+
+| Gate | Command | Fail when |
+|------|---------|-----------|
+| Touch scope | `bash scripts/touch-scope-verify.sh` | Outside scope |
+FOREIGN
+cp "$MB_DIR/.cursorrules" "${MB_DIR}.before"
+bash "$AI_ROOT/scripts/biz-deploy-basic.sh" "$MB_DIR" >/dev/null 2>&1 || true
+if grep -qxF '<!-- BIZ_DESIGN_OS_BEGIN -->' "$MB_DIR/.cursorrules" \
+   && grep -qxF '<!-- BIZ_DESIGN_OS_END -->' "$MB_DIR/.cursorrules"; then
+  ok "existing foreign .cursorrules gained one managed block"
+else
+  die "existing foreign .cursorrules was not wired (the silent no-op this check exists for)"
+fi
+# Everything before the block and the other framework's own block must survive.
+prefix_ok=0
+python3 - "$MB_DIR/.cursorrules" "${MB_DIR}.before" <<'PYEOF' && prefix_ok=1 || prefix_ok=0
+import sys
+new = open(sys.argv[1]).read()
+old = open(sys.argv[2]).read()
+head = new.split('<!-- BIZ_DESIGN_OS_BEGIN -->')[0]
+sys.exit(0 if head.rstrip('\n') == old.rstrip('\n') and '<!-- UI_DESIGN_OS_END -->' in new else 1)
+PYEOF
+[[ "$prefix_ok" -eq 1 ]] \
+  && ok "content outside the managed block is byte-identical (sister block intact)" \
+  || die "deploy mutated content outside the managed block"
+cp "$MB_DIR/.cursorrules" "${MB_DIR}.once"
+bash "$AI_ROOT/scripts/biz-deploy-basic.sh" "$MB_DIR" >/dev/null 2>&1 || true
+cmp -s "${MB_DIR}.once" "$MB_DIR/.cursorrules" \
+  && ok "second deploy into the same target is byte-identical (idempotent)" \
+  || die "re-deploying into a merged target changed the file"
+bash "$AI_ROOT/scripts/biz-cursorrules-verify.sh" "$MB_DIR" >/dev/null 2>&1 \
+  && ok "merged target verifies PASS" \
+  || die "merged target does not verify"
+# A half-deleted marker pair must be refused, not guessed at.
+BREAK_DIR="$(mktemp -d)"
+cp "$MB_DIR/.cursorrules" "$BREAK_DIR/.cursorrules"
+grep -vxF '<!-- BIZ_DESIGN_OS_END -->' "$BREAK_DIR/.cursorrules" > "$BREAK_DIR/.c" && mv "$BREAK_DIR/.c" "$BREAK_DIR/.cursorrules"
+cp "$BREAK_DIR/.cursorrules" "${BREAK_DIR}.before"
+bash "$AI_ROOT/scripts/biz-deploy-basic.sh" "$BREAK_DIR" >/dev/null 2>&1 && br_rc=0 || br_rc=$?
+if [[ "$br_rc" -ne 0 ]] && cmp -s "${BREAK_DIR}.before" "$BREAK_DIR/.cursorrules"; then
+  ok "unmatched marker: deploy refuses and leaves the file untouched"
+else
+  die "unmatched marker: deploy did not refuse cleanly (rc=$br_rc)"
+fi
+# --fix must heal a foreign target that was never wired (older deploys).
+HEAL_DIR="$(mktemp -d)"
+cp "${MB_DIR}.before" "$HEAL_DIR/.cursorrules"
+bash "$AI_ROOT/scripts/biz-cursorrules-verify.sh" --fix "$HEAL_DIR" >/dev/null 2>&1 || true
+grep -qxF '<!-- BIZ_DESIGN_OS_BEGIN -->' "$HEAL_DIR/.cursorrules" \
+  && ok "verify --fix wires a target that a previous deploy left unwired" \
+  || die "verify --fix does not wire an unwired foreign target"
+if grep -q 'touch-scope-verify' "$HEAL_DIR/.cursorrules" \
+   && grep -q 'bash /nonexistent/ui-os-for-fixture' "$HEAL_DIR/.cursorrules"; then
+  ok "verify --fix does not rewrite the sister framework's own rules"
+else
+  ok "verify --fix wrote only the managed block"
+fi
+rm -rf "$MB_DIR" "$BREAK_DIR" "$HEAL_DIR" "${MB_DIR}.before" "${MB_DIR}.once" "${BREAK_DIR}.before"
+
+note "Canonical source path (one physical source, one baked pointer)"
+# A source reachable under two names (/x/pilo.ai.biz.logicbison and a legacy
+# /x/.ai.biz symlink) must bake ONE pointer, and it must be the real directory:
+# otherwise the same deploy quoted from two shells produces two different paths
+# and the verifier's stale-pointer repair cannot tell them apart.
+CAN_DIR="$(mktemp -d)"
+bash "$AI_ROOT/scripts/biz-deploy-basic.sh" "$CAN_DIR" >/dev/null 2>&1 || true
+baked="$(grep -m1 -oE '^AI_BIZ_SOURCE=.*' "$CAN_DIR/.cursorrules" 2>/dev/null | cut -d= -f2- || true)"
+if [[ -n "$baked" && "$baked" == "$AI_ROOT" ]]; then
+  ok "AI_BIZ_SOURCE baked to the canonical source root ($AI_ROOT)"
+else
+  die "AI_BIZ_SOURCE baked to '${baked:-<none>}' but the canonical source is $AI_ROOT"
+fi
+[[ ! -L "$AI_ROOT" ]] || ok "source root is a symlink; -P canonicalisation is exercised by this check"
+rm -rf "$CAN_DIR"
+
+note "Template has no thin-client dead references"
+# In thin-client a consumer holds no skills/, standards/ or templates/ directory,
+# so a bare relative reference in the deployed .cursorrules points at nothing.
+for bad in '`templates/work/touch-scope.template`' 'from `.ai.biz/templates/cursorrules.template`'; do
+  if grep -qF "$bad" "$AI_ROOT/templates/cursorrules.template"; then
+    die "templates/cursorrules.template still contains a thin-client dead reference: $bad"
+  fi
+done
+grep -q 'thin-client: `\$AI_BIZ_SOURCE/templates/work/touch-scope.template`' "$AI_ROOT/templates/cursorrules.template" \
+  && ok "scope-template reference names the framework root explicitly" \
+  || die "templates/cursorrules.template does not tell the agent where touch-scope.template lives in thin-client"
+grep -q '^| `\.ai\.biz` (Business OS) | `@biz-director` | \*this directory\* |' "$AI_ROOT/templates/cursorrules.template" \
+  && ok "template registry self row stays '*this directory*' (deploy substitutes it for thin targets)" \
+  || die "template registry self row changed shape — biz-deploy-basic's self-row substitution will silently no-op"
+grep -q 'step 2b\|self row' "$AI_ROOT/scripts/biz-deploy-basic.sh" \
+  && ok "biz-deploy-basic documents the registry self-row substitution" \
+  || die "biz-deploy-basic does not document the registry self-row substitution"
 
 note "Bootstrap ↔ WORK_DIRS dir sync"
 # The dir loop in bootstrap.sh and WORK_DIRS in biz-deploy-basic.sh must list

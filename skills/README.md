@@ -27,7 +27,7 @@ Portable, tool-agnostic business workflows. Each skill is a folder with `skill.m
 | biz-deploy-basic | `biz-deploy-basic/` | Thin-client bootstrap (`.cursorrules` + `.work.biz/`); skills load via `AI_BIZ_SOURCE` (legacy pointer name: `AGENT_OS_SOURCE`) |
 | biz-deploy-files | `biz-deploy-files/` | Deploy `.ai.biz/` files into target project |
 | biz-bootstrap | `biz-bootstrap/` | Scaffold `.work.biz/`, `.cursorrules` from templates |
-| biz-strategy | `biz-strategy/` | Define niche, offer, positioning; profile the operator (`career`); reality check (arithmetic + outside view); certifies **strategy-ready** and records it as a decision |
+| biz-strategy | `biz-strategy/` | **Design** the strategy (generate 5+ plays, score them on graded evidence, pick one, pre-mortem) then define niche, offer, positioning; profile the operator (`career`); reality check (arithmetic + sensitivity + outside view); certifies **strategy-ready** and records it as a decision |
 | biz-brand | `biz-brand/` | Audit/overhaul LinkedIn, website, brand presence |
 | biz-pricing | `biz-pricing/` | Value-based pricing for any engagement; reality check (margin, capacity, runway); records each quote as a decision |
 | biz-content | `biz-content/` | LinkedIn publishing ops: publish, plan, 30-day challenge (#CreateImpact), tracker |
@@ -37,7 +37,7 @@ Portable, tool-agnostic business workflows. Each skill is a folder with `skill.m
 | biz-discovery | `biz-discovery/` | Sales discovery calls |
 | biz-proposal | `biz-proposal/` | Proposal writing and scoping |
 | biz-objections | `biz-objections/` | Handle sales objections |
-| biz-review | `biz-review/` | Weekly/monthly/quarterly business review (monthly = assumption re-validation; quarterly = content-by-pillar + **decision audit/calibration**) |
+| biz-review | `biz-review/` | Weekly/monthly/quarterly business review (monthly = assumption re-validation; quarterly = content-by-pillar + **decision audit/calibration** + **counterfactual audit** of rejected plays and bet kill signals) |
 | biz-market-validate | `biz-market-validate/` | Test offers before committing |
 | biz-pipeline-diagnosis | `biz-pipeline-diagnosis/` | Find and fix funnel bottlenecks |
 | biz-session | `biz-session/` | Session bookends + scoped git: `start` / `close` / `status` / `context`; `close commit [scoped] [push]`; standalone `commit` / `commit push` (no close) and `add` (stage only). Scope: `.work.biz/` in target projects, repo-wide in the Business OS source repo. Aliased as `session-control` |
@@ -48,9 +48,12 @@ Portable, tool-agnostic business workflows. Each skill is a folder with `skill.m
 | biz-archive | `biz-archive/` | Archive published content pieces: `ideas/` → `ideas.archive/` (mirrored), tracker annotated, history preserved |
 | biz-products | `biz-products/` | Buildable, stack-fit product/service concepts + MVP scoping + prioritization matrix |
 | biz-advisory | `biz-advisory/` | Situational business counsel: asset reframe pass, ranked options with **graded** evidence, base rate, arithmetic check, anti-advice, decisive recommendation; records the decision row |
+| biz-career | `biz-career/` | Job search and resume craft: role archetypes + channel plan + target list with a kill signal; CV elaboration on evidenced scope; interview story bank; offer evaluation. No invented numbers |
 | biz-sources | `biz-sources/` | Curate and mine business-advisory sources into a living catalog (`.work.biz/research/sources.md`), each **graded A–D** with freshness |
 
-**Typical flow (greenfield):** `@biz-bootstrap init` → `@biz-strategy greenfield` → `@biz-strategy certify` → `@biz-brand audit` → `@biz-pricing set` → `@biz-community find` → `@biz-social strategy` → `@biz-social write` → `@biz-youtube plan` → ...
+**Typical flow (greenfield):** `@biz-bootstrap init` → `@biz-strategy design` (when more than one direction is plausible) → `@biz-strategy greenfield` → `@biz-strategy certify`
+
+**Typical flow (employment):** `@biz-strategy career` (profile) → `@biz-career search` → `@biz-career resume` → `@biz-career interview` → `@biz-career negotiate` → `@biz-brand audit` → `@biz-pricing set` → `@biz-community find` → `@biz-social strategy` → `@biz-social write` → `@biz-youtube plan` → ...
 
 ---
 
@@ -60,7 +63,7 @@ Portable, tool-agnostic business workflows. Each skill is a folder with `skill.m
 |------|---------|
 | `status` | Read-only state report |
 | `init` | One-time setup |
-| `greenfield` | Generate full output from scratch |
+| `greenfield` | Generate full output from scratch (single chosen direction) |
 | `probe` | Adaptive gap-driven questioning |
 | `certify` | Gate check + state promotion |
 | `amend` | Record a strategy change made outside greenfield; fold out-of-tree strategy docs back in (biz-strategy) |
@@ -75,7 +78,7 @@ Portable, tool-agnostic business workflows. Each skill is a folder with `skill.m
 | `ask` | Request something (referrals) |
 | `engage` | Participate in community |
 | `test` | Run a validation experiment |
-| `design` | Plan an experiment |
+| `design` | Generate and score candidate strategies before committing (`biz-strategy`) — or plan a validation experiment (`biz-market-validate`) |
 | `review` | Assess a proposal before sending (biz-proposal) or assess business performance (biz-review) |
 | `plan` | Create a content/publishing plan |
 | `challenge` | 30-day LinkedIn consistency program (biz-content) |
@@ -85,6 +88,7 @@ Portable, tool-agnostic business workflows. Each skill is a folder with `skill.m
 | `monthly` | Monthly assumption re-validation: re-grade the assumption ledger, route dead load-bearing assumptions to amend (biz-review) |
 | `quarterly` | Quarterly strategic review: content-strategy alignment by pillar **and the Decision audit** — score the decision ledger, update calibration, convert repeating miss classes into rule changes (biz-review) |
 | `career` | Probe the operator (skills, proof points, constraints, risk, stage); fill `reference/OPERATOR_PROFILE.md`; career-direction read (biz-strategy) |
+| `search` / `resume` / `interview` / `negotiate` | Job search plan + target list, CV elaboration, story bank, offer evaluation (biz-career) |
 | `roleplay` | Practice objection handling (biz-objections) |
 | `close` / `start` | Session bookends |
 | `commit` / `push` | Session git ops, `.work.biz/` scope (incl. untracked): standalone verbs (checkpoint, no close) or modifiers of `close`; `push` implies commit; any order, combinable (biz-session) |

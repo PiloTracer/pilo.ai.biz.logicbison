@@ -20,6 +20,7 @@ Then in chat:
 ```text
 @biz-session start             # bookend the day
 @biz-bootstrap init                # scaffold .work.biz/
+@biz-strategy design               # generate + score candidate plays (skip if the direction is settled)
 @biz-strategy greenfield           # define niche, offer, positioning
 @biz-session close             # update HANDOFF · draft commit message
 ```
@@ -30,10 +31,12 @@ Then in chat:
 
 ## What you get
 
-- **Skills** — `@biz-strategy`, `@biz-brand`, `@biz-content`, `@biz-youtube`, `@biz-discovery`, `@biz-proposal`, … run the playbook (25 skills in total).
+- **Skills** — `@biz-strategy`, `@biz-brand`, `@biz-content`, `@biz-youtube`, `@biz-discovery`, `@biz-proposal`, … run the playbook (26 skills in total).
 - **Standards** — binding contracts (business conventions, pricing standard, brand guide, content standard) keep agent output honest.
 - **`.work.biz/`** — the project's memory: strategy docs, plans, pipeline tracker, `gates.md`, `HANDOFF.md`, `NEXT.md`. Survives session boundaries.
 - **Gates** — strategy-ready, brand-ready, pipeline-ready, sales-ready, active-deal, tracked in `.work.biz/gates.md`; skip a step and the agent **stops** with a redirect.
+- **Design before commit** — `@biz-strategy design` generates five or more plays, scores them on graded evidence, and writes the pre-mortem before anything is certified; `@biz-review quarterly` scores the choice against the alternatives it beat.
+- **Coexists with other OS frameworks** — a project that already runs Agent OS or UI Design OS keeps its `.cursorrules`; Business OS adds one managed block and never touches the rest (see [`COHABITATION.md`](COHABITATION.md)).
 
 Result: less re-prompting, fewer "where were we?" threads, a loop you can run **start → execute → review → hand off** every session.
 
@@ -89,6 +92,11 @@ State lives in one file, `.work.biz/gates.md`, and exactly one skill may promote
         │  Creates: .cursorrules · .work.biz/ skeleton · gates.md (all gates NOT MET)
         │  (scaffold only; no planning gates)
         ▼
+  @biz-strategy design        (when more than one direction is plausible)
+        │
+        │  Produces: situation audit, scored plays, ranking, WWHTBT, pre-mortem,
+        │            bets with kill signals, one decision row. Moves no gate.
+        ▼
   @biz-strategy greenfield
         │
         │  Produces: niche decision, unified offer, target buyer, channel plan
@@ -135,12 +143,12 @@ State lives in one file, `.work.biz/gates.md`, and exactly one skill may promote
 
 ### Skills at a glance
 
-All **23** skills live under [`skills/`](skills/README.md). Invoke as `@<skill-id>` plus a mode.
+All **26** skills live under [`skills/`](skills/README.md). Invoke as `@<skill-id>` plus a mode.
 
 | Skill | One line | Typical invoke |
 |-------|----------|----------------|
 | **biz-bootstrap** | Scaffold `.work.biz/`, `.cursorrules` from templates | `init` · `status` |
-| **biz-strategy** | Define niche, unified offer, target buyer, channel plan; profile the operator; certifies **strategy-ready** | `greenfield` · `probe` · `career` · `status` · `certify` |
+| **biz-strategy** | Design the strategy (5+ plays scored on graded evidence, pre-mortem, bets); define niche, unified offer, target buyer, channel plan; profile the operator; certifies **strategy-ready** | `design` · `greenfield` · `probe` · `career` · `status` · `certify` |
 | **biz-brand** | Audit and overhaul LinkedIn, website, brand presence to match offer | `audit` · `overhaul` · `status` |
 | **biz-pricing** | Arrive at value-based pricing for any engagement | `set` · `status` · `revise` |
 | **biz-content** | LinkedIn publishing ops: tracker, calendar, engagement cadence, consistency challenges | `publish` · `plan` · `challenge` · `status` |
@@ -155,7 +163,8 @@ All **23** skills live under [`skills/`](skills/README.md). Invoke as `@<skill-i
 | **biz-pipeline-diagnosis** | Identify which funnel stage is the bottleneck | `run` · `status` |
 | **biz-session** | Session bookends + scoped git checkpoints; updates HANDOFF + NEXT | `start` · `close` · `commit` · `add` · `status` · `context` |
 | **biz-deploy-files** | Deploy `.ai.biz/` into target project (no-overwrite default; `--update`/`--force`) | in-place · `copy - <path>` · `status` |
-| **biz-deploy-basic** | Thin-client bootstrap (`.cursorrules` + `.work.biz/` only) | `update` · `status` · `- <path>` |
+| **biz-deploy-basic** | Thin-client bootstrap (`.cursorrules` + `.work.biz/` only); appends a managed block when the project already runs another OS framework | `update` · `status` · `--no-merge` · `- <path>` |
+| **biz-career** | Job search and resume craft: role archetypes, channel plan, target list with a kill signal, CV elaboration, interview story bank, offer evaluation | `search` · `resume` · `interview` · `negotiate` · `status` |
 | **biz-director** | Universal orchestrator; accepts free-text, routes to correct skills | `<free-text request>` |
 | **biz-writing** | Write articles, posts, case studies, landing pages, emails (project-aware, tech-tilted) | `write - <topic>` · `plan - <horizon>` · `repurpose - <src>` · `audit - <draft>` |
 | **biz-social** | Platform-native social content (Reddit, Instagram, LinkedIn incl. carousel + native video, Facebook, X, YouTube incl. Shorts, Substack, Threads) | `write - <platform>` · `research - <platform>` · `repurpose - <src>` · `plan - <horizon>` |

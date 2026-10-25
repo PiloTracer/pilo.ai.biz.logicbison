@@ -19,8 +19,10 @@
 | If you want to... | Run this skill |
 |---|---|
 | Bootstrap `.work.biz/` and `.cursorrules` | `@biz-bootstrap init` |
+| Choose between plausible directions; score and compare candidate plays | `@biz-strategy design` |
 | Define your niche, offer, and target buyer | `@biz-strategy greenfield` |
 | Profile your skills, proof points, constraints; get a career read | `@biz-strategy career` |
+| Job search plan, resume/CV elaboration, interview prep, offer evaluation | `@biz-career search` · `resume` · `interview` · `negotiate` |
 | Test if your niche/offer works | `@biz-market-validate test` |
 | Fix your LinkedIn profile and brand | `@biz-brand overhaul` |
 | Publish LinkedIn content | `@biz-content publish` |

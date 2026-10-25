@@ -1,7 +1,31 @@
 # HANDOFF — Session Bookmark
 
-> **Date:** 2026-10-15
-> **Status:** Closed — 2026-10-15 — deploy reliability: `--force` wholesale `.cursorrules` replace gated behind the explicit `confirm-overwrite-cursorrules` token (blocked + lost-content report otherwise); skill doc updated; owner-invoked `@ai-director` pass across all 7 framework siblings (this repo's share: the force token — env override `BIZ_SOURCE` and script-path bake+verify already existed)
+> **Date:** 2026-10-25
+> **Status:** Closed — 2026-10-25 — cohabitation deploy verified live on `mendarion` (111 insertions / 0 deletions); strategy **design** mode + certify checks 14–17 + counterfactual audit; new `@biz-career` (job search, resume, interview, offer) with BIZ-13 playbook; BIZ-12 IT-services strategy lens; `docs/sources/verified-sources.md` (16 fetched sources graded, 12 marked unverified). `framework-verify` PASS (66 checks) · v0.7.0.
+
+---
+
+## Session summary (2026-10-25, cohabitation deploy + strategy design + career skill)
+
+| Step | Status |
+|------|--------|
+| Audit finding (measured, not assumed): `@biz-deploy-basic` into a project that already had another framework's `.cursorrules` wrote `.work.biz/` and **no Business OS wiring** — no pointer, no skills table; `update` printed a merge candidate no script could apply. Reproduced on a foreign-file fixture before the fix | Done |
+| **Managed block**: `templates/cursorrules.biz.snippet.template` + `scripts/biz-cursorrules-merge.sh` (`merge`/`refresh`/`state`/`print`, thin + fat layouts). Deploy default = merge; `--no-merge` = old skip; `update` refreshes only the region; unmatched marker = refuse + untouched file; `biz-deploy-files` (fat) wired the same way | Done |
+| **Verifier**: marker-pair integrity, merged-layout scoping (another framework's `bash scripts/…` is not a biz finding), self-heal append for targets an older deploy left unwired, naming-agnostic stale-pointer repair. Fixed a bug that **deleted the verified `.cursorrules`** when no block existed | Done |
+| **Paths**: `pwd -P` everywhere (one physical source → one pointer); the source registry's `.ai.ui`/`.ai.soc` cells pointed at non-existent `../.ai.*` and FAILed the framework against itself — all seven cells now name the real family dirs; template thin-client dead references (`skills/SKILL_DEPENDENCIES.md`, `templates/work/touch-scope.template`, `{SKILLS_ROOT}`) fixed | Done |
+| **Strategy design**: `@biz-strategy design` (I1b) + `concepts/strategy-design/prompt.md` (BIZ-11) — 6-lens audit, 7 archetypes, do-nothing-first alternatives map, 5–8 plays, weighted graded scoring, sensitivity, WWHTBT, 11-row pre-mortem, moat taxonomy, breakeven worksheet; incumbent play competes; rejected plays keep re-entry conditions | Done |
+| **Certify checks 14–17** (alternatives / pre-mortem / moat / sensitivity-breakeven) + `@biz-review quarterly` **counterfactual audit** (scores the selection process, re-enters a winning rejected play) + `CONVENTIONS.md` § Strategy design (8 binding rules) | Done |
+| **Enforcement**: `framework-verify` gains the foreign-`.cursorrules` merge matrix, canonical-pointer check, template dead-reference guard, skill-discovery coverage on both templates, and the strategy-design wiring block. Pre-existing rsync `chgrp` abort (exit 23 on `/tmp`) fixed with `-rlptD` | Done |
+| Fleet audit (read-only `status` over 21 consumer repos): 6 wired by hand merge (`legacy`, 0 FAILs), 15 with no Business OS wiring — each becomes wired with one `update`. Two repos carry stale `.ai.ui`/`.ai.soc` registry cells. Recorded in NEXT #1 | Done |
+| **Live verification of the merge** — `mendarion` (UI + Agent OS + Social OS already in `.cursorrules`): `update` → `state=absent` → block appended, `git diff --stat` **111 insertions, 0 deletions** (separator + 110-line block), original 421 lines byte-identical, `.work.biz/` scaffolded, verifier PASS. First attempt was denied by the file sandbox (read-only target) and failed safely with the file untouched — which surfaced two gaps, both fixed: accurate appended/refreshed reporting, and a writability pre-check with a single-payload write so a failure cannot half-append |
+| **`@biz-career`** (new skill, 5 modes) — job search plan with a capacity check and a kill signal, resume elaboration via an **evidence-recovery ladder** (no invented numbers; untraceable bullets become reported gaps), interview story bank, offer evaluation. Artifacts live in existing dirs — no scaffold change, no re-bootstrap |
+| **BIZ-12 IT services strategy** + **BIZ-13 career search** playbooks; both wired into `biz-strategy design` (IT lens during D2–D4) and `biz-career` |
+| **`docs/sources/verified-sources.md`** — 16 fetched-and-graded sources (Hinge High Growth 2025 B; Stark A; Dunford A; ConnectWise SLI A/B; Dalton A; Kuhn & Skuterud AER 2004 B; Ladders/HR Dive 2018 C; NBER w33903 2025 B; OPM A; AOM 2025 B) + a "what the evidence does not support" section (no ATS-rejection rate, no referral conversion, no causal positioning claim) + 12 recorded-unverified sources. `@biz-sources find` checks it before re-searching |
+| Docs: `COHABITATION.md` (new), `biz-deploy-basic`/`biz-bootstrap` skill docs, `templates/README.md`, README, START_HERE, PROCESS_ROUTER, `skills/README.md`, `biz-director`, `concepts/README.md`, CHANGELOG v0.7.0 | Done |
+
+**Verify in-repo:** `bash scripts/framework-verify.sh` (expect all pass) · `bash scripts/biz-deploy-basic.sh <fixture-with-foreign-.cursorrules>` (expect "merged Business OS block") · `bash scripts/biz-cursorrules-merge.sh <target> --state` (expect `present`).
+
+**Prior sessions below are historical.**
 
 ---
 

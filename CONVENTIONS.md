@@ -182,6 +182,55 @@ A market claim has a shelf life. Figures about prices, demand, platform mechanic
 
 This applies to skills, standards, and concepts (framework prose) as much as to produced content. It is enforced by review, not by a machine check: a grep-based uncited-statistic scanner was evaluated (2026-08-10) and rejected because it cannot tell a claim from advice and drowns real findings in false positives. When prose review finds an unmarked claim, fix it the way `biz-referrals` was fixed: find the source, or de-claim the number into directional language.
 
+## Strategy design (binding on strategy work)
+
+Certification measures **internal consistency**. It cannot tell whether the chosen play was the best of the ones available, because nothing in the framework ever recorded an alternative. A strategy that was never compared against anything is the operator's first guess with documentation. Design closes that gap, and these rules make the comparison auditable.
+
+### 1. No certification without a comparison, or an explicit waiver
+
+Certify check 14 passes on one of exactly three things: a `strategy/design-record.md` with ≥3 scored plays, a `## Alternatives considered` section in `one-pager.md` naming ≥2 rejected plays and why each lost, or a waiver written into `certification.md` as `alternatives: waived — <specific reason>` (a project certified before design existed, or a single inherited mandate). "I was sure" is not a reason.
+
+### 2. The incumbent competes
+
+When a strategy already exists, its play enters the candidate set and is scored on the same rubric. Design may conclude "keep the current play" or "replace it", never "ignore it". Re-running design is a comparison, not a licence to relitigate a certified decision by fiat.
+
+### 3. Weights before scores
+
+The six criteria and their weights are written into `design-record.md` before any score is visible. If a weight or criterion moves after a score exists, the run restarts. A rubric assembled around the preferred play ranks the preference, not the plays.
+
+### 4. Every score carries an evidence grade
+
+Each score needs a one-line justification **and** an A–D grade (`§ Evidence grades`). A 4–5 resting on C/D evidence is capped at 2, and an unevidenced criterion scores 1 rather than a neutral 3. Without the grade, a press release and a call note score the same.
+
+### 5. Rejected plays keep re-entry conditions
+
+Every losing play stays in the record with its score and the observable event that puts it back on the table. Deleting the runner-up means a failed winner restarts the search from zero, which is how operators end up with three strategies in a year and no calibration.
+
+### 6. Bets carry observable kill signals
+
+`one-pager.md` § `## Strategy bets` gives each bet a kill signal with a number and a window plus a review date. "Engagement is low" is not a signal; "fewer than 2 discovery calls booked in 30 days" is. A kill signal written after launch records what happened instead of what to watch.
+
+### 7. Choosing a direction is a decision
+
+One row in `decisions/DECISIONS.md` at design time — expected outcome, confidence, reversibility, kill/review trigger, review by. `@biz-review quarterly` scores it and runs the **counterfactual audit**, which asks whether a rejected play would have done better and scores the selection process rather than only the result.
+
+### 8. Design never moves a gate
+
+Design writes `situation-audit.md`, `design-record.md`, the bets, and one decision row. It does not write the six canonical strategy files, does not write `certification.md`, and promotes nothing. Only `@biz-strategy certify` moves `strategy-ready`.
+
+### Selection rubric (defaults, adjustable only before scoring)
+
+| Criterion | Weight | A 5 means |
+|-----------|--------|-----------|
+| Speed to first revenue | 25 | A paying buyer can exist inside the runway with no new asset |
+| Asset fit | 20 | The play sells something already delivered or owned |
+| Buyer accessibility + budget | 20 | Reachable on a held channel, with a budget line and a named buyer |
+| Defensibility | 15 | At least one moat with evidence behind it |
+| Evidence strength | 10 | Load-bearing claims are A/B rows |
+| Capacity fit | 10 | Base-case delivery fits available hours with room for one more client |
+
+Winner must beat the runner-up by ≥5 weighted points; below that the 2-point sensitivity swing decides. Full anchors, archetypes, moat taxonomy and the breakeven worksheet live in `concepts/strategy-design/prompt.md` (BIZ-11).
+
 ## Business Phase Lifecycle
 
 ```
@@ -194,7 +243,7 @@ Gate state lives in `.work.biz/gates.md`. One skill promotes each gate; see `ski
 
 | Phase | Key Deliverables | Gate to pass | Promoted by |
 |-------|-----------------|--------------|-------------|
-| **Strategy** | Niche decision, unified offer, target buyer, channel plan | strategy-ready | `@biz-strategy certify` |
+| **Strategy** | Design record (scored alternatives, bets, kill signals), niche decision, unified offer, target buyer, channel plan | strategy-ready | `@biz-strategy certify` |
 | **Brand** | LinkedIn profile, website, brand assets | brand-ready | `@biz-brand overhaul` |
 | **Pipeline** | Pipeline tracker configured, pricing set, outreach cadence documented in `.work.biz/pipeline/outreach-cadence.md` | pipeline-ready | `@biz-review status` |
 | **Sales** | Discovery, proposals, objection handling | sales-ready, then active-deal | `@biz-discovery run` |

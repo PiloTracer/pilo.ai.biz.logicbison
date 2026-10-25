@@ -1,0 +1,107 @@
+<!-- BIZ_DESIGN_OS_BEGIN -->
+<!-- Managed block — written by @biz-deploy-basic. Do not hand-edit inside these
+     markers: `@biz-deploy-basic update` refreshes this region in place.
+     Everything outside the markers belongs to other frameworks and is never
+     touched by Business OS work. -->
+
+## Business OS (`.ai.biz/`) — business strategy and execution
+
+**Cohabitation:** this block coexists with the other OS frameworks registered in this file. Business work writes only under `.work.biz/`. It never edits `.work/`, `.work.ui/`, another framework's section of this file, or application code without saying so and asking first in the same message.
+
+REPLACE_BIZ_POINTER_SECTION
+
+### Source resolution and path rules
+
+Apply these before reading any `.ai.biz/<path>` reference in this block:
+
+1. `.cursorrules` (this file) and `.work.biz/**` — always local, in both modes.
+2. **Thin-client** (`$AI_BIZ_SOURCE` set and readable): every other `.ai.biz/<path>` resolves to `$AI_BIZ_SOURCE/<path>` — `skills/<id>/skill.md`, `skills/SKILL_DEPENDENCIES.md`, `standards/**`, `concepts/**`, `docs/**`, `scripts/**`, `templates/**`. Never assume a local `.ai.biz/` exists.
+3. **Fat-client**: read `.ai.biz/<path>` locally in this repo.
+4. **Unreachable source:** stop and report `business-os source unreachable: $AI_BIZ_SOURCE`. Do not fall back to a local `.ai.biz/` and do not guess another path.
+5. Other frameworks' roots are resolved by their own sections. Never resolve a `.ai/` or `.ai.ui/` path from this block.
+
+**Sibling frameworks:** the cross-framework registry lives in `$AI_BIZ_SOURCE/.cursorrules` § Frameworks registry — its path cells are host-specific. A sister that is not installed routes as `[degraded: <framework> not installed]`; never route into the void.
+
+### Business skills
+
+| Skill | Purpose |
+|-------|---------|
+| `biz-session` | Session open/close, HANDOFF/NEXT, scoped git (`start`, `close`, `context`, `commit`, `add`) |
+| `biz-director` | Free-text router: `@biz-director - <what you want>`; never dead-ends |
+| `biz-strategy` | Strategy design and certification: `design` (generate + score candidate plays), `greenfield` (8 elements), `probe`, `career`, `amend`, `reconcile`, `certify`, `status` |
+| `biz-advisory` | Situational counsel: reframe, ranked options, anti-advice, decisive recommendation |
+| `biz-career` | Job search + resume craft: targets, channel plan, CV elaboration on evidenced scope, interview stories, offer evaluation |
+| `biz-market-validate` | Cheap experiments that test load-bearing assumptions before commitment |
+| `biz-pricing` | Value-based, fixed-price, milestone-gated pricing |
+| `biz-brand` | LinkedIn / website / brand presence audit and overhaul |
+| `biz-content` | LinkedIn publishing operations and cadence |
+| `biz-social` | Platform-native social content (Reddit, Instagram, X, Threads, Substack, YouTube, LinkedIn) |
+| `biz-writing` | Long-form craft: articles, case studies, landing pages, emails |
+| `biz-youtube` | YouTube publishing operations |
+| `biz-community` | Community discovery and participation |
+| `biz-referrals` | Systematic referral generation |
+| `biz-discovery` | Sales discovery calls |
+| `biz-proposal` | Proposal writing and scoping |
+| `biz-objections` | Objection handling |
+| `biz-pipeline-diagnosis` | Funnel bottleneck diagnosis |
+| `biz-review` | Weekly / monthly / quarterly review, decision audit, calibration, counterfactual audit of rejected plays |
+| `biz-ideas` | Structured venture idea generation |
+| `biz-products` | Product / service concepts and MVP scoping |
+| `biz-archive` | Archive published content (`ideas/` → `ideas.archive/`) |
+| `biz-sources` | Curate and grade advisory sources |
+| `biz-bootstrap` | Scaffold `.work.biz/` and `.cursorrules` (fat-client setup) |
+| `biz-deploy-basic` | Thin-client deploy / update / status of this block |
+| `biz-deploy-files` | Fat-client vendored deploy of `.ai.biz/` |
+
+**Usage:** when a request matches a skill's purpose, read `$AI_BIZ_SOURCE/skills/<id>/skill.md` and follow its workflow. If no skill obviously fits, run `@biz-director - <describe what you want>`.
+
+### Business context files (read at session start)
+
+| File | Purpose |
+|------|---------|
+| `.work.biz/context/HANDOFF.md` | Session handoff (written at session close) |
+| `.work.biz/plans/NEXT.md` | Tactical next action and active phase |
+| `.work.biz/plans/UNKNOWNS.md` | Open unknowns and blocked decisions |
+| `.work.biz/gates.md` | Readiness ledger — the only authoritative gate state |
+| `.work.biz/decisions/DECISIONS.md` | Decision ledger — what was decided, expected, and what happened |
+| `.work.biz/strategy/one-pager.md` | Certified strategy summary, reality check, strategy bets |
+| `.work.biz/reference/OPERATOR_PROFILE.md` | What the operator can actually deliver and prove |
+
+### Change safety (business work)
+
+| Gate | Command | Fail when |
+|------|---------|-----------|
+| Touch scope | bash scripts/touch-scope-verify.sh | File outside `.work.biz/touch-scope` |
+| Blast radius | bash scripts/blast-radius-check.sh | Cross-area diff ≥3 areas |
+| Gate check | bash scripts/gate-verify.sh | A gate claims PASS without its evidence |
+| Framework verify | bash scripts/framework-verify.sh | Non-zero exit |
+
+**Declare scope first:** copy `$AI_BIZ_SOURCE/templates/work/touch-scope.template` → `.work.biz/touch-scope`.
+
+### Business gates
+
+| Gate | Evidence | Promoted by |
+|------|----------|-------------|
+| `strategy-ready` | `.work.biz/strategy/certification.md` | `@biz-strategy certify` |
+| `brand-ready` | `.work.biz/reference/BRAND_STATUS.md` | `@biz-brand overhaul` |
+| `pipeline-ready` | `strategy/pricing.md` + pipeline tracker + outreach cadence | `@biz-review status` |
+| `sales-ready` | Pipeline tracker with a logged discovery call | `@biz-discovery run` |
+| `active-deal` | Pipeline tracker with a live deal | `@biz-discovery run` |
+
+**Reading rule:** a gate is met only when its `**Status:**` line in `.work.biz/gates.md` starts with `PASS`. Never infer a gate from the presence of files.
+
+### Business protected files
+
+Do not modify unless the operator explicitly asks in the same message: `skills/SKILL_DEPENDENCIES.md`, `standards/`, `hooks/`, `templates/`, and the Business OS block in this file. (Application-level protected files listed by other frameworks still apply.)
+
+### Output contracts (binding)
+
+- **Operator handoff** — close every operator-facing report per `$AI_BIZ_SOURCE/skills/SKILL_DEPENDENCIES.md` § Operator handoff contract: terse output; `**Needs your approval:**` numbered with `path:L<n>` cites; `**Needs your answer:**` numbered and never mixed with approvals; exactly one `**Next step:**`; Form A single line when nothing is needed; empty sections omitted.
+- **Document clarity** — every generated document carries a ≤4-line Status/Needs header, separate Decisions / Open questions lists, exactly one `## Next action`, and no leftover scaffolding.
+- **Evidence discipline** — any market claim carries a citation or an explicit `directional` / `Unverified` marker, plus an evidence grade `A`–`D` when the claim carries a decision. Model memory alone may never carry one.
+
+### Business documentation conventions
+
+Strategy documents live under `.work.biz/strategy/`; plans `plan_<topic>.md` under `.work.biz/plans/`; research `research_<topic>.md`; drafts `draft_<topic>.md`. Dated documents use a `YYYYMMDD-` prefix. No "Generated by" lines, no agent signatures, no dates-as-signatures.
+
+<!-- BIZ_DESIGN_OS_END -->

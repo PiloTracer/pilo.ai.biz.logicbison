@@ -24,7 +24,7 @@ Keep the operator's **evidence base** alive. Advice is only as good as what it d
 
 | User says | Mode |
 |-----------|------|
-| `@biz-sources find - <topic>` | Research the topic, vet candidates, add the best 3–8 to the catalog with mining notes. |
+| `@biz-sources find - <topic>` | Research the topic, vet candidates, add the best 3–8 to the catalog with mining notes. Check `docs/sources/verified-sources.md` first; a topic already covered there is a re-verification, not a discovery. |
 | `@biz-sources list` | Show the catalog grouped by domain, with freshness flags. |
 | `@biz-sources add - <source name or URL> - <domain>` | Add one operator-named source after a verification pass. |
 | `@biz-sources status` | Read-only: catalog size, coverage by domain, stale entries. |
@@ -44,7 +44,9 @@ Keep the operator's **evidence base** alive. Advice is only as good as what it d
 
 **Grade** is the evidence grade the source can support, per `CONVENTIONS.md` § Evidence grades: `A` first-party/primary (the operator's own data, a vendor's own live pricing page, filings) · `B` named third-party research stating method and sample · `C` vendor, consultancy, or media claim; single anecdote · `D` unsourced or undated. Grade the claim the source is being cited for, not the author — a practitioner is `A` on their own numbers and `C` on the market's. A source the framework cannot grade is a source whose claims cannot carry a decision.
 
-Domains (extend as needed): **Positioning & strategy** · **Pricing** · **Sales & outreach** · **Niche & market research** · **Productized / fractional services** · **AI-services market** · **Content & audience** · **Operator craft** (decision-making, writing, negotiation).
+Domains (extend as needed): **Positioning & strategy** · **Pricing** · **Sales & outreach** · **Niche & market research** · **Productized / fractional services** · **AI-services market** · **IT services strategy** · **Job search** · **Resume & interview** · **Content & audience** · **Operator craft** (decision-making, writing, negotiation).
+
+**Framework-level catalog:** `docs/sources/verified-sources.md` in the framework root holds the sources already verified for **IT services strategy**, **job search**, and **resume & interview** — with URL, date, grade and how to mine each, plus a list of sources that could not be verified and must not be cited. Read it before re-searching a topic it already covers; add what you learn to the project catalog at `.work.biz/research/sources.md`.
 
 ---
 

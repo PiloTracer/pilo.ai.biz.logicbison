@@ -8,8 +8,9 @@ You are not a yes-machine. You are a trusted advisor whose sole objective is the
 
 # AI Agent Rules — REPLACE:PROJECT_NAME
 
-> **Bootstrap (fat-client):** Copy this file from `.ai.biz/templates/cursorrules.template` to the **project root** as `.cursorrules`, then replace every `REPLACE:` token below.
-> **Bootstrap (thin-client):** Run `@biz-deploy-basic` from the source `.ai.biz` — copies `.cursorrules` (with `AI_BIZ_SOURCE` pointer) + `.work.biz/` skeleton. Skills stay in the source and load at runtime. See § Source resolution below.
+> **Bootstrap (fat-client):** copy the framework's `templates/cursorrules.template` to the **project root** as `.cursorrules` (`.ai.biz/templates/cursorrules.template` when vendored), then replace every `REPLACE:` token below.
+> **Bootstrap (thin-client):** Run `@biz-deploy-basic` from the source Business OS — writes `.cursorrules` (with the `AI_BIZ_SOURCE` pointer) + the `.work.biz/` skeleton. Skills stay in the source and load at runtime. See § Source resolution below.
+> **Project already runs another OS framework** (so a `.cursorrules` exists): the file is **never replaced**. `@biz-deploy-basic` appends one managed block between `<!-- BIZ_DESIGN_OS_BEGIN -->` and `<!-- BIZ_DESIGN_OS_END -->` and later refreshes only that region. Everything outside the markers belongs to the other framework and must not be touched by Business OS work.
 
 ## Core Principles (ALWAYS APPLY)
 
@@ -69,11 +70,11 @@ Sister frameworks are siblings on disk; `.ai.<fw>` (legacy) / `pilo.ai.<fw>.logi
 |-----------|----------|------|--------------------|
 | `.ai.biz` (Business OS) | `@biz-director` | *this directory* | `skills/README.md` |
 | `.ai` (Agent OS) | `@ai-director` | `../pilo.ai.logicbison` | `skills/README.md` |
-| `.ai.cto` (CTO Professor OS) | `@cto-director` | `../.ai.cto` | `skills/README.md` |
-| `.ai.flutter` (Flutter Agent OS) | `@flutter-director` | `../.ai.flutter` | `skills/README.md` |
-| `.ai.mlt` (MLT Agent OS) | `@mlt-director` | `../.ai.mlt` | `skills/README.md` |
-| `.ai.soc` (Social OS) | `@soc-director` | `../.ai.soc` | `skills/README.md` |
-| `.ai.ui` (UI Design OS) | `@ui-director` | `../.ai.ui` | `skills/README.md` |
+| `.ai.cto` (CTO Professor OS) | `@cto-director` | `../pilo.ai.cto.logicbison` | `skills/README.md` |
+| `.ai.flutter` (Flutter Agent OS) | `@flutter-director` | `../pilo.ai.flutter.logicbison` | `skills/README.md` |
+| `.ai.mlt` (MLT Agent OS) | `@mlt-director` | `../pilo.ai.mlt.logicbison` | `skills/README.md` |
+| `.ai.soc` (Social OS) | `@soc-director` | `../pilo.ai.soc.logicbison` | `skills/README.md` |
+| `.ai.ui` (UI Design OS) | `@ui-director` | `../pilo.ai.ui.logicbison` | `skills/README.md` |
 
 **Path resolution:** (1) use a filled path cell; empty → fall through. (2) Auto-discover: parent = `S/..` with S = this repo (self-hosted) or `$AI_BIZ_SOURCE` (thin); sister = `<S basename with <fw> inserted before its last .segment>` (e.g. `pilo.ai.ui.logicbison` for a `pilo.ai.logicbison` source; `.ai`-prefixed sources resolve `.ai.<fw>` directly), else legacy `.ai.<fw>`; missing = "not installed". (3) Before routing, verify the framework dir + its `skills/README.md` exist; if absent, route with `[degraded: <framework> not installed]` — never route into the void. If your source dir name breaks discovery, fill the path cells manually. (The `.ai` row here tracks the Agent OS family source `pilo.ai.logicbison`; hosts still on the legacy `.ai` name should change that cell to `../.ai`. If neither `../.ai` nor the family-named root exists, ask the user for the correct path — never guess.)
 
@@ -139,7 +140,7 @@ AI_BIZ_SOURCE=REPLACE_BASICSOURCE
 | Mode | Bootstrapped via | Where framework assets live | `AI_BIZ_SOURCE` |
 |------|------------------|----------------------------|-------------------|
 | **Fat-client** (vendored) | `@biz-deploy-files` or `biz-bootstrap init` | this repo's `.ai.biz/` | unset (token left as `REPLACE_BASICSOURCE`) |
-| **Thin-client** (remote) | `@biz-deploy-basic` | the **source** Business OS; this repo holds only `.cursorrules` + `.work.biz/` | set to an absolute path (e.g. `/mnt/work/Projects/.ai.biz`) |
+| **Thin-client** (remote) | `@biz-deploy-basic` | the **source** Business OS; this repo holds only `.cursorrules` + `.work.biz/` | set to an absolute path (e.g. `/abs/path/to/pilo.ai.biz.logicbison`; a legacy `.ai.biz` symlink resolves to the same directory) |
 
 **Resolution rule (agents MUST apply before reading any `.ai.biz/...` reference):**
 
@@ -148,6 +149,14 @@ AI_BIZ_SOURCE=REPLACE_BASICSOURCE
 3. **Fat-client** (`AI_BIZ_SOURCE` is unset or still `REPLACE_BASICSOURCE`): read `.ai.biz/<path>` locally in this repo.
 4. `.work.biz/...` references and project app code resolve locally in this repo in both modes.
 5. **Thin-client + unreachable source:** if `$AI_BIZ_SOURCE` is set but the directory does not exist or `skills/README.md` is unreadable, **stop** and report `business-os source unreachable: $AI_BIZ_SOURCE` — do **not** silently fall back to a local `.ai.biz/` (there isn't one) and do **not** guess a different path.
+
+**Managed block in a consumer's `.cursorrules`.** A target that already runs another OS framework keeps its own file. Business OS owns one region of it, delimited by `<!-- BIZ_DESIGN_OS_BEGIN -->` and `<!-- BIZ_DESIGN_OS_END -->`, written and refreshed by `scripts/biz-cursorrules-merge.sh` (called by `@biz-deploy-basic` and by `biz-cursorrules-verify.sh --fix`). Rules for agents and operators:
+
+1. Never hand-edit inside the markers — `@biz-deploy-basic update` replaces that region.
+2. Never edit, reorder, or delete content outside the markers: it is another framework's contract.
+3. A missing block plus no `AI_BIZ_SOURCE=` line means Business OS was never wired (deploy silently skipped an existing file). Fix with `@biz-deploy-basic update`.
+4. An unmatched marker is a broken merge: report it, do not guess at the intended region.
+5. `--force confirm-overwrite-cursorrules` still replaces the whole file and destroys every other framework's block — same-message approval only.
 
 **First bootstrap in thin-client mode** is a chicken-and-egg escape: before `@biz-deploy-basic` runs, the target has no local skill to invoke. Bootstrap is initiated either (a) from the **source** repo — `@biz-deploy-basic - /abs/path/to/target` — or (b) by invoking the shell directly from the target: `bash /abs/path/to/source/scripts/biz-deploy-basic.sh .` After that, the source pointer in `.cursorrules` lets the local agent load `@biz-deploy-basic update` and every other skill from source.
 
@@ -164,7 +173,7 @@ Reusable agent skills live under `skills/` (or `$AI_BIZ_SOURCE/skills/` in thin-
 | biz-deploy-files | `skills/biz-deploy-files/` | Deploy Business OS files into target project (fat-client) |
 | biz-deploy-basic | `skills/biz-deploy-basic/` | Thin-client bootstrap — copies `.cursorrules` (with `AI_BIZ_SOURCE` pointer) + `.work.biz/` skeleton; skills resolve from source at runtime. `@biz-deploy-basic`, `@biz-deploy-basic update`, `@biz-deploy-basic status` |
 | biz-bootstrap | `skills/biz-bootstrap/` | Scaffold `.work.biz/`, `.cursorrules` from templates |
-| biz-strategy | `skills/biz-strategy/` | Niche, offer, positioning, target buyer, operator profile (career); reality check (arithmetic + outside view) at certify |
+| biz-strategy | `skills/biz-strategy/` | Strategy design (generate + graded scoring of candidate plays, pre-mortem, bets), niche, offer, positioning, target buyer, operator profile (career); reality check (arithmetic + sensitivity + outside view) at certify |
 | biz-brand | `skills/biz-brand/` | LinkedIn, website, brand presence |
 | biz-pricing | `skills/biz-pricing/` | Value-based pricing framework |
 | biz-content | `skills/biz-content/` | LinkedIn content publishing and strategy |
@@ -174,7 +183,7 @@ Reusable agent skills live under `skills/` (or `$AI_BIZ_SOURCE/skills/` in thin-
 | biz-discovery | `skills/biz-discovery/` | Sales discovery calls |
 | biz-proposal | `skills/biz-proposal/` | Proposal writing and scoping |
 | biz-objections | `skills/biz-objections/` | Handle sales objections |
-| biz-review | `skills/biz-review/` | Weekly/monthly/quarterly business review; quarterly includes the decision audit + calibration |
+| biz-review | `skills/biz-review/` | Weekly/monthly/quarterly business review; quarterly includes the decision audit + calibration and the counterfactual audit of rejected plays + bet kill signals |
 | biz-market-validate | `skills/biz-market-validate/` | Test offers before committing |
 | biz-pipeline-diagnosis | `skills/biz-pipeline-diagnosis/` | Find and fix funnel bottlenecks |
 | biz-session | `skills/biz-session/` | Session open/close; HANDOFF, NEXT; `close commit [scoped] [push]`; standalone `commit` / `commit push` (no close) and `add` (stage only); `context` read-only load + uncommitted-aware. Aliased as `session-control` (`@session-control context`, `@session-control start`, etc.) |
@@ -185,6 +194,7 @@ Reusable agent skills live under `skills/` (or `$AI_BIZ_SOURCE/skills/` in thin-
 | biz-archive | `skills/biz-archive/` | Archive published content pieces: `ideas/` → `ideas.archive/` (mirrored), tracker annotated, history preserved |
 | biz-products | `skills/biz-products/` | Buildable, stack-fit product/service concept generation + MVP scoping |
 | biz-advisory | `skills/biz-advisory/` | Situational business counsel: asset reframe pass, ranked options with graded market evidence, base rate, arithmetic check, anti-advice, decisive recommendation + 30-day step; records the decision row |
+| biz-career | `skills/biz-career/` | Job search + resume craft: role archetypes, channel plan, 20–40 company target list with a kill signal; CV elaboration on evidenced scope; interview story bank; offer evaluation. No invented numbers |
 | biz-sources | `skills/biz-sources/` | Curate and mine business-advisory sources (positioning, pricing, sales, fractional/AI-services market) into a living catalog |
 
 **Usage:** When a task matches a skill's purpose, read `skill.md` and follow the workflow.

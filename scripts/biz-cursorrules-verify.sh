@@ -58,16 +58,20 @@ done
 [[ -n "$RAW_TARGET" ]] || { echo "Usage: $0 [--fix] [--thin|--fat] <target-root>" >&2; exit 2; }
 
 # Source Business OS root: explicit override wins, else derive from script location.
+# pwd -P: the framework may be reachable under two names (a real directory plus a
+# legacy `.ai.biz` symlink). Every path comparison and every repair must use the
+# directory the framework actually lives in, otherwise a target baked from the
+# symlink looks "stale" to a verifier run through the real path (and vice versa).
 if [[ -n "${BIZ_SOURCE:-}" ]]; then
-  BIZ_ROOT="$(cd "$BIZ_SOURCE" && pwd)"
+  BIZ_ROOT="$(cd "$BIZ_SOURCE" && pwd -P)"
 else
-  BIZ_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  BIZ_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 fi
 
 if [[ "$RAW_TARGET" == "." || "$RAW_TARGET" == "$PWD" ]]; then
-  DEST_ROOT="$(pwd)"
+  DEST_ROOT="$(pwd -P)"
 else
-  DEST_ROOT="$(cd "$RAW_TARGET" 2>/dev/null && pwd)" || {
+  DEST_ROOT="$(cd "$RAW_TARGET" 2>/dev/null && pwd -P)" || {
     echo "ERROR: target directory does not exist: $RAW_TARGET" >&2; exit 2; }
 fi
 CURS_DEST="${DEST_ROOT}/.cursorrules"
@@ -81,6 +85,40 @@ note() { echo "  [info] $1"; }
 # A directory is a Business OS root when it carries the biz thin-client deploy
 # skill. Used to tell a stale biz pointer apart from a foreign framework's.
 is_biz_root() { [[ -f "$1/skills/biz-deploy-basic/skill.md" ]]; }
+
+# Managed block (see scripts/biz-cursorrules-merge.sh). States:
+#   present · unterminated · legacy (wired, unmarked) · absent · none
+BIZ_BEGIN_MARK='<!-- BIZ_DESIGN_OS_BEGIN -->'
+BIZ_END_MARK='<!-- BIZ_DESIGN_OS_END -->'
+block_state() {
+  [[ -f "$CURS_DEST" ]] || { printf none; return 0; }
+  local nb ne
+  nb="$(grep -cxF "$BIZ_BEGIN_MARK" "$CURS_DEST" 2>/dev/null || true)"; nb="${nb:-0}"
+  ne="$(grep -cxF "$BIZ_END_MARK" "$CURS_DEST" 2>/dev/null || true)"; ne="${ne:-0}"
+  if [[ "$nb" -eq 1 && "$ne" -eq 1 ]]; then printf present; return 0; fi
+  if [[ "$nb" -gt 0 || "$ne" -gt 0 ]]; then printf unterminated; return 0; fi
+  if grep -qE 'AI_BIZ_SOURCE=|^\| `?biz-strategy`? \||^## Business OS \(`\.ai\.biz' "$CURS_DEST" 2>/dev/null; then
+    printf legacy; return 0
+  fi
+  printf absent
+}
+
+# Does a (possibly unreachable) path look like a Business OS pointer? Used to
+# decide whether an unreachable pointer is our own stale path (repair it) or a
+# foreign framework's (leave it alone). Naming-agnostic: the framework's real
+# directory is `pilo.ai.biz.logicbison`, not necessarily anything containing
+# `.ai.biz`, so a `.ai.biz` substring test alone silently fails to repair it.
+looks_like_biz_pointer() {
+  local p="${1:-}" base sib
+  [[ -n "$p" ]] || return 1
+  [[ "$p" == *.ai.biz* ]] && return 0
+  base="$(basename "$p")"
+  [[ "$base" == pilo.ai.biz.* || "$base" == ai.biz.* ]] && return 0
+  # A sibling of a valid Business OS root on the same host (source renamed or moved).
+  sib="$(dirname "$p")"
+  [[ -d "$sib" ]] && compgen -G "$sib"/*biz*/skills/biz-deploy-basic/skill.md >/dev/null 2>&1 && return 0
+  return 1
+}
 
 # Shared sister-framework discovery (family naming `pilo.ai.<fw>.logicbison` +
 # legacy `.ai.<fw>`) — see scripts/sister-discovery.sh. Optional: when the lib
@@ -154,6 +192,21 @@ fi
 
 # ── --fix: mechanical repairs (before checks so verdict reflects them) ──
 if [[ "$FIX" -eq 1 && -f "$CURS_DEST" ]]; then
+  # 0a. Unwired Business OS: a target that already runs another framework has a
+  #     .cursorrules we must not replace, and skipping it leaves Business OS
+  #     completely inert. Append only the managed block (nothing else changes).
+  MERGE_SH="${BIZ_ROOT}/scripts/biz-cursorrules-merge.sh"
+  cur_state="$(block_state)"
+  if [[ "$cur_state" == "absent" ]] \
+     && ! grep -qE 'AI_BIZ_SOURCE=|AGENT_OS_SOURCE=' "$CURS_DEST" \
+     && [[ -f "$MERGE_SH" ]] && [[ -f "${BIZ_ROOT}/templates/cursorrules.biz.snippet.template" ]]; then
+    if [[ "$LAYOUT" == "fat" && -d "${DEST_ROOT}/.ai.biz/skills" ]]; then
+      BIZ_SOURCE="$BIZ_ROOT" bash "$MERGE_SH" "$DEST_ROOT" --layout fat | sed 's/^/  [fix] /'
+    elif [[ "$LAYOUT" == "thin" ]]; then
+      BIZ_SOURCE="$BIZ_ROOT" bash "$MERGE_SH" "$DEST_ROOT" --layout thin | sed 's/^/  [fix] /'
+    fi
+    SRC_VALUE="$(get_source)"
+  fi
   if [[ "$LAYOUT" == "thin" ]]; then
     BIZ_ESC="${BIZ_ROOT//\//\\/}"
     # 0. Migrate the legacy pointer name: AGENT_OS_SOURCE → AI_BIZ_SOURCE, only
@@ -163,7 +216,7 @@ if [[ "$FIX" -eq 1 && -f "$CURS_DEST" ]]; then
     #    is left untouched.
     if ! grep -q 'AI_BIZ_SOURCE=' "$CURS_DEST"; then
       legacy="$(get_legacy_source)"
-      if [[ -n "$legacy" ]] && { [[ "$legacy" == "REPLACE_BASICSOURCE" ]] || is_biz_root "$legacy" || { [[ ! -d "$legacy" ]] && [[ "$legacy" == *.ai.biz* ]]; }; }; then
+      if [[ -n "$legacy" ]] && { [[ "$legacy" == "REPLACE_BASICSOURCE" ]] || is_biz_root "$legacy" || { [[ ! -d "$legacy" ]] && looks_like_biz_pointer "$legacy"; }; }; then
         legacy_esc="${legacy//\//\\/}"
         perl -i -pe "s{AGENT_OS_SOURCE=\Q${legacy}\E}{AI_BIZ_SOURCE=${legacy_esc}}" "$CURS_DEST"
         echo "  [fix] migrated AGENT_OS_SOURCE → AI_BIZ_SOURCE ($legacy)"
@@ -182,8 +235,8 @@ if [[ "$FIX" -eq 1 && -f "$CURS_DEST" ]]; then
       if [[ -z "$SRC_VALUE" || "$SRC_VALUE" == "REPLACE_BASICSOURCE" ]]; then
         repoint=1
       elif [[ ! -d "$SRC_VALUE" ]]; then
-        if [[ "$SRC_VALUE" == *.ai.biz* ]]; then repoint=1
-        else warn "AI_BIZ_SOURCE: $SRC_VALUE unreachable and not .ai.biz-shaped — foreign framework pointer? Left untouched."; fi
+        if looks_like_biz_pointer "$SRC_VALUE"; then repoint=1
+        else warn "AI_BIZ_SOURCE: $SRC_VALUE unreachable and not Business-OS-shaped — foreign framework pointer? Left untouched."; fi
       elif is_biz_root "$SRC_VALUE"; then
         repoint=1
       else
@@ -202,7 +255,8 @@ if [[ "$FIX" -eq 1 && -f "$CURS_DEST" ]]; then
     # 2. Re-bake gate-table script paths: old absolute prefix first (so the
     #    lookbehind below can't re-match inside it), then bare literals.
     before="$(mktemp)"; cp "$CURS_DEST" "$before"
-    if [[ -n "$SRC_VALUE" && "$SRC_VALUE" != "$BIZ_ROOT" && "$SRC_VALUE" != "REPLACE_BASICSOURCE" && "$SRC_VALUE" == *.ai.biz* ]]; then
+    if [[ -n "$SRC_VALUE" && "$SRC_VALUE" != "$BIZ_ROOT" && "$SRC_VALUE" != "REPLACE_BASICSOURCE" ]] \
+       && { looks_like_biz_pointer "$SRC_VALUE" || [[ -d "$SRC_VALUE" ]]; }; then
       perl -i -pe "s{\Q${SRC_VALUE}\E/scripts/}{${BIZ_ESC}/scripts/}g" "$CURS_DEST"
     fi
     perl -i -pe "s{bash (?<!/)scripts/}{bash ${BIZ_ESC}/scripts/}g" "$CURS_DEST"
@@ -258,6 +312,29 @@ if [[ ! -f "$CURS_DEST" ]]; then
   exit 1
 fi
 ok ".cursorrules: present"
+
+# Managed block integrity (targets only; the source repo carries no block).
+# A half-present marker pair means a hand edit or a truncated append: the region
+# is ambiguous, so it FAILs rather than being guessed at.
+if [[ "$LAYOUT" != "source" ]]; then
+  case "$(block_state)" in
+    present)
+      b_line="$(grep -nxF "$BIZ_BEGIN_MARK" "$CURS_DEST" | head -1 | cut -d: -f1)"
+      e_line="$(grep -nxF "$BIZ_END_MARK" "$CURS_DEST" | head -1 | cut -d: -f1)"
+      if [[ "${b_line:-0}" -lt "${e_line:-0}" ]]; then
+        ok "managed block: BIZ_DESIGN_OS_BEGIN/END paired (lines ${b_line}-${e_line})"
+      else
+        fail "managed block: END marker precedes BEGIN (line ${e_line} < ${b_line}) — repair by hand"
+      fi
+      ;;
+    unterminated)
+      fail "managed block: unmatched BIZ_DESIGN_OS marker — repair the pair by hand (see scripts/biz-cursorrules-merge.sh)"
+      ;;
+    legacy)
+      note "managed block: absent — Business OS wired without markers (standalone or hand merge; @biz-deploy-basic update does not add a second block)"
+      ;;
+  esac
+fi
 
 # Validate baked absolute .ai.biz references. A stale ref FAILs only when no
 # reachable Business OS root remains — files that document a secondary/fallback
@@ -319,9 +396,23 @@ elif [[ "$LAYOUT" == "thin" ]]; then
 
   # Gate-table executables must be baked to absolute paths that exist, but only
   # when this file's pointer is a Business OS pointer (foreign pointers own
-  # their own script-path conventions).
+  # their own script-path conventions). In a merged layout only the managed block
+  # is ours: the rest of the file belongs to another framework, whose own
+  # `bash scripts/…` literals are not ours to judge (and not ours to rewrite).
+  CHECK_CURS="$CURS_DEST"
+  if [[ "$(block_state)" == "present" ]]; then
+    CHECK_CURS="$(mktemp)"
+    # Only the scratch copy is ever removed: the trap must never point at the
+    # target's real .cursorrules (a standalone layout uses the file directly).
+    trap 'rm -f "${CHECK_CURS:-}"' EXIT
+    awk '
+      /^<!-- BIZ_DESIGN_OS_BEGIN -->$/ { f = 1 }
+      f { print }
+      /^<!-- BIZ_DESIGN_OS_END -->$/ { f = 0 }
+    ' "$CURS_DEST" > "$CHECK_CURS"
+  fi
   if [[ -n "$SRC_NOW" && "$SRC_NOW" != "REPLACE_BASICSOURCE" ]] && { [[ ! -d "$SRC_NOW" ]] || is_biz_root "$SRC_NOW"; }; then
-    literal_n="$(perl -ne '$c++ if /bash (?<!\/|\$)scripts\//; END{print $c+0}' "$CURS_DEST")"
+    literal_n="$(perl -ne '$c++ if /bash (?<!\/|\$)scripts\//; END{print $c+0}' "$CHECK_CURS")"
     if [[ "$literal_n" -gt 0 ]]; then
       fail "script paths: ${literal_n} line(s) still literal 'bash scripts/' (unbaked — run @biz-deploy-basic update)"
     else
@@ -334,9 +425,9 @@ elif [[ "$LAYOUT" == "thin" ]]; then
       else
         fail "script paths baked to stale prefix $p (missing — run @biz-deploy-basic update)"
       fi
-    done < <(grep -oE '/[^ `|"]+/scripts/(touch-scope-verify|blast-radius-check|gate-verify|framework-verify|install-git-hooks|biz-cursorrules-verify)\.sh' "$CURS_DEST" 2>/dev/null | sed 's#/scripts/[^/]*$##' | sort -u || true)
+    done < <(grep -oE '/[^ `|"]+/scripts/(touch-scope-verify|blast-radius-check|gate-verify|framework-verify|install-git-hooks|biz-cursorrules-verify)\.sh' "$CHECK_CURS" 2>/dev/null | sed 's#/scripts/[^/]*$##' | sort -u || true)
 
-    grep -q 'Source resolution' "$CURS_DEST" \
+    grep -q 'Source resolution' "$CHECK_CURS" \
       && ok "Source-resolution section: present" \
       || warn "Source-resolution section: missing (merge candidate on @biz-deploy-basic update)"
   fi
@@ -410,6 +501,11 @@ if command -v find_agent_os_dir >/dev/null 2>&1; then
       | awk -F'|' '{gsub(/`/, "", $4); gsub(/ \(default[^)]*\)/, "", $4); gsub(/ \(discovered at deploy time\)/, "", $4); gsub(/^ +| +$/, "", $4); print $4}' || true)"
     if [[ -z "$ai_cell" ]]; then
       note ".ai (Agent OS): no registry row found — custom .cursorrules (verify manually)"
+    elif [[ "$ai_cell" == '*this directory*' ]]; then
+      # A consumer that carries the source-repo self-reference has not been told
+      # where Agent OS lives. That is a routing gap, not a Business OS defect:
+      # the path-resolution contract falls through to auto-discovery.
+      note ".ai (Agent OS): self-reference (\`*this directory*\`) — Agent OS is not installed at this repo; runtime discovery falls through. Fill the cell only if Agent OS lives elsewhere."
     else
       [[ "$ai_cell" != /* ]] && ai_cell="${DEST_ROOT}/${ai_cell}"
       if [[ -d "$ai_cell" && -f "${ai_cell}/skills/README.md" ]]; then

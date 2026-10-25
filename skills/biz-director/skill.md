@@ -99,7 +99,10 @@ Parse the user's request against this routing table. Match on intent, not keywor
 | Intent cluster | Example requests | Skill(s) to route | Gate required |
 |---|---|---|---|
 | **Setup / bootstrap** | "start a new project", "set up my business folder", "create .work.biz" | `@biz-bootstrap init` | — |
-| **Strategy / niche / offer** | "figure out my niche", "define my offer", "who should I target", "what should I sell", "certify my strategy", "check if strategy is ready", "how's my strategy looking", "what should I do with my career", "what can I actually prove", "profile my skills", "am I on the right track career-wise" | `@biz-strategy` (greenfield, probe, career, certify, or status per parse invocation) | scaffold |
+| **Strategy / niche / offer** | "figure out my niche", "define my offer", "who should I target", "what should I sell", "certify my strategy", "check if strategy is ready", "how's my strategy looking", "what should I do with my career", "what can I actually prove", "profile my skills", "am I on the right track career-wise" | `@biz-strategy` (design, greenfield, probe, career, certify, or status per parse invocation) | scaffold (design/greenfield/probe/career/status); strategy-ready not required |
+| **Job search / resume / interview / offer** | "help me find a job", "rewrite my resume", "elaborate my CV", "I have an interview at X", "should I take this offer", "how do I negotiate salary", "which companies should I target", "I want to move from consulting back to employment" | `@biz-career` (search, resume, interview, negotiate, or status per parse invocation). Profile the operator with `@biz-strategy career` first if `reference/OPERATOR_PROFILE.md` is missing | scaffold (no gate) |
+| **Choose between directions / compare options** | "which direction should I pick", "I have three ideas and can't choose", "compare these options", "is my current niche the best one", "should I change what I sell", "score my options", "what's the highest-leverage play" | `@biz-strategy design` — generation and graded scoring of ≥5 plays, forced ranking, pre-mortem, bets. The current play enters the ranking as a candidate; the output is a design record, not a certification | scaffold |
+| **Was the option we rejected better** | "did we pick the right direction", "would the other option have worked", "did our bet pay off", "should we re-enter the plan we parked" | `@biz-review quarterly` (counterfactual audit — scores the selection process and re-enters a rejected play through its recorded re-entry condition) | at least one strategy doc |
 | **Market validation** | "test if my idea works", "validate my niche", "run an experiment", "design a validation test", "design an experiment" | `@biz-market-validate` (test, design, or status per parse invocation) | — (can run any time) |
 | **Brand / LinkedIn / website** | "fix my LinkedIn", "rewrite my profile", "update my website", "make me look professional", "check my brand presence", "how's my LinkedIn doing" | `@biz-brand` (audit, overhaul, or status per parse invocation) | strategy-ready |
 | **Pricing** | "how much should I charge", "set my prices", "price this project", "revise my pricing", "is my pricing right", "what's my current price" | `@biz-pricing` (set, revise, or status per parse invocation) | strategy-ready |
@@ -202,6 +205,8 @@ These **project-aware generative skills** have **no prerequisite gate** and may 
 | `@biz-ideas` | `generate` · `stress` · `pivot` · `status` | Ideation; no gate |
 | `@biz-products` | `generate` · `extend` · `scope` · `audit` · `status` | Concepts + MVP scoping; no gate |
 | `@biz-market-validate` | `test` · `design` · `status` | (pre-existing) Validation; no gate |
+| `@biz-strategy` | `design` · `greenfield` · `probe` · `career` · `status` · `certify - why` | Strategy design and draft strategy; no gate beyond the `.work.biz/` scaffold. Only `certify` moves `strategy-ready` |
+| `@biz-career` | `search` · `resume` · `interview` · `negotiate` · `status` | Job search and resume craft; no gate |
 | `@biz-community` | `find` · `status` | Community discovery; no gate. **`engage` is gated** on brand-ready |
 
 ### Check each gate:

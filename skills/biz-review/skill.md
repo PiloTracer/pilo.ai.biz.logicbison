@@ -3,8 +3,9 @@ name: biz-review
 description: >-
   Weekly, monthly, and quarterly business review. Assess pipeline, content
   performance, assumption health, overall business health, and — quarterly —
-  score the decision ledger to calibrate judgment. biz-review weekly,
-  biz-review monthly, biz-review quarterly, biz-review status.
+  score the decision ledger to calibrate judgment, audit the rejected strategy
+  alternatives (counterfactual), and review the strategy-bet kill signals.
+  biz-review weekly, biz-review monthly, biz-review quarterly, biz-review status.
 ---
 
 # biz-review
@@ -208,6 +209,23 @@ Assumptions are re-graded monthly and content is measured by pillar above. **Jud
 6. Report the debt: rows still `pending` past their review date.
 
 If the ledger is empty while the quarter plainly contained consequential decisions, say that in the report. A decision recorded only as prose can never be scored, and the missing record *is* the finding.
+
+---
+
+### Counterfactual audit (quarterly, ~15 min)
+
+The decision audit scores what was chosen. It cannot answer the question that actually improves strategy design: **was the alternative that lost better?** A framework that never checks its rejects will keep selecting the same way and calling the result experience.
+
+1. Read `strategy/design-record.md` (if absent, report `no design record — strategy was never compared; run @biz-strategy design` and skip this step).
+2. For every **rejected play** whose re-entry condition was plausibly triggered this quarter (or whose score was within the 5-point margin), record what would have happened: would the runner-up have sold, reached, or paid better than the winner did? Use the same evidence sources as the decision audit. Where the evidence cannot settle it, say `unclear` rather than inventing a counterfactual.
+3. Score the **selection process**, not the plays: did the winning play win for the reason the record gave? Three outcomes are possible and all three are useful:
+   - **Predicted** — the winner won on the criterion the record named. The rubric is calibrated; keep it.
+   - **Right for the wrong reason** — the play worked, but the criterion that decided the ranking was not the one that mattered. Re-weight that criterion for the next design run and say so.
+   - **Wrong** — the runner-up would have won. Re-enter it via `@biz-strategy design` (its re-entry condition is already written) rather than starting from zero.
+4. Review the **strategy bets**. For each bet in `one-pager.md` § `## Strategy bets`: is its kill signal triggered? A triggered kill signal with no response is worse than no kill signal, because it now looks managed. Respond or re-date it this quarter, and log the response in the decision ledger.
+5. Record the calibration line in the ledger's **Calibration** table under class `strategy-selection`: scored selections, how many were predicted, mean confidence, gap.
+
+If three design selections in a row were scored `wrong`, that is a rubric problem (weights or criteria), not a market problem: amend the rubric in `concepts/strategy-design/prompt.md` §6 and record the change in `strategy/changelog.md`.
 
 ---
 

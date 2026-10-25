@@ -3,9 +3,12 @@ name: biz-strategy
 description: >-
   Define your niche, unified offer, target buyer, and channel strategy, and
   profile the operator behind them. Produces strategy docs that guide all other
-  business development. Certifies strategy-ready gate. biz-strategy greenfield,
-  biz-strategy probe, biz-strategy career, biz-strategy amend,
-  biz-strategy reconcile, biz-strategy certify, biz-strategy status.
+  business development. `design` generates and scores three or more candidate
+  plays before one is committed (upstream of greenfield); `greenfield` writes the
+  8 elements of the chosen one; `certify` promotes the strategy-ready gate.
+  biz-strategy design, biz-strategy greenfield, biz-strategy probe,
+  biz-strategy career, biz-strategy amend, biz-strategy reconcile,
+  biz-strategy certify, biz-strategy status.
 ---
 
 # biz-strategy
@@ -13,6 +16,8 @@ description: >-
 **Canonical path:** `.ai.biz/skills/biz-strategy/skill.md`
 
 Define your niche, unified offer, target buyer, channel plan, and pricing range. This is the foundational Business OS skill — every other skill depends on the strategy docs this skill produces. Run before anything else.
+
+**Design before you commit.** `greenfield` tests ONE idea; if the operator's first idea is weak, the whole strategy inherits the weakness and certification only measures internal consistency. `design` (I1b) generates five or more plays, scores them on graded evidence, kills the weak ones, and writes the pre-mortem before anything is launched. Run it first whenever more than one direction is plausible — the playbook is `concepts/strategy-design/prompt.md`.
 
 **Why specialize (directional, not measured):** specialists generally command higher rates than generalists, convert better against a narrow buyer, and a single offer reduces choice overload (Hick's Law). Treat these as the *rationale* for the skill, not as citable figures: the framework has no sourced study behind them, so do not repeat percentages to the user as fact. When a project needs real numbers for its own niche, gather them with `@biz-market-validate test` and record them in `.work.biz/strategy/assumption-ledger.md` with citations.
 
@@ -68,6 +73,8 @@ Choice constrains channel, price, and offer structure.
 
 | User says | Mode |
 |-----------|------|
+| `@biz-strategy design` | Generate and score candidate plays, pick one, write the pre-mortem and the bets. Upstream of greenfield; writes `strategy/situation-audit.md` + `strategy/design-record.md`. Aliases: `options`, `blueprint`. |
+| `@biz-strategy design - <situation>` | Same, seeded with the operator's situation text. |
 | `@biz-strategy greenfield` | Generate full strategy from scratch. Walk through all 8 elements. |
 | `@biz-strategy greenfield - from <file>` | Generate strategy using an existing document as seed. |
 | `@biz-strategy probe` | Adaptive gap-filling questioning. Targets unknown/inferred assumptions. |
@@ -96,6 +103,8 @@ All strategy files live under `{WORK_BUSINESS_ROOT}` (`.work.biz/`):
 | `strategy/target-buyer-profile.md` | Detailed buyer persona |
 | `strategy/channel-plan.md` | Primary channel + supporting channels |
 | `strategy/pricing.md` | Distilled price range from the Price element |
+| `strategy/situation-audit.md` | Design mode: six graded lenses (assets, demand, constraints, traction, timing, identity) |
+| `strategy/design-record.md` | Design mode: plays, pre-set weights, scores with grades, ranking, sensitivity, WWHTBT, pre-mortem, moat, breakeven worksheet, rejected plays with re-entry conditions |
 | `strategy/certification.md` | Gate certification record (certify mode writes here) |
 | `strategy/changelog.md` | Append-only record of strategy changes (amend mode writes here; reconcile mode appends entries marked **(correction)**) |
 | `decisions/DECISIONS.md` | Decision ledger — outside `strategy/` on purpose, because it records judgment rather than positioning. `certify` appends the certified strategy as a decision; `amend` appends the superseding row (CONVENTIONS § Decision loop) |
@@ -316,6 +325,68 @@ Next: @biz-strategy certify  (validate consistency and promote gate)
 
 ---
 
+## I1b — Design mode
+
+`design` is the **generation and selection** half of strategy: it decides *which* play to run before greenfield decides *how* to run it. Greenfield is a coherence test on one idea; design is the search that produces the idea worth testing. Without it the framework can certify a strategy it never compared anything against, and the operator's first guess becomes the strategy by default.
+
+**Playbook:** read `concepts/strategy-design/prompt.md` before running. It carries the six lenses, the archetype table, the scoring anchors, the moat taxonomy, the pre-mortem prompt bank and the breakeven worksheet. This section defines the **procedure and the files**; the playbook defines the **content**.
+
+**IT-shaped offers add a lens:** when the deliverable is software, platform, data, security, or technical leadership, also read `concepts/it-services-strategy/prompt.md` (BIZ-12) during D2/D3/D4 — the **buying motion** (capability gap · bounded outcome · accountability gap · risk reduction · operational continuity) decides the offer shape, the proof and the sales cycle more than the technology does. An offer that does not name its buying motion is a capability list.
+
+### When design is the right mode
+
+| Situation | Run |
+|-----------|-----|
+| More than one plausible direction, nothing ranking them | `design` |
+| Niche chosen by intuition, never compared to an alternative | `design` (the current play enters the ranking as a candidate) |
+| 90 days elapsed with no traction and the buyer or offer may be the wrong shape | `design`, then `greenfield` |
+| A new asset or constraint appeared (job, runway, proof, obligation) | `design` — the audit changed, so the ranking must be re-run |
+| Re-certification blocked by load-bearing C/D evidence | `design` — re-select around the evidence instead of arguing harder |
+| One direction already chosen, evidenced, and consistent | skip to `greenfield` |
+| Certified strategy, one element fuzzy | `probe`, not design |
+
+**The incumbent play competes; it is not replaced silently.** When a strategy already exists, its play joins the candidate set as one of the plays, scored on the same rubric. Design may only conclude "keep the current play" or "replace it with X, because the ranking says so", and either conclusion is written to the record. Re-running design is not a licence to relitigate a certified decision by fiat — it is a licence to compare.
+
+### Workflow
+
+| Step | Do | Write to |
+|------|----|----------|
+| **D1 — Situation audit** | Six lenses (assets, demand signals, constraints, traction, timing, identity); each row graded A–D with its artefact. Contradictions recorded, not smoothed. If no row reaches A/B, say so in the first line and label everything downstream `provisional`. | `strategy/situation-audit.md` |
+| **D2 — Model the money** | Assign a business-model archetype per candidate (playbook §3) with its cash timing and capacity ceiling. Fixed price only; hourly is banned by `standards/20260621-PRICING-STANDARD.md`. | `strategy/design-record.md` § Archetypes |
+| **D3 — Alternatives map** | Per candidate: what the buyer uses today — do nothing first, then DIY + AI, hire, freelancer, agency, incumbent product — with cost, speed, why it fails, and our wedge. If the cost of doing nothing is not demonstrably above the price, the play cannot score above 2 on speed to revenue. | `strategy/design-record.md` § Alternatives |
+| **D4 — Generate plays** | 5–8 plays, distinct on buyer, offer, or channel. Six fields each: buyer, problem (root cause, ≤14 words), offer shape, one primary channel, price band (2–4x, fixed), business model. Each cites the audit row that produced it. Banned shapes refused at generation, with the reason recorded. | `strategy/design-record.md` § Plays |
+| **D5 — Score** | Six criteria (speed to revenue 25 · asset fit 20 · buyer accessibility + budget 20 · defensibility 15 · evidence strength 10 · capacity fit 10). Weights are written down **before** any score is visible; if a weight moves after a score exists, restart. Every score carries a one-line justification **and** an A–D grade; a 4–5 resting on C/D evidence is capped at 2; an unevidenced criterion scores 1. | `strategy/design-record.md` § Scores |
+| **D6 — Select** | Forced ranking, no ties (break on evidence strength, then speed). A winner must beat the runner-up by ≥5 weighted points; below that, the 2-point sensitivity swing decides and the record names the criterion that decided it. | `strategy/design-record.md` § Ranking |
+| **D7 — WWHTBT** | For the winner only: ≤5 numbered conditions that must be true, each mapped to an assumption-ledger row, the cheapest test, and a fail-by date. Ordered by blast radius. | `strategy/design-record.md` § What would have to be true |
+| **D8 — Pre-mortem** | ≥10 failure modes with likelihood (H/M/L, `directional`), an **observable** earliest signal with a number and a window, and a pre-committed response. Carry them into the bets and the decision row as kill signals. | `strategy/design-record.md` § Pre-mortem |
+| **D9 — Moat** | Name the one moat the winner builds first, with its evidence artefact and the action that builds it. A moat whose evidence cell is empty is deleted, not softened. "No moat — two-way trade" is an allowed answer only with a short review date. | `strategy/design-record.md` § Moat |
+| **D10 — Arithmetic** | Run the breakeven worksheet for the top two plays (never only the winner): price, deals/month, capacity, contribution, fixed cost, breakeven, months to first revenue vs runway, pessimistic / base / optimistic revenue, most-sensitive variable, and the value at which the strategy stops working. | `strategy/design-record.md` § Worksheet |
+| **D11 — Record and hand off** | Write `## Strategy bets` into `strategy/one-pager.md`; append ONE decision row to `decisions/DECISIONS.md` (the choice of direction, with the rejected plays listed and their re-entry conditions). | `strategy/one-pager.md`, `decisions/DECISIONS.md` |
+
+### Output contracts
+
+- **Rejected plays are kept, with re-entry conditions.** Every play that lost stays in `design-record.md` with its score and the observable event that puts it back on the table ("if the buyer segment proves unwilling to pay the floor price, the productized-diagnostic play re-enters"). Deleting the runner-up means a failed winner restarts the whole search.
+- **Design shapes, greenfield fills.** Design does not write the six canonical strategy files, does not write `certification.md`, and does not promote a gate. Its record is the seed: `@biz-strategy greenfield - from strategy/design-record.md`.
+- **The decision row is the record of the call, not of the analysis.** Expected outcome with a number and a date, confidence %, reversibility, kill/review trigger, review by — per `CONVENTIONS.md` § Decision loop. A design run with no row cannot ever be scored.
+- **Every world-claim carries a grade.** A play whose demand, price, or channel claim rests on D-grade memory is labelled `Unverified` and becomes WWHTBT condition 1, not a reason to proceed.
+- **Document clarity:** `situation-audit.md` and `design-record.md` open with the ≤4-line Status/Needs header and close with exactly one `## Next action` section.
+
+### Design completion gate (cannot be skipped)
+
+Design is complete only when all are true:
+
+1. `strategy/situation-audit.md` exists and every lens has at least one row, graded, with its artefact named.
+2. `strategy/design-record.md` contains ≥3 scored plays (5+ unless the audit constrains the space and the reason is recorded), the pre-set weights, the ranking, the sensitivity answer, WWHTBT, the pre-mortem, and the moat.
+3. The incumbent play is present in the ranking whenever a strategy already existed (or the absence is explained — e.g. first certification).
+4. The rejected plays carry their re-entry conditions.
+5. `## Strategy bets` is in `strategy/one-pager.md` with a kill signal and review date per bet.
+6. Exactly one decision row is appended to `decisions/DECISIONS.md`.
+7. The next command is stated: `@biz-strategy greenfield - from strategy/design-record.md` (or `probe - <element>` when the ranking exposed a specific gap).
+
+If any item is missing, say which one and do not present the design as complete.
+
+---
+
 ## I2 — Probe mode
 
 Adaptive questioning to fill gaps. When assumptions are "inferred" or "unknown", or when an element feels fuzzy.
@@ -495,6 +566,10 @@ Each check must pass. First failure stops the check.
 | 11 | **Reality arithmetic** | `one-pager.md` § Reality check A is present and closes: capacity → revenue ceiling at the floor price covers the income target; required prospects/week ≤ the primary channel's realistic capacity; first revenue lands inside runway. Every figure carries a `measured`/`estimated`/`assumption`/`unknown` tag. | Section missing, arithmetic absent, numbers do not close, a load-bearing figure is `assumption`/`unknown`, or a conversion rate is used without stating its source |
 | 12 | **Outside view** | `one-pager.md` § Reality check B names the reference class, states what normally happens to it (graded, or marked `directional`), and reconciles the plan's timeline against it — explaining any material difference. | Section missing, a timeline asserted with no reference class, or the plan is materially faster than the base rate with no stated reason |
 | 13 | **Decision record** | The certified strategy is appended to `decisions/DECISIONS.md` as one row with a falsifiable expected outcome, a confidence, a reversibility class, a kill/review trigger, and a review date (`CONVENTIONS.md` § Decision loop). | No row appended, or the row lacks any of the five required fields |
+| 14 | **Alternatives recorded** | The strategy was chosen against something. Passes with `strategy/design-record.md` (≥3 scored plays, rejected plays carrying re-entry conditions) **or** a `## Alternatives considered` section in `one-pager.md` naming ≥2 rejected plays and why each lost. A project certified before design existed may instead record `alternatives: waived — <specific reason>` in `certification.md`; a blanket waiver is not a reason. | No design record, no alternatives section, and no specific waiver — the strategy has nothing it beat, so its selection was never a decision |
+| 15 | **Pre-mortem / kill signals** | `one-pager.md` § `## Strategy bets` carries, per bet, a kill signal with a number and a window plus a review date; or `design-record.md` § Pre-mortem carries ≥3 failure modes with observable signals. | No bets table, no pre-mortem, or a signal that cannot be observed inside the review window ("engagement is low") |
+| 16 | **Moat / durability** | The winner names one defensibility mechanism with its evidence artefact (case study, method, named relationships, switching cost, audience, delivery record, licence), **or** states `no moat — two-way trade` with a review date short enough that speed must arrive before the moat question does. | Moat asserted with an empty evidence cell, or no statement at all |
+| 17 | **Sensitivity & breakeven** | Reality check A carries breakeven deals/month, pessimistic / base / optimistic revenue, the most-sensitive variable, and the value at which the strategy stops working. | Single-point forecast, no breakeven, or no sensitivity — a number with no range cannot fail, so it cannot be managed |
 
 ### Consistency check: Element web
 
@@ -562,7 +637,10 @@ If `gates.md` does not exist, create it from `templates/work/gates.md.template` 
 
 ```text
 ✓ CERTIFIED: strategy-ready
-  All 13 checks passed. No critical consistency failures.
+  All 17 checks passed. No critical consistency failures.
+  Chosen against: {n} scored plays — {winner} beat {runner-up} by {points} weighted points
+  Kill signals: {n} with observable windows · Moat: {mechanism or "none — two-way trade"}
+  Breakeven: {deals/month} vs capacity {deals/month} · Most-sensitive: {variable}
   Arithmetic closes: {revenue ceiling at floor price} vs target {target}; {required prospects/week} prospects/week vs channel capacity.
   Reference class: {base rate stated, or "directional"}
   Decision logged: D-{nnn} — expected {expected outcome}, review by {date}
@@ -581,6 +659,8 @@ If any check fails:
   To proceed: {specific action — e.g., "Run @biz-strategy probe - person to clarify the buyer"}
   Assumption state: {n} load-bearing unknown ({which}) · {n} of {total} peripheral unknown ({pct}%)
   Arithmetic: {closes | does not close — which line}
+  For checks 14–17: @biz-strategy design  (produces the alternatives, bets, moat and worksheet
+  without re-running greenfield; the current play enters the ranking as a candidate)
 ```
 
 Do NOT write `certification.md`. Do NOT promote the gate.
@@ -605,6 +685,9 @@ Strategy status — {WORK_BUSINESS_ROOT}/strategy/
   Assumption ledger:    {exists/missing}
   Certification:        {exists/missing}
   Reality check:        {present (arithmetic closes/does not close · reference class stated/directional/missing) / missing}
+  Design record:        {present (n plays, winner <play>, margin <points>) / missing — @biz-strategy design ranks alternatives before certification}
+  Situation audit:      {present (weakest lens <lens>, A/B rows <n>) / absent}
+  Strategy bets:        {n bets with kill signals / none — certify check 15 will fail}
   Decision ledger:      {n decisions — n open, n past review date / missing - the judgment loop is not running}
 
   Gate: strategy-ready  {PASS / FAIL / NOT ATTEMPTED}
@@ -641,6 +724,7 @@ Next: <nothing - status read-only | the single applicable quick action>
 
 | Mode | Estimated time | Notes |
 |------|---------------|-------|
+| `design` | 60-120 minutes | Generation + scoring + pre-mortem + worksheet. The highest-leverage block in the framework. |
 | `greenfield` | 45-90 minutes | Full walkthrough. Schedule a block. |
 | `greenfield - from <file>` | 20-40 minutes | Faster if seed doc is detailed. |
 | `probe` | 5-15 minutes | Per element. Variable based on gaps. |
@@ -668,6 +752,8 @@ See `SKILL_DEPENDENCIES.md` for the full gate graph.
 
 | Situation | Action |
 |-----------|--------|
+| More than one plausible direction, or the first guess was never compared | `@biz-strategy design`, then `greenfield - from strategy/design-record.md` |
+| A certified play failed its kill signal | `@biz-strategy design` with the rejected plays' re-entry conditions — re-enter one rather than inventing a new direction from zero |
 | Adding a new service line | `@biz-strategy greenfield - force` (restart from scratch) |
 | First 90 days are up and no traction | `@biz-strategy probe - person` (is the buyer real?) then `@biz-strategy probe - problem` (is the problem painful enough?) |
 | First client signed but market feels different from strategy | `@biz-strategy probe` (scan for new assumptions from real market feedback) |
@@ -684,6 +770,7 @@ See `SKILL_DEPENDENCIES.md` for the full gate graph.
 | Skill | When |
 |-------|------|
 | `@biz-bootstrap init` | Before strategy — scaffolds the work tree |
+| `@biz-market-validate test` | After design — tests the WWHTBT conditions before greenfield commits to them |
 | `@biz-brand audit` | After certification — align LinkedIn/website to the strategy |
 | `@biz-pricing set` | After certification — set specific engagement prices |
 | `@biz-content publish` | After brand-ready gate — publish content aligned to strategy |
@@ -706,6 +793,9 @@ See `SKILL_DEPENDENCIES.md` for the full gate graph.
 - `{WORK_BUSINESS_ROOT}/strategy/pricing.md`
 - `{WORK_BUSINESS_ROOT}/strategy/assumption-ledger.md`
 - `{WORK_BUSINESS_ROOT}/strategy/certification.md`
+- `{WORK_BUSINESS_ROOT}/strategy/situation-audit.md`
+- `{WORK_BUSINESS_ROOT}/strategy/design-record.md`
+- `.ai.biz/concepts/strategy-design/prompt.md` (design playbook)
 - `{WORK_BUSINESS_ROOT}/gates.md`
 - `.ai.biz/skills/SKILL_DEPENDENCIES.md`
 - `{WORK_BUSINESS_ROOT}/strategy/changelog.md` (append-only amend and reconcile log)

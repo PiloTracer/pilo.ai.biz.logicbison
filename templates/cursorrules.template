@@ -8,8 +8,9 @@ You are not a yes-machine. You are a trusted advisor whose sole objective is the
 
 # AI Agent Rules — REPLACE:PROJECT_NAME
 
-> **Bootstrap (fat-client):** Copy this file from `.ai.biz/templates/cursorrules.template` to the **project root** as `.cursorrules`, then replace every `REPLACE:` token below.
-> **Bootstrap (thin-client):** Run `@biz-deploy-basic` from the source `.ai.biz` — copies `.cursorrules` (with `AI_BIZ_SOURCE` pointer) + `.work.biz/` skeleton. Skills stay in the source and load at runtime. See § Source resolution below.
+> **Bootstrap (fat-client):** copy the framework's `templates/cursorrules.template` to the **project root** as `.cursorrules` (`.ai.biz/templates/cursorrules.template` when vendored), then replace every `REPLACE:` token below.
+> **Bootstrap (thin-client):** Run `@biz-deploy-basic` from the source Business OS — writes `.cursorrules` (with the `AI_BIZ_SOURCE` pointer) + the `.work.biz/` skeleton. Skills stay in the source and load at runtime. See § Source resolution below.
+> **Project already runs another OS framework** (so a `.cursorrules` exists): the file is **never replaced**. `@biz-deploy-basic` appends one managed block between `<!-- BIZ_DESIGN_OS_BEGIN -->` and `<!-- BIZ_DESIGN_OS_END -->` and later refreshes only that region. Everything outside the markers belongs to the other framework and must not be touched by Business OS work.
 
 ## Core Principles (ALWAYS APPLY)
 
@@ -57,13 +58,13 @@ These principles override all other instructions. They are non-negotiable.
 
 ## Required Context Files
 
-**Lost or unsure what to do? Read [`START_HERE.md`](START_HERE.md) first.**
+**Lost or unsure what to do? Read `START_HERE.md` from the framework root first** — thin-client: `$AI_BIZ_SOURCE/START_HERE.md`; fat-client: `.ai.biz/START_HERE.md`. It is not a file in this repo in thin-client mode.
 
 **Free-text entry point:** If you don't know which `biz-*` skill to run, invoke `@biz-director - <describe what you want>`. For work that spans `.ai` + `.ai.ui` + `.ai.biz`, use `@x-director - <describe what you want>`.
 
 ### Frameworks registry (cross-framework discovery)
 
-Sister frameworks are siblings on disk; `.ai.<fw>` (legacy) / `pilo.ai.<fw>.logicbison` (family) naming — see path resolution below. `.ai.biz` is this framework (self-hosted).
+Sister frameworks are siblings on disk; `.ai.<fw>` (legacy) / `pilo.ai.<fw>.logicbison` (family) naming — see path resolution below. `.ai.biz` is this framework: in thin-client its assets live in the source root (row filled at deploy time), in fat-client this repo carries `.ai.biz/` locally.
 
 | Framework | Director | Path | Bootstrap artifact |
 |-----------|----------|------|--------------------|
@@ -99,8 +100,8 @@ Read these at the start of every conversation:
 | `{NEXT}` | `.work.biz/plans/NEXT.md` |
 | `{PIPELINE_TRACKER}` | `.work.biz/pipeline/pipeline_tracker.md` |
 | `{DECISIONS}` | `.work.biz/decisions/DECISIONS.md` |
-| `{SKILLS_ROOT}` | `skills/` |
-| `{CONCEPTS_ROOT}` | `concepts/` |
+| `{SKILLS_ROOT}` | thin-client: `$AI_BIZ_SOURCE/skills/`; fat-client: `.ai.biz/skills/` |
+| `{CONCEPTS_ROOT}` | thin-client: `$AI_BIZ_SOURCE/concepts/`; fat-client: `.ai.biz/concepts/` |
 | `{AGENT_RULES_FILE}` | **`.cursorrules` (this file)** |
 | `REPLACE:PROJECT_NAME` | Your business / project name |
 | `REPLACE:UNIFIED_OFFER` | Your one-line offer (e.g. "Custom AI-powered platform development") |
@@ -120,7 +121,7 @@ Run before commit / before claiming completion:
 | Gate check | `bash scripts/gate-verify.sh` | Task with empty Notes, or a gate claiming PASS in `.work.biz/gates.md` without its evidence |
 | Framework verify | `bash scripts/framework-verify.sh` | Non-zero exit |
 
-**Declare scope first:** Copy `templates/work/touch-scope.template` → `.work.biz/touch-scope`.
+**Declare scope first:** copy the framework's scope template to `.work.biz/touch-scope` (thin-client: `$AI_BIZ_SOURCE/templates/work/touch-scope.template`; fat-client: `.ai.biz/templates/work/touch-scope.template`).
 
 ---
 
@@ -137,7 +138,7 @@ AI_BIZ_SOURCE=REPLACE_BASICSOURCE
 | Mode | Bootstrapped via | Where framework assets live | `AI_BIZ_SOURCE` |
 |------|------------------|----------------------------|-------------------|
 | **Fat-client** (vendored) | `@biz-deploy-files` or `biz-bootstrap init` | this repo's `.ai.biz/` | unset (token left as `REPLACE_BASICSOURCE`) |
-| **Thin-client** (remote) | `@biz-deploy-basic` | the **source** Business OS; this repo holds only `.cursorrules` + `.work.biz/` | set to an absolute path (e.g. `/mnt/work/Projects/.ai.biz`) |
+| **Thin-client** (remote) | `@biz-deploy-basic` | the **source** Business OS; this repo holds only `.cursorrules` + `.work.biz/` | set to an absolute path (e.g. `/abs/path/to/pilo.ai.biz.logicbison`; a legacy `.ai.biz` symlink resolves to the same directory) |
 
 **Resolution rule (agents MUST apply before reading any `.ai.biz/...` reference):**
 
@@ -162,7 +163,7 @@ Reusable agent skills live under `skills/` (or `$AI_BIZ_SOURCE/skills/` in thin-
 | biz-deploy-files | `skills/biz-deploy-files/` | Deploy Business OS files into target project (fat-client) |
 | biz-deploy-basic | `skills/biz-deploy-basic/` | Thin-client bootstrap — copies `.cursorrules` (with `AI_BIZ_SOURCE` pointer) + `.work.biz/` skeleton; skills resolve from source at runtime. `@biz-deploy-basic`, `@biz-deploy-basic update`, `@biz-deploy-basic status` |
 | biz-bootstrap | `skills/biz-bootstrap/` | Scaffold `.work.biz/`, `.cursorrules` from templates |
-| biz-strategy | `skills/biz-strategy/` | Niche, offer, positioning, target buyer, operator profile (career); reality check (arithmetic + outside view) at certify |
+| biz-strategy | `skills/biz-strategy/` | Strategy design (generate + graded scoring of candidate plays, pre-mortem, bets), niche, offer, positioning, target buyer, operator profile (career); reality check (arithmetic + sensitivity + outside view) at certify |
 | biz-brand | `skills/biz-brand/` | LinkedIn, website, brand presence |
 | biz-pricing | `skills/biz-pricing/` | Value-based pricing framework |
 | biz-content | `skills/biz-content/` | LinkedIn content publishing and strategy |
@@ -172,7 +173,7 @@ Reusable agent skills live under `skills/` (or `$AI_BIZ_SOURCE/skills/` in thin-
 | biz-discovery | `skills/biz-discovery/` | Sales discovery calls |
 | biz-proposal | `skills/biz-proposal/` | Proposal writing and scoping |
 | biz-objections | `skills/biz-objections/` | Handle sales objections |
-| biz-review | `skills/biz-review/` | Weekly/monthly/quarterly business review; quarterly includes the decision audit + calibration |
+| biz-review | `skills/biz-review/` | Weekly/monthly/quarterly business review; quarterly includes the decision audit + calibration and the counterfactual audit of rejected plays + bet kill signals |
 | biz-market-validate | `skills/biz-market-validate/` | Test offers before committing |
 | biz-pipeline-diagnosis | `skills/biz-pipeline-diagnosis/` | Find and fix funnel bottlenecks |
 | biz-session | `skills/biz-session/` | Session open/close; HANDOFF, NEXT; `close commit [scoped] [push]`; standalone `commit` / `commit push` (no close) and `add` (stage only); `context` read-only load + uncommitted-aware. Aliased as `session-control` (`@session-control context`, `@session-control start`, etc.) |
@@ -183,6 +184,7 @@ Reusable agent skills live under `skills/` (or `$AI_BIZ_SOURCE/skills/` in thin-
 | biz-archive | `skills/biz-archive/` | Archive published content pieces: `ideas/` → `ideas.archive/` (mirrored), tracker annotated, history preserved |
 | biz-products | `skills/biz-products/` | Buildable, stack-fit product/service concept generation + MVP scoping |
 | biz-advisory | `skills/biz-advisory/` | Situational business counsel: asset reframe pass, ranked options with graded market evidence, base rate, arithmetic check, anti-advice, decisive recommendation + 30-day step; records the decision row |
+| biz-career | `skills/biz-career/` | Job search + resume craft: role archetypes, channel plan, 20–40 company target list with a kill signal; CV elaboration on evidenced scope; interview story bank; offer evaluation. No invented numbers |
 | biz-sources | `skills/biz-sources/` | Curate and mine business-advisory sources (positioning, pricing, sales, fractional/AI-services market) into a living catalog |
 
 **Usage:** When a task matches a skill's purpose, read `skill.md` and follow the workflow.
@@ -200,6 +202,10 @@ Reusable agent skills live under `skills/` (or `$AI_BIZ_SOURCE/skills/` in thin-
 - `skills/SKILL_DEPENDENCIES.md` (gate graph + clarity contracts)
 - `standards/` (binding business standards)
 - `hooks/` (git hook scripts)
+- `templates/` (bootstrap templates)
+- the managed `BIZ_DESIGN_OS_BEGIN`/`END` block in this file
+
+The four framework paths above resolve from the framework root — thin-client `$AI_BIZ_SOURCE/…`, fat-client `.ai.biz/…` — never from a local `skills/` or `standards/` directory that does not exist in thin-client mode.
 
 **If you think a change is needed in any protected file:**
 1. Stop.
@@ -268,7 +274,7 @@ Creating or editing files in declared task scope is allowed. Prefer reversible e
 - Be concise. Surface hard truths early.
 - Label uncertainty explicitly.
 - Distinguish: confirmed facts, inferences, proposals.
-- Close every task response per the **Operator handoff contract** (`skills/SKILL_DEPENDENCIES.md`): Form A single line when nothing is needed; otherwise `**Needs your approval:**` / `**Needs your answer:**` (numbered lists, never mixed, approvals citing `path:L<n>`) and exactly one `**Next step:**`. Omit empty sections.
+- Close every task response per the **Operator handoff contract** (`$AI_BIZ_SOURCE/skills/SKILL_DEPENDENCIES.md`): Form A single line when nothing is needed; otherwise `**Needs your approval:**` / `**Needs your answer:**` (numbered lists, never mixed, approvals citing `path:L<n>`) and exactly one `**Next step:**`. Omit empty sections.
 
 ---
 
@@ -289,13 +295,17 @@ Creating or editing files in declared task scope is allowed. Prefer reversible e
 
 ### File Layout
 ```
-/
-├── .cursorrules              (this file — AI agent rules)
-├── skills/              (Business OS framework — skills, standards, templates)
-├── standards/           (Binding business standards)
-├── templates/           (Bootstrap templates)
-├── .work.biz/           (Project memory — plans, pipeline, HANDOFF)
+/                                (thin-client)
+├── .cursorrules              (this file — Business OS rules + the managed block)
+├── .work.biz/                (Project memory — strategy, plans, pipeline, HANDOFF, decisions)
+└── <app code>                (untouched by Business OS)
+
+$AI_BIZ_SOURCE/                 (the framework root — read-only, shared by every consumer)
+├── skills/  standards/  concepts/  docs/  scripts/  templates/
+└── START_HERE.md  CONVENTIONS.md  skills/SKILL_DEPENDENCIES.md
 ```
+
+Fat-client (`biz-bootstrap init` / `@biz-deploy-files`) replaces `$AI_BIZ_SOURCE/` with a local `.ai.biz/` directory.
 
 ---
 
