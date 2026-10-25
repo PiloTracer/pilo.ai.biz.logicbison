@@ -427,6 +427,21 @@ elif [[ "$LAYOUT" == "thin" ]]; then
       fi
     done < <(grep -oE '/[^ `|"]+/scripts/(touch-scope-verify|blast-radius-check|gate-verify|framework-verify|install-git-hooks|biz-cursorrules-verify)\.sh' "$CHECK_CURS" 2>/dev/null | sed 's#/scripts/[^/]*$##' | sort -u || true)
 
+    # Stale prose pointer name. The legacy migration renames the ASSIGNMENT
+    # (AGENT_OS_SOURCE= → AI_BIZ_SOURCE=) but not the prose that references it, so
+    # a migrated target can end up with a correct pointer and rules that tell the
+    # agent to read the wrong variable. Report it inside the source-resolution
+    # section only (a multi-framework repo may legitimately name another
+    # framework's pointer elsewhere) and never rewrite it automatically.
+    if ! grep -qE '^[[:space:]]*AGENT_OS_SOURCE=' "$CURS_DEST"; then
+      curs_section="$(sed -n '/^## Source resolution/,/^## /p' "$CURS_DEST" 2>/dev/null || true)"
+      stale_prose="$(printf '%s\n' "$curs_section" | grep -c 'AGENT_OS_SOURCE' || true)"
+      [[ -z "$stale_prose" ]] && stale_prose=0
+      if [[ "$stale_prose" -gt 0 ]]; then
+        warn "source-resolution prose names AGENT_OS_SOURCE (${stale_prose}x) but the file defines AI_BIZ_SOURCE — the legacy migration renames the assignment only; align the prose by hand (COHABITATION.md §4)"
+      fi
+    fi
+
     grep -q 'Source resolution' "$CHECK_CURS" \
       && ok "Source-resolution section: present" \
       || warn "Source-resolution section: missing (merge candidate on @biz-deploy-basic update)"
