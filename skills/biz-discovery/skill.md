@@ -18,6 +18,8 @@ This skill supports three modes via the `biz-discovery` command:
 | **run** | `biz-discovery run` | Full call structure with 4 phases. Follow-up email within 24 hours. Log to pipeline tracker. |
 | **status** | `biz-discovery status` | Read-only state report of discovery pipeline |
 
+**Lead-facing floor (binding).** The 24-hour follow-up email and the call recap are read by a prospect who is deciding whether to keep talking, so `standards/20260621-CONTENT-STANDARD.md` § Lead-facing artifacts binds on both. Run the AI-artifact scan before the recap or follow-up leaves, and report that it ran. A recap that reads as templated tells the prospect they were not actually listened to, which undoes the call. Never describe output as undetectable or AI-proof; § Lead-facing artifacts rule 2 forbids the claim.
+
 ---
 
 ## I0 — Gate pre-check

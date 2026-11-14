@@ -36,9 +36,20 @@ if [ "${#SCOPE_ENTRIES[@]}" -eq 0 ]; then
   exit 0
 fi
 
-CHANGED="$(git diff --name-only HEAD 2>/dev/null || true)"
+# Same semantics as blast-radius-check.sh: when anything is staged, the staged
+# set is what the next commit carries, so measure only that. Otherwise measure
+# the whole working tree INCLUDING untracked files — a brand-new skill folder or
+# scaffold is a touched path, and `git diff HEAD` cannot see it.
 STAGED="$(git diff --cached --name-only HEAD 2>/dev/null || true)"
-mapfile -t ALL_FILES < <(echo -e "${CHANGED}\n${STAGED}" | sort -u | grep -v '^$' || true)
+if [ -n "$STAGED" ]; then
+  WORK_SET="$STAGED"
+else
+  WORK_SET="$(
+    git diff --name-only HEAD 2>/dev/null || true
+    git ls-files --others --exclude-standard 2>/dev/null || true
+  )"
+fi
+mapfile -t ALL_FILES < <(printf '%s\n' "$WORK_SET" | sort -u | grep -v '^$' || true)
 
 if [ "${#ALL_FILES[@]}" -eq 0 ]; then
   echo "touch-scope-verify: PASS (no changed files)"

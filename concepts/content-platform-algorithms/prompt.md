@@ -25,14 +25,19 @@ Every social platform uses a distinct algorithm to determine which content reach
 ## Platform algorithm rules (binding)
 
 ### LinkedIn
-- **External links in body are demoted** — put links in the first comment instead
-- **First 60 minutes decide reach** — the algorithm tests with a small audience first
-- **Carousels and document posts** have the highest organic reach (3-5x text-only)
-- **Personal profiles outperform company pages** — write as a person
-- **3-5 hashtags max** — relevant, selective, not shotgun
-- **Dwell time** is tracked — how long someone spends reading your post
-- **Meaningful comments** (multi-sentence) > likes
+*(Corrected 2026 against `docs/sources/verified-sources.md` § LinkedIn distribution. Full detail and the grade warnings live in `skills/biz-social/platforms/linkedin.md`; these bullets must not contradict it.)*
+- **Zero-click: no external links in the body AND none in the first comment** — the first-comment workaround is now detected and suppressed (reported 20-80% reach reduction). This bullet used to recommend it
+- **The first hour is a launchpad, not the verdict** — relevance-over-recency keeps posts circulating 2-3 weeks; do not judge or repost at hour two
+- **Dwell time and saves are the dominant signals, ahead of likes** — a "long dwell" classifier per content type and position; saves reported ~5x a like, ~2x a comment
+- **Interest graph, not social graph** — topic relevance decides reach to non-followers, so declare 2-3 topic territories and stay in them
+- **Carousels and document posts** have the highest organic reach (3-5x text-only, `directional`)
+- **Educational beats promotional and personal** (~3-5x reach, grade C)
+- **Personal profiles outperform company pages** (~5x engagement) — write as a person, founder-led
+- **0-3 hashtags; 10+ is a visibility penalty** and semantic analysis now does the topic matching
+- **Polls are effectively dead** (~0.07% engagement) — audience research only, never a growth tactic
+- **Meaningful comments** (multi-sentence) > likes; "post and ghost" suppresses you
 - **Reply to every comment within 2 hours** to signal engagement
+- **An AI-slop filter is reported to tag templated posts and specific vocabulary** — the Content Standard's banned-vocabulary list is a reach rule here, not only taste
 - **Best posting time:** Tue-Thu, 8-10 AM or 12-1 PM local audience time
 - **Anti-patterns:** "Agree?" (engagement bait, now penalized), "Copy-paste this", personal stories with no professional payoff, same hashtags on every post
 - **Creator challenges:** `#CreateImpact` and similar — 2–4 posts/week, ≥1 carousel/week, challenge hashtag on one post/week; use `@biz-content challenge`
@@ -75,7 +80,7 @@ Every social platform uses a distinct algorithm to determine which content reach
 - **Anti-patterns:** recycled TikTok watermarked content, link-in-caption (unclickable anyway), 30-hashtag shotgun, posting only static images
 
 ### Facebook
-- **External links are penalized** (similar to LinkedIn) — prefer native content, link in first comment
+- **External links are penalized** — prefer native content. *(The "link in first comment" workaround this bullet used to recommend is **unverified for Facebook** and is confirmed suppressed on LinkedIn as of 2026; do not assume it transfers. No 2026 Facebook-specific evidence is in the catalog, so treat this whole section as `directional` and test on the project's own page.)*
 - **Groups have much higher organic reach than Pages** — community-focused distribution is rewarded
 - **Personal profiles > business pages** for organic reach
 - **Native video gets highest reach** — upload directly, don't link to YouTube
@@ -87,7 +92,7 @@ Every social platform uses a distinct algorithm to determine which content reach
 
 ### Cross-platform universal rules
 
-- **Early engagement (first 60 min)** is the strongest algorithmic signal on every platform
+- **Early engagement matters on every platform, but it is not the whole verdict anywhere.** *(Corrected 2026: this rule used to claim the first 60 minutes are the strongest signal on every platform.)* LinkedIn's relevance-over-recency now keeps posts circulating for two to three weeks, so a flat first hour is not a dead post. Answer comments promptly everywhere because it builds the relationship and adds a signal, not because a 60-minute window closes.
 - **Platform-native content** outperforms cross-posted content every time
 - **Engagement quality (saves, shares, comments) > volume (impressions, passive likes)**
 - **Consistency > frequency** — a regular cadence builds algorithmic trust

@@ -19,6 +19,7 @@ Business concept prompts that guide strategic thinking and decision-making. Each
 | BIZ-11 | Strategy Design | Choosing *which* play to run: situation audit, business-model archetypes, alternatives map, weighted scoring, WWHTBT, pre-mortem, moat, breakeven/sensitivity |
 | BIZ-12 | IT Services Strategy | When the product is IT capability: buying motions, IT offer archetypes, pricing architecture, proof an IT buyer accepts, differentiation by constraint, sales motion per archetype |
 | BIZ-13 | Career Search | The job-search funnel, channel selection without invented conversion rates, how a resume is actually read, evidence-recovery instead of fabrication, structured-interview scoring, negotiation as a pre-commitment |
+| BIZ-14 | Geographic Sourcing | When the operator's country of residence is not the buyer's: sizing the domestic / regional / northward rings, channel classes per ring, positioning against the arbitrage instead of into it, contracting shape before any rate. Latin America and Costa Rica worked in detail |
 
 ### Trigger Table
 
@@ -36,3 +37,6 @@ Business concept prompts that guide strategic thinking and decision-making. Each
 | Several directions are plausible and nothing ranks them | BIZ-11 Strategy Design (`@biz-strategy design`) |
 | The offer is IT/software work and the buying motion is unclear | BIZ-12 IT Services Strategy |
 | Searching for a job, rewriting a CV, or preparing an interview | BIZ-13 Career Search (`@biz-career`) |
+| Living in one country and selling into another — "there is no work here" | BIZ-14 Geographic Sourcing (`@biz-career search`, `@biz-strategy` channel plan) |
+| A buyer asks why your rate is above the regional norm | BIZ-14 §4, then BIZ-12 IT Services Strategy |
+| Quoting a cross-border rate before the contracting shape is known | BIZ-14 §5 (`@biz-pricing set` must not produce a number yet) |

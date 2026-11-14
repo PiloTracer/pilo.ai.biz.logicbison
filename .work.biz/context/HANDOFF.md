@@ -1,7 +1,9 @@
 # HANDOFF — Session Bookmark
 
-> **Date:** 2026-10-25
-> **Status:** Closed — 2026-10-25 — cohabitation deploy verified live on `mendarion` (111 insertions / 0 deletions); strategy **design** mode + certify checks 14–17 + counterfactual audit; new `@biz-career` (job search, resume, interview, offer) with BIZ-13 playbook; BIZ-12 IT-services strategy lens; `docs/sources/verified-sources.md` (16 fetched sources graded, 12 marked unverified). `framework-verify` PASS (66 checks) · v0.7.0.
+> **Date:** 2026-11-14
+> **Status:** Open — 2026-11-14 — goal: improve the Business OS framework (understand, honest improvement suggestions, plan file before changes). First change applied this session: replaced the root `QWEN.md` host adapter, which was a stray byte-identical copy of `system-news/QWEN.md`.
+>
+> **Superseded open session (2026-11-05, never closed):** goal was `@biz-deploy-basic update` on `/mnt/work/Projects/system-news`. Measured 2026-11-14, the deploy **did land**: `system-news/.cursorrules` carries a paired `BIZ_DESIGN_OS_BEGIN`/`END` block, `AI_BIZ_SOURCE=/mnt/work/Projects/pilo.ai.biz.logicbison` at `.cursorrules:486`, `.work.biz/` fully scaffolded (incl. `gates.md`, `decisions/`, `reference/`), and `biz-cursorrules-merge.sh --state` reports `present`. What is missing is the **bookend**: no session summary, no NEXT row, no commit here. `NEXT.md:L18` still says "Fleet re-wiring — 1 of 15 done (mendarion)" and its 14-repo list never contained `system-news`, so the fleet count in NEXT is stale by at least one repo.
 
 ---
 
@@ -63,62 +65,7 @@
 
 ---
 
-## Session summary (2026-09-10, evidence-guard hardening close)
-
-| Step | Status |
-|------|--------|
-| Investigated thin-client commit/push failures: confirmed "evidence guard" is the Reasonix host write precondition (todo + acceptance criteria + read evidence), not a Business OS feature; repo search + git history clean | Done |
-| Patched `skills/biz-session/skill.md`: host-guard preconditions before every git step (re-read HANDOFF/NEXT/UNKNOWNS, active acceptance-criteria todo) + retry-once; wired into C6b, M5, I5, hard rules, anti-patterns | Done |
-| Patched `future-strategy/reasonix.toml` `[sandbox] allow_write`: added its own `.work.biz/` and `.git/` (was LogicBison-only, blocking bash git/writes there) | Done |
-| Gates: framework-verify PASS (rsync `--no-g` shim for sandbox chgrp), touch-scope PASS (3 files, scope declared), blast-radius PASS (2 areas), gate-verify PASS (n/a) | Done |
-
----
-
-## Session summary (2026-08-21, advisory capability + future-strategy update close)
-
-| Step | Status |
-|------|--------|
-| `@biz-deploy-basic update` on `future-strategy`: no-overwrite bootstrap honored; created missing skeletons (`strategy/README.md`, `reference/BRAND_STATUS.md`); flagged `.cursorrules` as merge candidate (custom legacy layout, stale `.ai.biz` refs) | Done |
-| Rules-aware merge of `future-strategy/.cursorrules`: all framework primaries re-pointed to verified `pilo.ai.*.logicbison` roots (biz/ai/ui/cto/mlt), Source-resolution section + `AGENT_OS_SOURCE` added, Change-safety / Protected Files / Data-loss / Verification sections added, Business OS skills table refreshed; LogicBison identity, rebranding context, CTO/MLT sections, fallback column preserved | Done |
-| `.work.biz` skeleton merge (13 files, append-only): gates.md `## Schema`, HANDOFF Pending/Key-decisions skeletons, VOICE_RETRO Trend/edit-classes added; 10 files already equivalent; user content preserved | Done |
-| Fixed `biz-cursorrules-verify.sh` pipefail abort (Agent OS cell grep pipeline missing `|| true` — exited 1 mid-run on any custom `.cursorrules`); post-deploy verification of future-strategy now PASS | Done |
-| New skill `@biz-advisory` (24th): situational counsel protocol — context contract, mandatory reframe pass (≥2 "don't sell X — sell Y" reframes), ≥5 ranked options with researched market precedent, mandatory anti-advice, parallel-track sequencing + 30-day frame, decisive recommendation, assumption ledger; calibrated against `future-strategy/.work.biz/feedback/20260820-small-rescue-team.md` | Done |
-| BIZ-10 Advisory Patterns (`concepts/advisory-patterns/`): 10 generalized judgment patterns (team-as-product, productized entry offer, trigger-based demand, anchor channel, complementor channel, dual-track hedging, customers-before-company, modular configurations, control-layer positioning, outcome-over-people) | Done |
-| New skill `@biz-sources` (25th): curates advisory sources into `.work.biz/research/sources.md` — vet (exists / says-what's-claimed / freshness / bias) or mark Unverified; verify-before-citing seed catalog (Dunford, Enns, Stark, patio11, Indie Hackers, First Round Review, Lenny's, fractional-services marketplaces) | Done |
-| Registration across 10 surfaces: skills/README (+ `advise`/`patterns`/`list` verbs), SKILL_DEPENDENCIES (ungated counsel skills), biz-director intents, START_HERE (tree + table), PROCESS_ROUTER, .cursorrules + template, README (25 skills), concepts/README (BIZ-10), CHANGELOG v0.6.2, framework-verify DOC_GENERATING | Done |
-| Gates: touch-scope PASS (16 files), blast-radius PASS, gate-verify PASS (n/a), framework-verify all green (25 skills, 15 doc-generating) | Done |
-
----
-
-## Session summary (2026-08-19, homogenization + v0.6.1 close)
-
-| Step | Status |
-|------|--------|
-| Verified uncommitted homogenization changeset against `docs/homogenization/biz.md`: sister-discovery.sh, 7-row Frameworks registry in .cursorrules + template, deploy fill, verifier cell checks, framework-verify wiring — all faithful | Done |
-| Deploy smoke `/tmp/smoke-biz`: 5 sister tokens filled at deploy time, target verifier PASS | Done |
-| Gap list resolved: F2 (`--self-test` present; source-repo run PASSes via new `source` layout), F1 (NEXT template has `## Next action`), stale tmp artifacts gone, `reasonix.toml` allow-list reset (rename-era one-offs) | Done |
-| Agent OS root check (owner directive): `agent_os_names`/`find_agent_os_dir` in sister-discovery.sh (family root `pilo.ai.logicbison` preferred, legacy `../.ai` fallback; neither → ask the operator, never guess); template `.ai` row now `REPLACE:AI_PATH`; deploy fills it; verifier validates the filled cell (STALE = FAIL) | Done |
-| Gates: framework-verify PASS (incl. new registry wiring + AI_PATH token), touch-scope PASS, gate-verify PASS (n/a), blast-radius WARN (acknowledged) | Done |
-| biz.md updated: gaps marked resolved, checklist ticked | Done |
-| Release v0.6.1: CHANGELOG cut, tag, GitHub release | Done |
-
----
-
-## Session summary (2026-08-19, consistency audit close)
-
-| Step | Status |
-|------|--------|
-| Audited today's commits (087981f, dd4531e) + framework-wide: two deep audits (skills; knowledgebase/standards/templates) + spot-checks of every finding | Done |
-| Fixed contradictions/dead refs: active-deal one-writer (BUSINESS-CONVENTIONS), README 23→24, CONVENTIONS phase chain, README `strategy_*.md` path, CHANGELOG duplicate headings, false PROTECTED_SURFACES.json claim, biz-director deploy-basic routing + strategy glob, stale `.work.biz/README` + `prompts/README` | Done |
-| Pricing dedup (low-risk, owner-approved): PRICING-STANDARD gains reduce-scope rule; retainer table moved to `biz-pricing` § Post-Delivery Offers; `biz-proposal` points at both | Done |
-| `hooks/pre-commit` change-safety gates warn-only by default (owner request: commit/push without blockers); `GATES_ENFORCE=1` restores blocking; tracking hooks unchanged; `.cursorrules` + CHANGELOG documented | Done |
-| Context budget slim: older session blocks (07-30, 07-21) moved to `HANDOFF.archive.md` | Done |
-| All 14 session files committed + pushed by owner as `33f9547` | Done |
-| Gates: touch-scope PASS, framework-verify PASS, gate-verify PASS (n/a) | Done |
-
----
-
-> Older session summaries (2026-08-19 close and earlier) moved to `context/HANDOFF.archive.md` (Context budget).
+> Older session summaries (2026-09-10 evidence-guard hardening, 2026-08-21 advisory capability, both 2026-08-19 closes, and earlier) moved to `context/HANDOFF.archive.md` (Context budget, CONVENTIONS). Newest-first; nothing deleted.
 
 ## Pending for next session
 

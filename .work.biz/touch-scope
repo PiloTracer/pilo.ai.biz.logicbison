@@ -1,54 +1,40 @@
-# Touch Scope — declared 2026-10-25 (release v0.7.0)
+# Touch Scope - declared 2026-11-14 (framework improvement round 1 + lead-facing capability)
 #
-# Session: cohabitation deploy (managed .cursorrules block) + strategy design mode +
-# @biz-career + BIZ-12/13 playbooks + verified source catalog. This is a framework
-# RELEASE, so the boundary is deliberately wide: the change is cross-surface by
-# design (a deploy script change must reach the skill doc, the templates, the
-# routing docs and the verifier, or the framework drifts). Declared here so the
-# blast-radius result is a known cost, not an accident.
+# Session scope grew in three approved steps:
+#   1. QWEN.md host adapter (committed 8bccabf).
+#   2. Plan items 1-11 from .work.biz/plans/plan_framework_improvement_20261114.md,
+#      operator-approved with "COMPLETE ALL PENDING IMPROVEMENTS".
+#   3. Operator's 7-item lead-facing request: LinkedIn, resume/CV, IT+GenAI career
+#      advice, geographic job/client sourcing (incl. Costa Rica and Latin America),
+#      marketing, hire/win-client outcomes, and a verified natural-voice floor.
 #
-# Prior scopes (2026-10-15 deploy reliability, 2026-10-09 judgment-quality layer)
-# are closed; their entries are not carried forward.
+# Cross-cutting by design: a standard change must reach the skills that consume it,
+# the routing docs and the verifier, or the framework drifts. blast-radius will
+# report high; that is a known cost of this scope, not an accident.
+#
+# Prior scopes (2026-10-25 release v0.7.0 and earlier) are closed.
 
-.cursorrules
-.work.biz/touch-scope
-.work.biz/context/HANDOFF.md
-.work.biz/plans/NEXT.md
-.work.biz/plans/UNKNOWNS.md
-CHANGELOG.md
-COHABITATION.md
-CONVENTIONS.md
+QWEN.md
 README.md
 START_HERE.md
 PROCESS_ROUTER.md
-
-# deploy surface
-scripts/biz-cursorrules-merge.sh
-scripts/biz-cursorrules-verify.sh
-scripts/biz-deploy-basic.sh
-scripts/biz-deploy-files.sh
-scripts/framework-verify.sh
-templates/cursorrules.biz.snippet.template
-templates/cursorrules.template
-templates/README.md
-templates/work/strategy/README.md.template
-
-# strategy design surface
-concepts/README.md
-concepts/strategy-design/
-concepts/it-services-strategy/
-concepts/career-search/
-skills/biz-strategy/skill.md
-skills/biz-review/skill.md
-
-# career surface
-skills/biz-career/skill.md
-skills/SKILL_DEPENDENCIES.md
-skills/README.md
-skills/biz-director/skill.md
-skills/biz-bootstrap/skill.md
-skills/biz-deploy-basic/skill.md
-skills/biz-sources/skill.md
-
-# sources of record
+CONVENTIONS.md
+CHANGELOG.md
+.cursorrules
+.work.biz/
+concepts/
 docs/sources/
+skills/biz-career/
+skills/biz-brand/
+skills/biz-writing/
+skills/biz-social/
+skills/biz-session/skill.md
+skills/biz-proposal/skill.md
+skills/biz-discovery/skill.md
+skills/biz-sources/skill.md
+skills/biz-strategy/skill.md
+skills/README.md
+standards/
+scripts/
+templates/
+agent.os.framework.md

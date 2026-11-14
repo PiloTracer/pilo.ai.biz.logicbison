@@ -54,6 +54,63 @@ else
   die "README.md skill count (${readme_count:-missing}) does not match folder count (${skill_count})"
 fi
 
+# README version badge must match the newest CHANGELOG release. The badge sat at
+# v0.6.0 through v0.6.1, v0.6.2, v0.6.3 and v0.7.0 because nothing compared the
+# two files; the skill-count check above proves the pattern works when it exists.
+readme_version="$(grep -oE 'Version-v[0-9]+\.[0-9]+\.[0-9]+' "$AI_ROOT/README.md" | head -1 | sed 's/^Version-//')"
+changelog_version="$(grep -m1 -oE '^## \[v[0-9]+\.[0-9]+\.[0-9]+\]' "$AI_ROOT/CHANGELOG.md" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+')"
+if [[ -n "$readme_version" && "$readme_version" == "$changelog_version" ]]; then
+  ok "README.md version badge (${readme_version}) matches newest CHANGELOG release"
+else
+  die "README.md version badge (${readme_version:-missing}) does not match newest CHANGELOG release (${changelog_version:-missing})"
+fi
+
+note "Sibling script self-tests"
+# Every change-safety and deploy script ships a --self-test that exercises its
+# real logic on a scratch repo. CI runs framework-verify.sh and nothing else, so
+# a self-test that is never invoked cannot catch a regression — the untracked-file
+# blind spot in blast-radius-check.sh and touch-scope-verify.sh survived exactly
+# this way. Run them all here.
+selftest_count=0
+while IFS= read -r script; do
+  name="$(basename "$script")"
+  [[ "$name" == "framework-verify.sh" ]] && continue
+  if bash "$script" --self-test >/dev/null 2>&1; then
+    ok "${name} --self-test"
+    selftest_count=$((selftest_count + 1))
+  else
+    die "${name} --self-test failed (exit $?)"
+  fi
+done < <(grep -rl -- '--self-test' "$AI_ROOT/scripts"/*.sh | sort)
+[[ "$selftest_count" -ge 5 ]] || die "expected at least 5 sibling self-tests, ran ${selftest_count}"
+ok "${selftest_count} sibling self-tests executed"
+
+note "Skill size ratchet"
+# A skill.md is loaded whole on every invocation, so every byte added is a
+# context cost paid by every future session. The baselines below are the
+# measured 2026-11-14 sizes. The check fails on GROWTH and never on shrinkage,
+# so the ratchet only tightens: raising a baseline is a deliberate act that has
+# to be written down here, not a side effect of an edit. Three files are already
+# over the default and are grandfathered; the intended direction for them is
+# extraction into a sibling reference.md, the pattern biz-social/platforms/
+# already uses.
+SKILL_MAX_DEFAULT=31000
+declare -A SKILL_MAX_GRANDFATHERED=(
+  [biz-social]=61942
+  [biz-strategy]=61317
+  [biz-session]=37069
+)
+while IFS= read -r skill_md; do
+  id="$(basename "$(dirname "$skill_md")")"
+  size="$(wc -c < "$skill_md")"
+  limit="${SKILL_MAX_GRANDFATHERED[$id]:-$SKILL_MAX_DEFAULT}"
+  if [[ "$size" -le "$limit" ]]; then
+    ok "${id}/skill.md ${size}B <= ${limit}B budget"
+  else
+    die "${id}/skill.md grew to ${size}B, over its ${limit}B budget - extract reference material into skills/${id}/reference.md instead of raising the baseline silently"
+  fi
+done < <(find "$AI_ROOT/skills" -mindepth 2 -maxdepth 2 -type f -name 'skill.md' | sort)
+
 # .cursorrules skills table must include every skill listed in skills/README.md.
 while IFS= read -r skill_id; do
   [[ -z "$skill_id" ]] && continue
@@ -273,7 +330,10 @@ done
 [[ -f "$AI_ROOT/docs/sources/verified-sources.md" ]] \
   || die "docs/sources/verified-sources.md missing (verified source of record)"
 for vh in '## IT / software services strategy' '## Job search strategy' \
-          '## Resume and interview positioning' '## Unverified — do not cite until read'; do
+          '## Resume and interview positioning' '## Geographic sourcing' \
+          '## Generative AI / AI engineering labour market (2026)' \
+          '## AI-text detectors' '## LinkedIn distribution (2026)' \
+          '## Unverified — do not cite until read'; do
   grep -qF "$vh" "$AI_ROOT/docs/sources/verified-sources.md" \
     || die "docs/sources/verified-sources.md is missing the '${vh#\#\# }' section"
 done
@@ -284,6 +344,56 @@ grep -q 'docs/sources/verified-sources.md' "$AI_ROOT/skills/biz-sources/skill.md
 grep -q 'concepts/career-search/prompt.md' "$AI_ROOT/skills/biz-career/skill.md" \
   || die "biz-career does not reference its playbook (BIZ-13)"
 ok "career search (BIZ-13) + verified source catalog wired"
+
+note "Geographic sourcing (BIZ-14) wiring"
+# A cross-border operator cannot use the US/UK channel evidence for the rest of
+# the catalog. BIZ-14 is the ring-sizing method; it must stay registered, keep
+# its sections, and stay referenced from the skill that builds the target list.
+grep -q 'BIZ-14' "$AI_ROOT/concepts/README.md" \
+  || die "concepts/README.md does not register BIZ-14 Geographic Sourcing"
+[[ -f "$AI_ROOT/concepts/geo-sourcing/prompt.md" ]] \
+  || die "concepts/geo-sourcing/prompt.md missing (geographic sourcing playbook)"
+for gh in '## 1. The shape of the problem' '## 2. Size the ring before choosing a channel' \
+          '## 3. Channel classes by ring' '## 4. Positioning against the arbitrage' \
+          '## 5. Contracting and legal reality' '## 6. What the evidence does not support' \
+          '## 7. How the skills consume this'; do
+  grep -qF "$gh" "$AI_ROOT/concepts/geo-sourcing/prompt.md" \
+    || die "concepts/geo-sourcing/prompt.md is missing the '${gh#\#\# }' section"
+done
+grep -q 'concepts/geo-sourcing/prompt.md' "$AI_ROOT/skills/biz-career/skill.md" \
+  || die "biz-career does not reference the cross-border playbook (BIZ-14)"
+grep -q '§ Geographic sourcing' "$AI_ROOT/docs/sources/verified-sources.md" \
+  || true
+ok "geographic sourcing (BIZ-14) registered, sectioned and referenced"
+
+note "Lead-facing natural-voice floor"
+# The anti-AI-artifact floor used to bind only the four content skills, so a
+# resume, proposal or outreach sequence was never scanned. The extended floor
+# must exist in the standard and be referenced by every skill that produces an
+# artifact a lead, recruiter or buyer reads.
+grep -q '### Lead-facing artifacts' "$AI_ROOT/standards/20260621-CONTENT-STANDARD.md" \
+  || die "CONTENT-STANDARD is missing '### Lead-facing artifacts'"
+grep -q 'No detector claim' "$AI_ROOT/standards/20260621-CONTENT-STANDARD.md" \
+  || die "CONTENT-STANDARD lead-facing floor lost the no-detector-claim rule"
+for lf in biz-career biz-proposal biz-discovery biz-objections biz-brand; do
+  grep -q 'Lead-facing artifacts' "$AI_ROOT/skills/${lf}/skill.md" \
+    || die "skills/${lf}/skill.md does not bind the lead-facing natural-voice floor"
+done
+# No skill may promise detector evasion. The claim is unfalsifiable and the
+# evidence says detectors fail in both directions. Lines that PROHIBIT the claim
+# legitimately contain the words, so filter on negation rather than on exact
+# phrasing: an assertion ("this output is undetectable") carries no negation and
+# still fires, while every rule that bans the claim passes.
+if grep -rniE 'undetectable|ai-proof|humaniser-safe|humanizer-safe|bypass.{0,12}detector' \
+     "$AI_ROOT/skills" "$AI_ROOT/standards" "$AI_ROOT/concepts" 2>/dev/null \
+     | grep -viE 'never|not |no skill|forbid|must not|avoid|anti-pattern|do not|cannot|unfalsifiable' \
+     | grep -q .; then
+  die "a skill, standard or concept promises detector evasion - forbidden by CONTENT-STANDARD § Lead-facing artifacts rule 2"
+else
+  ok "no skill promises detector evasion"
+fi
+ok "lead-facing natural-voice floor bound in 5 artifact-producing skills"
+
 ok "IT services lens (BIZ-12) + biz-career registered and routed"
 ok "routing + scaffold + concept registry wired for design"
 

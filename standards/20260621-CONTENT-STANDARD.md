@@ -158,6 +158,26 @@ The goal is not polished prose. The goal is a credible human talking to a peer.
 - **Substack and newsletters:** Avoid "Welcome back to another edition of…" and numbered-issue preambles before the actual content. Avoid a subject line that describes the format instead of the idea ("Thoughts on AI, part 3"). Avoid the subscribe-CTA-in-the-middle interruption unless the piece is genuinely long. Avoid a sign-off block inside the prose; bylines belong on the platform, not in the text.
 - **Threads:** Avoid porting LinkedIn thought-leadership cadence over. Threads punishes formality and rewards conversational replies. Avoid numbered listicles and avoid the X-style "🧵" thread marker.
 
+### Lead-facing artifacts (binding beyond the content skills)
+
+The floor above binds the four content skills. It also binds **every artifact a lead, recruiter, or buyer reads**, including the ones produced by skills that are not content skills and were therefore never in scope of the scan:
+
+| Artifact | Produced by |
+|----------|-------------|
+| Resume / CV, cover note, LinkedIn profile copy | `@biz-career resume`, `@biz-brand overhaul` |
+| Proposal, scope document, three-option table | `@biz-proposal write` |
+| Outreach sequence and follow-up notes | `.work.biz/pipeline/outreach-cadence.md`, `@biz-discovery` |
+| Discovery-call recap and next-step email | `@biz-discovery run` |
+| An objection answer sent in writing | `@biz-objections handle` |
+
+Rules, all binding:
+
+1. **Mechanical tics, Vocabulary red flags and Structural red flags apply unchanged** to every artifact above. They are a floor; no project file overrides them, exactly as in § Relationship to the project voice profile.
+2. **No detector claim, ever.** No artifact, skill, report, or operator-facing message may state or imply that its output is "undetectable", "AI-proof", "humaniser-safe", "passes Turnitin/GPTZero", or otherwise verified by an AI-text detector. The measured evidence runs in both directions at once: detectors classified **61.22% of 91 TOEFL essays** as AI-generated, with 97% flagged by at least one of seven detectors (Liang et al., *Patterns* 4(7):100779, 2023, grade B), and in a 160-document ground-truth set Turnitin and GPTZero detected **0% of the fully-AI papers** (Van Vlasselaer, *Int J Educ Technol High Educ*, 2026, grade B). A detector verdict is not evidence about authorship in either direction. Rows and grades: `docs/sources/verified-sources.md` § AI-text detectors.
+3. **The justification is reader trust, not evasion.** A buyer or recruiter who notices generated prose discounts the claim being made, not the grammar. The scan exists because artifacts read as careless, and because a proposal that reads as careless is priced as careless.
+4. **Second-language English is a voice, not a defect.** Rules `reference/VOICE_PROFILE.md` marks as **texture** must not be corrected away. Detectors score perplexity, which correlates with lexical and syntactic complexity, so "reducing detection risk" and "writing away from a legitimate non-native register" are the same action. That is the operative risk for any operator writing in a second language, and it is a reason to protect the voice profile, not to flatten it.
+5. **Scan before it leaves the building, and report the result.** The AI-artifact scan in the delivery checklist is mandatory for lead-facing artifacts too. Report that the scan ran and what it found; never assert a clean result without running it.
+
 ## Graded claims (mandatory on commentary content)
 
 Commentary inherits other people's facts. Without grading, their errors silently become yours, and a single unverifiable inherited claim can cost more credibility than the piece earns.

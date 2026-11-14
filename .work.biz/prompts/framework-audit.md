@@ -35,9 +35,17 @@ approves them in the same message.
 
 ## Report
 
-Write `.work/reports/YYYYMMDD-<framework>-audit.md` with: scope, per-check
+Write `<work root>/reports/YYYYMMDD-<framework>-audit.md` with: scope, per-check
 pass/fail with evidence (`path:L<n>`), findings classified
 `confirmed` | `inference` | `unknown`, and a proposed fix list (not applied).
+
+`<work root>` is the target framework's own project memory, never a hardcoded
+path: `.work/` for Agent OS, `.work.biz/` for Business OS, `.work.ui/` for UI
+Design OS. Confirm it from the target's `.cursorrules` placeholder map before
+writing; the hardcoded `.work/` this file used to carry is wrong in every
+non-Agent-OS repo. A forward-looking plan an operator approves work from belongs
+in `<work root>/plans/plan_<topic>.md` instead — Business OS binds the split in
+`CONVENTIONS.md` § Plan vs report.
 
 ## Constraints
 

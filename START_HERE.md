@@ -182,17 +182,35 @@ These project-aware generative skills run any time — even before bootstrap. Th
 
 ## 7. Reading order
 
-| Step | File | Why |
-|------|------|-----|
+Two tiers, because a flat list nobody implements gets either ignored or over-read.
+
+**Load tier 1 with a skill, not by hand:** `@biz-session start` (marks the session open) or `@biz-session context` (read-only, uncommitted-aware, writes nothing). Both read exactly the tier 1 set below; `start` is `skills/biz-session/skill.md` § S1.
+
+### Tier 1 — every session start
+
+| # | File | Why |
+|---|------|-----|
 | 1 | `.cursorrules` | Identity, core principles, protected items |
-| 2 | `README.md` | Canonical map |
-| 3 | `.work.biz/gates.md` | Which readiness gates are PASS |
-| 4 | `.work.biz/context/HANDOFF.md` | Last session state |
-| 5 | `.work.biz/plans/NEXT.md` | Tactical next action |
-| 6 | `skills/README.md` | Registered skills |
-| 7 | The specific `skill.md` you're invoking | Verbs and gates |
-| 8 | The specific standard | Binding rules |
-| 9 | `.work.biz/decisions/DECISIONS.md` | Open decisions and their review dates — read before advising, pricing, or routing |
+| 2 | `.work.biz/gates.md` | Which readiness gates are PASS |
+| 3 | `.work.biz/context/HANDOFF.md` | Last session state |
+| 4 | `.work.biz/plans/NEXT.md` | Tactical next action |
+| 5 | `.work.biz/plans/UNKNOWNS.md` | Open questions and blocked decisions |
+| 6 | `.work.biz/reference/CONTENT_STATUS.md` | Content pipeline brief, when the tracker exists |
+
+### Tier 2 — on demand, never by default
+
+| Read it when | File |
+|--------------|------|
+| You invoke a skill | that `skills/<id>/skill.md` — sizes vary by more than 10x across skills |
+| A rule carries the decision | the relevant **section** of the binding `standards/*.md`, not the whole file |
+| You do not know which skill to run | `skills/README.md`, or skip it and invoke `@biz-director - <what you want>` |
+| You are lost about the framework itself | `README.md` (map) or this file (decision tree) |
+| A convention is in question | the relevant **section** of `CONVENTIONS.md` |
+| You advise, price, or route | `.work.biz/decisions/DECISIONS.md` — open decisions and their review dates |
+
+**Why the split (measured 2026-11-14):** the previous flat 9-step list cost ~177 KB (~44k tokens) for a `@biz-strategy` session and ~206 KB (~51k tokens) for `@biz-strategy design`. Roughly 48 KB of that was `README.md` + `skills/README.md` + `CONVENTIONS.md`, none of which `@biz-session start` § S1 reads. The list and the protocol contradicted each other; this tier split makes §7 describe what the start protocol actually does. Sizes are recorded in `.work.biz/plans/plan_framework_improvement_20261114.md`, deliberately not here, so this file cannot drift when a file grows.
+
+**Per-invocation cost is a separate problem.** Tier 2 row 1 is the largest single item for heavy skills, and `biz-social` already solves it by keeping platform detail in `platforms/*.md` and loading one guide at a time. Skills that have not been split load whole. Tracked as item 9b in the plan above.
 
 ---
 

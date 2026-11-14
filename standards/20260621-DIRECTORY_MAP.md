@@ -62,6 +62,15 @@ Stored in the consumer project. Never copied from source; owned by the user and 
 │                              # Created on first publish to that platform, not at bootstrap
 ├── research/
 │   └── research_index.md      # Research index
+├── reports/                   # Dated audits and improvement plans of record,
+│                              # `YYYYMMDD-<topic>.md`. Produced by the portable
+│                              # prompts in `prompts/`, or by an audit an operator
+│                              # asked for. Read-only history: a report is never
+│                              # rewritten, a follow-up writes a new dated file.
+├── prompts/                   # Portable, reusable framework prompts. Each is
+│                              # self-contained and re-runnable inside any OS
+│                              # framework repo; `README.md` indexes them and
+│                              # records which are approved vs superseded.
 ├── reference/                 # Project reference files
 │   ├── CONTENT_STATUS.md      # Publish/status tracker for all content
 │   ├── BRAND_STATUS.md        # Brand audit history + overhaul log (brand-ready evidence)

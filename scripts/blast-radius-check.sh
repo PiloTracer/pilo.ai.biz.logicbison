@@ -79,8 +79,12 @@ collect_files() {
     echo "measuring: staged content (what the next commit carries)" >&2
     printf '%s\n' "$staged"
   else
-    echo "measuring: working tree vs HEAD (nothing staged)" >&2
+    # Untracked files count here. `git diff HEAD` is blind to them, so a session
+    # that scaffolds a new tree (a new skill folder, a bootstrap run) used to be
+    # rated on the tracked half of its own change.
+    echo "measuring: working tree vs HEAD, incl. untracked (nothing staged)" >&2
     git diff --name-only HEAD 2>/dev/null || true
+    git ls-files --others --exclude-standard 2>/dev/null || true
   fi
 }
 
@@ -101,6 +105,13 @@ if [ "$SELF_TEST" -eq 1 ]; then
   # This is the exact case the old HEAD-diff behavior failed.
   mkdir -p "$tmp/a" "$tmp/b" "$tmp/c"
   echo x > "$tmp/a/1"; echo x > "$tmp/b/1"; echo x > "$tmp/c/1"
+
+  # Untracked with nothing staged: the three new areas must already rate high
+  # risk. Before untracked-awareness this measured files=0 and passed silently.
+  if ( cd "$tmp" && collect_files | measure >/dev/null ); then
+    echo "blast-radius-check self-test: FAIL (three untracked areas, nothing staged, should fail)" >&2; fail=1
+  fi
+
   git -C "$tmp" add a/1
   if ! ( cd "$tmp" && collect_files | measure >/dev/null ); then
     echo "blast-radius-check self-test: FAIL (one staged area amid three changed areas should pass)" >&2; fail=1

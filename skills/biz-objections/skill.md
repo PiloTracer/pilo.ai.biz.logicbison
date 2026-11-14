@@ -17,6 +17,8 @@ Objections are not rejections. They're questions the prospect needs answered bef
 - **Never discount on the first objection.** Discounting trains the client to object more. Address the concern first.
 - **Objections are about one of three things:** Value (don't see the ROI), Trust (don't believe you can deliver), or Risk (afraid of making a bad decision). Identify which one before responding.
 
+**Lead-facing floor (binding).** When an objection response is delivered in writing rather than spoken — an email, a proposal addendum, a message thread — `standards/20260621-CONTENT-STANDARD.md` § Lead-facing artifacts binds on it. Run the AI-artifact scan before it is sent and report that it ran. This matters more here than elsewhere: an objection is a trust moment, and a scripted-sounding answer confirms the buyer's suspicion rather than answering it. Never describe output as undetectable or AI-proof; § Lead-facing artifacts rule 2 forbids the claim.
+
 ## Modes
 
 ### handle

@@ -107,6 +107,8 @@ Mode words: `start` | `close` | `commit` | `add` | `context` | `status`. Modifie
 
 **Aliases (same verb):** `begin`, `open` → start; `end`, `handoff` → close. `@session-control …` maps to `@biz-session …` for every verb above.
 
+**Name collision — read this in a cohabitation repo.** Agent OS owns a *different* skill with the same name (`pilo.ai.logicbison/skills/session-control/`), with its own repo-mode detection and its own `.work/` state paths. Where both frameworks are installed the alias is genuinely ambiguous, and resolving it to Business OS would write `.work.biz/` when the operator meant `.work/`. Rule: **`@biz-session <verb>` is the canonical form for Business OS work, always.** Treat a bare `@session-control` as Agent OS's unless the repo runs Business OS only. This skill's alias exists for single-framework Business OS repos (Key decision 23); it is a convenience, not a claim on the name.
+
 **Goal text:** anything after `-` or on a new line after `start` (not the words `commit` / `push` / `scoped`).
 
 **Standalone `commit` / `commit push` / `add`:** the verb `commit` or `add` **without** `close` runs the git-only protocol (I4 / I5). The session remains open; HANDOFF, NEXT, and UNKNOWNS are **not** touched. (In this skill, `commit` as a *modifier of close* closes first; `commit` as the *verb* does not.)

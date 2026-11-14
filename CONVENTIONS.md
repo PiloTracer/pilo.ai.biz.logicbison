@@ -14,7 +14,10 @@
 - Plans: `plan_<topic>.md` under `.work.biz/plans/`
 - Drafts: `draft_<topic>.md` under `.work.biz/drafts/`
 - Research: `research_<topic>.md` under `.work.biz/research/`
+- Audits and reports of record: `YYYYMMDD-<topic>.md` under `.work.biz/reports/`
 - Use `YYYYMMDD-` prefix for dated documents
+
+**Plan vs report (binding).** A **plan** is forward-looking and gets superseded: it lives in `plans/plan_<topic>.md`, it carries a Status header, and it is the file an operator approves work from. A **report** is a record of work already measured and is never rewritten: it lives in `reports/YYYYMMDD-<topic>.md`, and a follow-up writes a new dated file rather than editing the old one. An audit that proposes changes is therefore *both*: the findings go in `reports/`, the approved work goes in `plans/`. Before this rule the two prior improvement plans landed in `reports/`, so neither location was canonical.
 
 **Path rule:** `biz-strategy` writes strategy artifacts to `.work.biz/strategy/`. All other skills read strategy artifacts from `.work.biz/strategy/`. `strategy_*.md` files under `.work.biz/plans/` are historical/ad-hoc only; on any conflict, `strategy/` is canonical.
 
@@ -32,6 +35,8 @@
 - `reference/VOICE_RETRO.md` — draft vs owner edits; amend the voice profile when an edit class repeats three times
 - `strategy/` — strategy artifacts (canonical location; see Document naming below)
 - `decisions/DECISIONS.md` — decision ledger: what was decided, the falsifiable expected outcome, and what actually happened (see Decision loop)
+- `reports/` — dated audits and reports of record, `YYYYMMDD-<topic>.md`; never rewritten (see Plan vs report)
+- `prompts/` — portable, reusable framework prompts; `prompts/README.md` indexes them and records approved vs superseded
 
 ## Content Status Protocol (binding for all content skills)
 

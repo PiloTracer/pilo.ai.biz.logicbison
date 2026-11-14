@@ -17,6 +17,8 @@ This skill covers three modes:
 | **overhaul** | `biz-brand overhaul` | Full rewrite of LinkedIn profile, website positioning, and brand asset consistency |
 | **status** | `biz-brand status` | Read-only state report of current brand configuration |
 
+**Lead-facing floor (binding).** LinkedIn headline, About section, experience entries and website positioning copy are read by a buyer forming a first judgement in seconds, so `standards/20260621-CONTENT-STANDARD.md` § Lead-facing artifacts binds on everything `overhaul` writes. Run the AI-artifact scan before delivery and report that it ran. Profile copy is the worst place for generated prose, because it is the one artifact whose entire job is to sound like a specific person. Never describe output as undetectable or AI-proof; § Lead-facing artifacts rule 2 forbids the claim.
+
 ---
 
 ## I0 - Gate pre-check

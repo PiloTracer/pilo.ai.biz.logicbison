@@ -21,6 +21,8 @@ Run the review checklist before sending a proposal.
 ### status — Proposal Pipeline Report
 Report the current pipeline of sent/pending/closed proposals.
 
+**Lead-facing floor (binding).** A proposal is the highest-stakes artifact a buyer reads before committing money, so `standards/20260621-CONTENT-STANDARD.md` § Lead-facing artifacts binds on everything `write` and `review` produce, including the scope narrative, the option table copy and the covering email. Run the AI-artifact scan before delivery and report that it ran and what it found. A proposal that reads as generated is priced as careless, which is a margin problem and not a grammar problem. Never describe output as undetectable or AI-proof; § Lead-facing artifacts rule 2 forbids the claim.
+
 ---
 
 ## I0 — Gate pre-check

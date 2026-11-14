@@ -22,10 +22,13 @@ Invocations like `@biz-session start`, `@biz-strategy design`, `@biz-director - 
 
 | Prefix | Source root |
 |--------|-------------|
-| `@biz-*` | this repo |
-| none: `@session-control`, `@code-implementation`, `@code-verify`, `@plan-*`, `@feature-spec`, `@db-migration`, `@docs`, `@ai-director`, `@x-director` | `/mnt/work/Projects/pilo.ai.logicbison` |
+| `@biz-*` (including `@biz-session`) | **this repo** |
+| `@session-control` | **this repo** - it is an alias of `biz-session` (`skills/biz-session/skill.md:L108`). Do **not** route it to Agent OS from here. Agent OS owns a *different* skill of the same name, so in a cohabitation repo the bare alias is ambiguous and `@biz-session <verb>` is the form to use. |
+| none: `@code-implementation`, `@code-verify`, `@plan-*`, `@feature-spec`, `@db-migration`, `@docs`, `@ai-director`, `@x-director` | `/mnt/work/Projects/pilo.ai.logicbison` |
 | `@ui-*` | `/mnt/work/Projects/pilo.ai.ui.logicbison` |
 | `@cto-*` / `@mlt-*` / `@soc-*` / `@flutter-*` | `/mnt/work/Projects/pilo.ai.<fw>.logicbison` |
+
+**Session bookends are the entry point for context.** `@biz-session start` loads the session and marks `HANDOFF.md` open; `@biz-session context` is the same load, read-only and uncommitted-aware, and writes nothing. The verb is `context` on its own - there is no `context load` form. Both read exactly the tier 1 set in `START_HERE.md` § 7; do not hand-read the tier 2 files (`README.md`, `skills/README.md`, `CONVENTIONS.md`) at session start, and never load a `skill.md` you are not invoking.
 
 Sister roots resolve through `scripts/sister-discovery.sh` and the Frameworks registry in `.cursorrules`; prefer those over hardcoding. If a source root is missing or unreadable, stop and report `<framework> source unreachable: <path>`. No fallback, no guessing.
 
