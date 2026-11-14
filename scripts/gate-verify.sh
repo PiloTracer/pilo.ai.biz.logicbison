@@ -12,7 +12,15 @@
 # Use --warn-only to report findings and exit 0. Use --self-test to check the parsers.
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Resolve the repo under test. In a thin-client target project the script lives in the
+# framework but must measure the project, so prefer $BIZ_TARGET_ROOT, then the git toplevel of
+# the cwd. Falling back to the framework root keeps source-repo and CI behaviour unchanged.
+FRAMEWORK_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [ -n "${BIZ_TARGET_ROOT:-}" ]; then
+  REPO_ROOT="$BIZ_TARGET_ROOT"
+else
+  REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || echo "$FRAMEWORK_ROOT")"
+fi
 fail=0
 WARN_ONLY=0
 SELF_TEST=0
