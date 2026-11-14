@@ -236,6 +236,21 @@ Design writes `situation-audit.md`, `design-record.md`, the bets, and one decisi
 
 Winner must beat the runner-up by ≥5 weighted points; below that the 2-point sensitivity swing decides. Full anchors, archetypes, moat taxonomy and the breakeven worksheet live in `concepts/strategy-design/prompt.md` (BIZ-11).
 
+## Release process (binding for the framework source repo)
+
+A release is four artifacts that must move together. Splitting them is how v0.6.2, v0.6.3 and v0.7.0 shipped with no git tag, and how the `README.md` badge sat at v0.6.0 for four releases. Neither drift was visible, because nothing compared the files and nothing in this document mentioned `CHANGELOG.md` at all.
+
+1. **`CHANGELOG.md`** — add `## [vX.Y.Z] - YYYY-MM-DD` at the top, above the previous entry. Never rewrite a published entry; a correction gets a new entry.
+2. **`README.md` badge** — `Version-vX.Y.Z` in both the label and the badge target, equal to the newest CHANGELOG version. `scripts/framework-verify.sh` enforces the equality.
+3. **Git tag** — `git tag -a vX.Y.Z -m "<summary>"` on the release commit. `framework-verify` enforces that the newest CHANGELOG version is tagged, and `.github/workflows/framework-verify.yml` fetches tags so CI can actually run that check instead of skipping it.
+4. **Push commit and tag together** — `git push && git push origin vX.Y.Z`. The tag push is what triggers the workflow's `tags: ['v*']` path; pushing the commit alone leaves that path untested.
+
+**Version bumps.** `MAJOR` for a breaking change to a skill's invocation contract or to the `.work.biz/` layout. `MINOR` for a new skill, concept, standard, or binding rule. `PATCH` for corrections, evidence refreshes and verifier fixes.
+
+**Versions are monotonic against `CHANGELOG.md`, not against the tag list.** If a past release was never tagged, do not back-tag it at a lower number than one already published; tag forward from the next release and record the gap in that entry. A missing historical tag is a documented gap, not a licence to renumber.
+
+This section binds the framework source repo only. Consumer projects do not release the framework and carry no `CHANGELOG.md` of their own.
+
 ## Business Phase Lifecycle
 
 ```

@@ -65,6 +65,19 @@ else
   die "README.md version badge (${readme_version:-missing}) does not match newest CHANGELOG release (${changelog_version:-missing})"
 fi
 
+# The newest CHANGELOG release must carry a git tag. v0.6.2, v0.6.3 and v0.7.0
+# were all documented and pushed with no tag, so the tag-triggered CI path never
+# ran for three consecutive releases and nothing noticed. Skipped when the clone
+# carries no tags at all: a shallow or CI checkout without fetch-tags has none,
+# and a false failure there would be worse than no check.
+if [[ -z "$(git -C "$AI_ROOT" tag 2>/dev/null)" ]]; then
+  note "no tags in this clone (shallow, or CI without fetch-tags) — release-tag congruence skipped"
+elif git -C "$AI_ROOT" rev-parse -q --verify "refs/tags/${changelog_version}" >/dev/null 2>&1; then
+  ok "newest CHANGELOG release ${changelog_version} is tagged"
+else
+  die "CHANGELOG documents ${changelog_version} but no git tag exists for it — tag the release commit and push the tag with the commit"
+fi
+
 note "Sibling script self-tests"
 # Every change-safety and deploy script ships a --self-test that exercises its
 # real logic on a scratch repo. CI runs framework-verify.sh and nothing else, so

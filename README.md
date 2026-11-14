@@ -1,7 +1,7 @@
 # Business OS — turn your career into a business
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version: v0.7.0](https://img.shields.io/badge/Version-v0.7.0-blue.svg)](CHANGELOG.md)
+[![Version: v0.8.0](https://img.shields.io/badge/Version-v0.8.0-blue.svg)](CHANGELOG.md)
 
 > Your freelance/consulting business has no CRM, no sales playbook, no repeatable pipeline — just you guessing what to do next. **Business OS fixes that** with a complete set of repeatable **skills**, binding **standards**, and a tiny **project-memory** folder.
 

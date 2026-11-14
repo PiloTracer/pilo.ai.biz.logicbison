@@ -114,12 +114,31 @@ SKILL_EXCLUDE_REGEX='^(\.github/|\.gitignore$|\.gitattributes$|\.cursorrules$|sc
 
 TMP_LIST="$(mktemp)"
 MERGE_CANDS="$(mktemp)"
-trap 'rm -f "$TMP_LIST" "$MERGE_CANDS"' EXIT
+MISSING_LIST="$(mktemp)"
+trap 'rm -f "$TMP_LIST" "$MERGE_CANDS" "$MISSING_LIST"' EXIT
 
+# `git ls-files --cached --others` lists paths in the INDEX, which includes a file
+# deleted from the worktree whose deletion is not yet staged. rsync aborts on such
+# a path with exit 23 and an error that names rsync, not the missing file, so
+# filter to paths that actually exist and report what was dropped.
 ( cd "$BIZ_ROOT" \
   && git ls-files --cached --others --exclude-standard \
-  | grep -vE "$SKILL_EXCLUDE_REGEX" \
+  | { grep -vE "$SKILL_EXCLUDE_REGEX" || true; } \
+  | while IFS= read -r rel; do
+      if [[ -z "$rel" ]]; then
+        continue
+      elif [[ -e "$rel" ]]; then
+        printf '%s\n' "$rel"
+      else
+        printf '%s\n' "$rel" >> "$MISSING_LIST"
+      fi
+    done \
 ) > "$TMP_LIST"
+
+if [[ -s "$MISSING_LIST" ]]; then
+  echo "  skipped (in git index but absent from worktree): $(wc -l < "$MISSING_LIST" | tr -d ' ')"
+  sed 's/^/    - /' "$MISSING_LIST"
+fi
 
 COUNT="$(wc -l < "$TMP_LIST" | tr -d ' ')"
 mkdir -p "$DEST_DIR"

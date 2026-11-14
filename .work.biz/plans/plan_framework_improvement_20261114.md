@@ -180,11 +180,17 @@ All approved by the operator in one message ("COMPLETE ALL PENDING IMPROVEMENTS"
 
 ## Decisions
 
-1. **Item 12** - fix `scripts/biz-deploy-files.sh:L120` so a staged-but-uncommitted deletion cannot abort a deploy with rsync exit 23? Low risk, and the failure mode is cryptic.
-2. **Item 9b** - proceed with extracting `biz-strategy` I1 Greenfield + I2c Reconcile + I2d Career (300 lines, zero verifier couplings) into `skills/biz-strategy/reference.md`? Cuts that skill's per-invocation load by roughly 37%. Needs its own session: the 11 couplings in Design and Certify must stay in `skill.md`, and a new check should assert `reference.md` is actually referenced so the split cannot silently orphan content.
-3. **`BRAND-GUIDE.md`** at 2,527 B is the thinnest binding standard in the framework and carries `brand-ready`. Expand it, or is its brevity deliberate?
-4. **`linkedin-video.md`** (405 lines) still carries "first comment" posting-ritual advice that was not re-verified against 2026 evidence. Give it the same correction pass?
-5. **Release**: round 1 + round 2 together are a coherent v0.8.0 (2 new verifier blocks, 1 new concept, 1 extended binding standard, 3 corrected platform tactics). Cut it, or hold until item 9b lands?
+All five resolved by the operator on 2026-11-14 and recorded as Key decisions 46-53 in `context/HANDOFF.md`.
+
+1. **Item 12** - resolved: `scripts/biz-deploy-files.sh:L120` now filters the rsync list to paths that exist and reports dropped entries by name. Applied.
+2. **Item 9b** - resolved as *deferred with the seam measured*: the operator chose Tier 1 scope only. The ratchet is in place; the 300-line extraction is `NEXT.md:L59` (#30) and needs its own session.
+3. **`BRAND-GUIDE.md`** - resolved: **thin by design**, operator decision 2026-11-14. Recorded as Key decision 51 and in the v0.8.0 CHANGELOG "Known gaps" so a future session does not "fix" it by padding.
+4. **`linkedin-video.md`** - resolved: corrected in five places (culture fundamentals, Step 5 resource routing, deliverable list, posting ritual items 3/5/6, QA checklist). Applied.
+5. **Release** - resolved: **v0.8.0**, not v0.7.1. The operator first chose v0.7.1, then re-chose v0.8.0 once `CONVENTIONS.md` § Release process classified a new concept plus two new binding rules as MINOR. Version chosen before tagging, since a pushed tag is effectively immutable.
+
+### Version-congruence note
+
+The operator's first answer was v0.6.5, which would have been a **regression**: `CHANGELOG.md:L5` already documented v0.7.0 and was pushed. Flagged before tagging rather than applied, because it would have made the version history non-monotonic and immediately failed the version-congruence check added earlier in the same session. v0.6.2, v0.6.3 and v0.7.0 remain untagged as a documented gap; `CONVENTIONS.md` § Release process now forbids back-tagging below a published version.
 
 ## Open questions
 

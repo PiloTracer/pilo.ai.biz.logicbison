@@ -246,8 +246,14 @@ sales-ready|Sales|pipeline/pipeline_tracker.md
 active-deal||pipeline/pipeline_tracker.md
 "
 
-if [ ! -f "$GATES" ]; then
-  echo "skip: no .work.biz/gates.md — gate ledger checks not applicable"
+if [ ! -d "$WORK" ]; then
+  echo "skip: no .work.biz/ — not a Business OS project, gate ledger checks not applicable"
+elif [ ! -f "$GATES" ]; then
+  # A bootstrapped project that has lost its ledger must not pass silently. Every
+  # gate check below would be skipped and the script would still print PASS, which
+  # is the worst possible outcome for a framework whose gates are its main claim.
+  # Distinguish that from a repo that never had .work.biz/ at all.
+  gate_fail ".work.biz/ exists but gates.md is missing — gate claims cannot be verified without a ledger; re-run @biz-bootstrap to restore it"
 else
   while IFS='|' read -r gate phase evidence; do
     [ -z "$gate" ] && continue

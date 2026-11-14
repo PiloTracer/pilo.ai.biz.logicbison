@@ -12,6 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # framework-verify checks that the newest CHANGELOG release is tagged.
+          # Without this the default checkout carries no tags and the check skips.
+          fetch-tags: true
+          fetch-depth: 0
 
       - name: Run framework-verify
         run: bash scripts/framework-verify.sh

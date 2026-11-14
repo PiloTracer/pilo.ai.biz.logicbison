@@ -12,7 +12,7 @@ This guide treats LinkedIn video as a **teachable production discipline**, not a
 - **Silent autoplay dominates.** 70–80% of LinkedIn feed video is watched without sound [Unverified — directional benchmark based on platform behavior reports; test with your own analytics]. The first frame, captions, and on-screen text must carry the hook before anyone presses play.
 - **Brevity wins in feed.** 30–90 seconds is the sweet spot for feed-native video. Longer videos (3–5 min) work only when the topic justifies depth and the viewer is already warm.
 - **Native upload outperforms links.** Always upload the video file directly to LinkedIn. Links to YouTube, Loom, or Vimeo get throttled.
-- **The first 60 minutes still rule.** Early engagement signals tell LinkedIn whether to expand distribution. Post when you can be present to reply.
+- **The first hour is a launchpad, not the verdict.** *(Corrected 2026 — this used to say the first 60 minutes rule.)* Early engagement still helps LinkedIn decide whether to expand distribution, but relevance-over-recency now keeps posts circulating for two to three weeks. Post when you can be present to reply, and do not judge a video by its first hour or repost it. See `docs/sources/verified-sources.md` § LinkedIn distribution (2026), grade C.
 
 ---
 
@@ -122,20 +122,26 @@ SHOT 5 — CTA (1:05–1:15)
   Audio: [ask the question]
 ```
 
-#### Step 5 — Post copy + first comment
+#### Step 5 — Post copy + resource routing
 
 ```
 POST COPY (above the video)
   — 2–4 lines. Restate the hook. Add one line of context.
-  — No external links. No hashtags in the first line.
+  — No external links. No hashtags in the first line. 0–3 hashtags total, or none.
   — Example:
     "This one Postgres mistake almost delayed the launch by a week.
 
     60 seconds on what we caught — and the query plan rule we now check every time."
 
-FIRST COMMENT (within 60 seconds of posting)
-  — Add any link, resource, or deeper context here.
-  — Example: "The full case study with the query plan screenshots: [link]"
+RESOURCE ROUTING (zero-click — corrected 2026)
+  — Do NOT put links in a first comment. That workaround is now detected and
+    suppressed on LinkedIn, reported at 20–80% reach reduction. This guide
+    recommended it before v0.7.1.
+  — Put the resource in the profile Featured section or the bio, then name it
+    in words in the post copy.
+  — Example: "Full case study with the query plan screenshots is in Featured."
+  — The video is native and on-platform, so it carries no outbound penalty.
+    Let it be the whole deliverable.
 ```
 
 #### Step 6 — Deliver
@@ -146,11 +152,11 @@ Provide:
 2. **Shot list** (what to capture)
 3. **Caption file template** (or guidance for burned-in captions)
 4. **Post copy** (above-video text)
-5. **First comment copy** (if links/resources apply)
+5. **Resource routing note** — where links live instead (profile Featured or bio), never a first comment
 6. **Platform notes** — why this works for LinkedIn specifically
 7. **Equipment setup** — minimum or upgraded
 8. **Posting time suggestion**
-9. **Engagement plan** — first 60 minutes
+9. **Engagement plan** — first two hours, and the two-to-three-week tail
 
 ---
 
@@ -274,10 +280,10 @@ LinkedIn video pacing should feel slightly faster than a YouTube tutorial but sl
 
 1. **Upload the MP4 directly.** Do not paste a YouTube, Loom, or Vimeo link.
 2. **Write post copy** (2–4 lines, no external links).
-3. **Add 3–5 relevant hashtags** in the post copy, not the first line.
+3. **Hashtags: 0–3, or none.** *(Tightened 2026 from "3–5".)* 10+ is a reported visibility penalty and semantic analysis now does the topic matching.
 4. **Post when you can engage.** Tuesday–Thursday, 8–10 AM or 12–1 PM local audience time.
-5. **First comment within 60 seconds.** Add links, resources, or deeper context there.
-6. **First 60 minutes:** Reply to every comment; comment on 5–10 posts from your target buyer.
+5. **Zero-click — no first comment with links.** *(Corrected 2026 — this guide used to say "first comment within 60 seconds".)* The first-comment workaround is now detected and suppressed on LinkedIn, reported at 20–80% reach reduction. Put resources in the profile Featured section or bio and name them in words in the post copy.
+6. **First two hours:** reply to every comment in 3+ sentences, and comment on 5–10 posts from your target buyer. Do this because it builds the relationship and adds a signal, not because a 60-minute window closes.
 
 ---
 
@@ -377,7 +383,9 @@ Before delivering or publishing, verify:
 - [ ] Audio is clear and free of echo/background noise.
 - [ ] Lighting shows your face; no harsh shadows or blown-out window behind you.
 - [ ] Video uploaded natively, not linked from another platform.
-- [ ] Engagement plan is ready for the first 60 minutes.
+- [ ] Engagement plan covers the first two hours and the two-to-three-week resurfacing tail.
+- [ ] Zero-click: no external link in the post copy **and none in a first comment**.
+- [ ] Hashtags 0–3, not 3–5 and never 10+.
 - [ ] AI-artifact scan passed: no em-dash overuse, hedging fillers, generic transitions, passive voice, or empty intensifiers in the spoken script.
 
 ---
