@@ -101,7 +101,7 @@ List every asset, including the ones the operator is underpricing:
 - **Structural assets** — an existing team that already knows how to work together, an audience, a pipeline, a reputation.
 - **Tooling leverage** — e.g. AI fluency, positioned as a *control layer* (judgment + QA over AI acceleration), never as "we know tool X".
 
-Then attempt **at least 2 reframes** using the pattern library (`concepts/advisory-patterns/`, BIZ-10). The canonical reframe moves: individuals → delivery unit · skill → productized outcome · history → first sales channel · competitor → complementor channel (agencies as overflow) · tool fluency → governed acceleration. State each reframe as **"don't sell X — sell Y"** with the actual sentence the operator could use.
+Then attempt **at least 2 reframes** using the pattern library (`concepts/advisory-patterns/`, BIZ-10). The canonical reframe moves: individuals → delivery unit · skill → productized outcome · history → first sales channel · competitor → complementor channel (agencies as overflow) · tool fluency → governed acceleration. State each reframe as one affirmative sentence the operator could say to a buyer: what is being sold, and the outcome. Do not write "don't sell X, sell Y" and do not use an em dash. That shape is banned in `standards/20260621-CONTENT-STANDARD.md` § Contrastive negation, and the operator will repeat the sentence in posts and proposals.
 
 ### Step 3 — Option generation
 
@@ -184,7 +184,7 @@ Report: operator/team profile as loaded, active strategy presence, pipeline evid
 
 ## Quality check before delivering (run internally)
 
-- [ ] Did I reframe at least twice, with usable "don't sell X — sell Y" sentences?
+- [ ] Did I reframe at least twice, each as an affirmative sentence a buyer could hear, with no contrastive negation and no em dash?
 - [ ] ≥5 distinct approaches, ranked, each traced to confirmed assets?
 - [ ] Every market claim cited from research **and graded A–D**, or marked Unverified?
 - [ ] Did I name the reference class and what normally happens to it — before ranking?

@@ -208,9 +208,9 @@ Output this table as a document: open it with a Status/Needs header (≤4 lines 
 
 ### Posting ritual (every publish day)
 
-1. Post body — **no external links**
-2. First comment within 60 seconds — links if needed
-3. First 60 minutes — reply to every comment; comment on 5–10 ICP posts
+1. Post body, with no external URL, and no URL in a first comment either. Name a resource in words and point to Featured or the bio.
+2. Reply while you are at the keyboard. A flat first hour is not a dead post: LinkedIn keeps posts circulating for two to three weeks. Do not delete and repost because hour one was quiet.
+3. Comment on 5–10 ICP posts in the same sitting. Answer later comments too; the post is live for weeks, not for an hour.
 4. Update `.work.biz/reference/CONTENT_STATUS.md` — mark the piece published with date and platform
 5. Log in tracker (`status` mode): format, hook style, impressions at 48h
 

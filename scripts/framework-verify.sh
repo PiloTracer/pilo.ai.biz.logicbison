@@ -407,6 +407,35 @@ else
 fi
 ok "lead-facing natural-voice floor bound in 5 artifact-producing skills"
 
+note "LinkedIn drafting path matches the 2026 correction"
+# The platform guides were corrected in v0.8.0. The skills that draft the post
+# kept the old instruction (link in the first comment, 3-5 hashtags, first hour
+# as the verdict). These strings are that old instruction. A prohibition that
+# mentions the tactic in order to ban it must not use these exact phrases.
+for stale in \
+  "skills/biz-writing/skill.md|first-comment suggestion" \
+  "skills/biz-social/skill.md|first-comment suggestion" \
+  "skills/biz-social/skill.md|post the link as the first comment" \
+  "skills/biz-content/skill.md|First comment within 60 seconds" \
+  "standards/20260621-CONTENT-STANDARD.md|First comment: links to resources"
+do
+  path="${stale%%|*}"
+  phrase="${stale#*|}"
+  if grep -qF "$phrase" "$AI_ROOT/$path"; then
+    die "$path still teaches the retired LinkedIn tactic: $phrase"
+  fi
+done
+grep -q 'prose-rhythm-check.sh' "$AI_ROOT/standards/20260621-CONTENT-STANDARD.md" \
+  || die "CONTENT-STANDARD does not require prose-rhythm-check.sh on narrative drafts"
+grep -q 'prose-rhythm-check.sh' "$AI_ROOT/skills/biz-writing/skill.md" \
+  || die "biz-writing does not require prose-rhythm-check.sh before delivery"
+grep -q 'Contrastive negation' "$AI_ROOT/standards/20260621-CONTENT-STANDARD.md" \
+  || die "CONTENT-STANDARD lost the contrastive-negation ban"
+if grep -q "Here's why —" "$AI_ROOT/skills/biz-social/platforms/linkedin.md"; then
+  die "linkedin.md Good example still contains an em dash for agents to copy"
+fi
+ok "LinkedIn drafting skills no longer teach the retired tactics"
+
 ok "IT services lens (BIZ-12) + biz-career registered and routed"
 ok "routing + scaffold + concept registry wired for design"
 

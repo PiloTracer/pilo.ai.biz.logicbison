@@ -2,6 +2,36 @@
 
 > **Context budget (CONVENTIONS):** history is moved, never deleted. Older session blocks live here; the live `context/HANDOFF.md` keeps the newest blocks and carries a pointer to this file. Newest-first.
 
+## Session summary (2026-10-15, deploy-reliability close)
+
+| Step | Status |
+|------|--------|
+| Audit share of `.work/feedback/20261015-deploy-configure-cohabitate.md/` (in `pilo.ai.logicbison`): biz had `BIZ_SOURCE` override + `bash scripts/` bake/verify already; the gap was an unguarded force overwrite | Done |
+| `scripts/biz-deploy-basic.sh`: arg token `confirm-overwrite-cursorrules`; force on existing `.cursorrules` → BLOCKED exit 1 + lost-content listing unless the token is named; default skip unchanged | Done |
+| `skills/biz-deploy-basic/skill.md`: force row, flag-equivalence note, leak-block, step 3, idempotency, checklist (6 spots) | Done |
+| Evidence: force blocked/token/skip matrix on mktemp targets; `framework-verify` PASS | Done |
+
+**Verify in-repo:** `bash scripts/framework-verify.sh` · `bash scripts/biz-deploy-basic.sh /tmp/t --force` (expect BLOCKED exit 1) · append the token to overwrite.
+
+---
+
+## Session summary (2026-10-09, judgment-quality layer close)
+
+| Step | Status |
+|------|--------|
+| Audited the advice/planning layer for judgment-quality mechanisms: framework-wide absence of decision records, outcome tracking, base rates, pre-mortems, sensitivity, scenario analysis, and reversibility confirmed by grep plus a 10-file skill audit; BIZ-01–06 concept stubs found orphaned (no skill references any of them) | Done |
+| **Decision loop shipped** — `.work.biz/decisions/DECISIONS.md` + template (7 required columns + Calibration + Repeating-misses), `CONVENTIONS.md` § Decision loop (consequence test, record rule, scoring rule, calibration rule, empty-ledger warning); writers wired into `biz-strategy` (certify/amend), `biz-advisory` (step 8), `biz-pricing` (set/revise), `biz-market-validate` (go), `biz-proposal` (send); auditor added as `@biz-review quarterly` § Decision audit + weekly overdue flag + monthly dead-assumption cross-check | Done |
+| **Reality check shipped** — `biz-strategy` greenfield Element 8 (arithmetic table + outside view) and certify checks 11 Reality arithmetic, 12 Outside view, 13 Decision record; `biz-pricing` pre-quote reality check (margin / capacity / runway); `biz-advisory` outside-view step 4b + "does the math close" | Done |
+| **Evidence grades A–D + freshness** — CONVENTIONS § Evidence discipline extended (tier ladder, grade-the-claim rule, 18/12-month freshness); consumed by `biz-advisory` step 4, the assumption-ledger Grade column, `biz-pricing` anchors, `biz-market-validate` Signal grade, `biz-sources` catalog | Done |
+| **Load-bearing unknown gate** replaces the 30%-unknown count (certify check 3); ledger gains Load-bearing / If wrong / Grade columns; probe targets the largest blast radius first + new Reality question row | Done |
+| **`@biz-director` never dead-ends** — 5 new intent rows, 4-way judgment-route disambiguation, no-match default (one splitting question → `@biz-advisory` fallback → orientation fallback → gap detection), decision ledger in I0, completion contract requires the row | Done |
+| Manifest sync (rule #22): `decisions` dir + `decisions/DECISIONS.md` across bootstrap.sh, WORK_DIRS, WORK_FILES, templates/README, work/README.md.template, biz-bootstrap § I1/I2 (`empty ledger` warning), biz-deploy-basic; DIRECTORY_MAP canonized + Decision rule | Done |
+| Routing surfaces: PROCESS_ROUTER (5 rows + judgment-loop section), START_HERE (tree, strategy/generative tables, resume, reading order, anti-patterns), skills/README (5 rows + `decisions` entry), `.cursorrules` + template (`{DECISIONS}`, Before-Claiming-Completion items 3–5, refreshed rows) | Done |
+| `framework-verify.sh` — new "Decision loop wiring" block (template + 7 columns + conventions + 5 writers + auditor + director routing); bootstrap smoke test confirms `decisions/DECISIONS.md` scaffolds in a fresh target | Done |
+| Gates: framework-verify PASS (rsync `--no-g` shim for the sandbox chgrp issue), gate-verify PASS (n/a — no ledger), touch-scope PASS (25 files), blast-radius WARN (10 areas, cross-cutting by design — acknowledged) | Done |
+
+---
+
 ## Session summary (2026-09-10, evidence-guard hardening close)
 
 | Step | Status |

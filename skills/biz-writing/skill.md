@@ -219,7 +219,7 @@ If any test fails, revise the draft before moving to Step 4.
   prompt tied to the topic. Avoid broad self-help questions like
   "What do you think?" or "What's the one X in your org?"
 
-[Hashtags]    — 3-5 max. Niche conversation tags, not broad categories.
+[Hashtags]    — 0-3, or none. 10+ is a reach penalty.
 ```
 
 **LinkedIn post anti-patterns:**
@@ -227,20 +227,12 @@ If any test fails, revise the draft before moving to Step 4.
 - Abstract conceptual hooks ("The most dangerous X is the one nobody owns").
 - Repetitive triplet cadence ("The one that… / The one that… / The one that…").
 - Short-paragraph overload without a concrete payoff.
-- Hiding the actionable framework in the first comment. The first comment is for links, not for the lesson. If the post contains a checklist or audit, put it in the body or make it a carousel.
+- A URL in the body or in a first comment. LinkedIn detects that workaround and suppresses the post. Put a checklist in the body or a carousel. Name a resource in words and point to Featured or the bio.
 - Generic engagement questions as the only CTA.
 
 **LinkedIn format selection:** Before writing, decide whether the topic is a framework/checklist. If yes, strongly consider a **carousel** (6–12 slides, PDF upload) — it is currently LinkedIn's highest-reach format for save-worthy frameworks. Use a text post only when the value is a single story, hot take, or lesson.
 
-**CRITICAL — LinkedIn external-link rule:** Do **NOT** include external links (GitHub, websites, articles, etc.) in the post body. LinkedIn's algorithm demotes posts containing links and will show them to far fewer people. If the post needs to reference a URL, provide it separately as a first-comment suggestion:
-
-```
-First comment: "Links to the open-source Agent OSs: github.com/PiloTracer/.ai · .ai.ui · .ai.biz · .ai.soc"
-```
-
-Or adapt the comment text to the links relevant to the post. The operator should post the body first, then immediately add the link comment. This keeps reach high while the resources remain one tap away.
-
-**Remind the operator** of this rule each time LinkedIn content is delivered — do not assume they remember.
+**LinkedIn links:** No URL in the post body and none in a first comment. A body link is reported at about a 60% reach cut, and the old first-comment workaround at 20–80% (grade C, `docs/sources/verified-sources.md` § LinkedIn distribution). Keep the post self-contained. If a resource must be named, say where it lives (Featured or the bio) in words. Load `skills/biz-social/platforms/linkedin.md` before drafting a LinkedIn post; this skill does not restate that guide.
 
 #### Case study
 
@@ -464,7 +456,7 @@ Close the status report per the Operator handoff contract: gaps needing operator
 - [ ] Is the length appropriate for the channel?
 - [ ] Technology tilt: is there at least one concrete technical detail per major section?
 - [ ] Are unproven claims either backed by a cited source or marked **Unverified**?
-- [ ] **LinkedIn only:** Are all external links stripped from the post body and placed as a first-comment suggestion? Remind operator about this.
+- [ ] **LinkedIn only:** No URL in the body or a first comment. Resource named in words (Featured or bio). On a narrative draft, `bash scripts/prose-rhythm-check.sh <file>` was run and the PASS, FAIL, or SKIP line is in the delivery.
 - [ ] **LinkedIn only:** If the post contains a checklist/framework, is it in the body or a carousel rather than hidden in the first comment?
 - [ ] **LinkedIn only:** Would this survive 30 seconds of scrutiny by a skeptical operator in the ICP's industry?
 

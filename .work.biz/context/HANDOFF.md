@@ -1,9 +1,24 @@
 # HANDOFF — Session Bookmark
 
-> **Date:** 2026-11-14
-> **Status:** Closed — 2026-11-14 — goal: improve the Business OS framework. Shipped **v0.8.0**: BIZ-14 geographic sourcing, a lead-facing natural-voice floor, three corrected LinkedIn tactics, `framework-verify` 66→102 checks, both change-safety gates made untracked-aware, and a documented release process. Plan of record with full evidence: `plans/plan_framework_improvement_20261114.md`.
->
-> **Superseded open session (2026-11-05, never closed):** goal was `@biz-deploy-basic update` on `/mnt/work/Projects/system-news`. Measured 2026-11-14, the deploy **did land**: `system-news/.cursorrules` carries a paired `BIZ_DESIGN_OS_BEGIN`/`END` block, `AI_BIZ_SOURCE=/mnt/work/Projects/pilo.ai.biz.logicbison` at `.cursorrules:486`, `.work.biz/` fully scaffolded (incl. `gates.md`, `decisions/`, `reference/`), and `biz-cursorrules-merge.sh --state` reports `present`. Only the bookend was missing, and it is now written: `NEXT.md:L18` fleet count corrected this session.
+> **Date:** 2026-11-17
+> **Status:** Closed — 2026-11-17 — drafting path aligned with the v0.8.0 LinkedIn correction and the voice floor. No version bump. Plan: `plans/plan_voice_linkedin_consistency_20261117.md`.
+
+---
+
+## Session summary (2026-11-17, drafting-path consistency close)
+
+| Step | Status |
+|------|--------|
+| Read-only audit: the v0.8.0 LinkedIn correction lived in the platform guides, while the skills that draft the post still taught the retired tactics | Done |
+| Content Standard, `biz-writing`, `biz-social`, and `biz-content` now match the guide: no URL in the body or a first comment, 0–3 hashtags or none, first hour is a launchpad | Done |
+| Quoted "Good" examples in `linkedin.md` no longer contain an em dash. Outline dashes are labeled as scaffold | Done |
+| Contrastive negation named as a structural red flag. Advisory reframes are affirmative sentences. Narrative drafts must report `prose-rhythm-check.sh` | Done |
+| `framework-verify` fails if the retired first-comment phrases return. Gates: framework-verify exit 0, gate-verify PASS, touch-scope PASS after scope declaration, blast-radius high (5 areas, cohesive cross-cut, warn-only per Key decision 34) | Done |
+| Voice profile left unfilled. Operator will supply writing samples later | Deferred |
+
+**Verify in-repo:** `bash scripts/framework-verify.sh` (exit 0) · `grep -c 'first-comment suggestion' skills/biz-writing/skill.md skills/biz-social/skill.md` (expect 0).
+
+**Prior sessions below are historical.**
 
 ---
 
@@ -61,44 +76,13 @@
 
 ---
 
-## Session summary (2026-10-15, deploy-reliability close)
-
-| Step | Status |
-|------|--------|
-| Audit share of `.work/feedback/20261015-deploy-configure-cohabitate.md/` (in `pilo.ai.logicbison`): biz had `BIZ_SOURCE` override + `bash scripts/` bake/verify already; the gap was an unguarded force overwrite | Done |
-| `scripts/biz-deploy-basic.sh`: arg token `confirm-overwrite-cursorrules`; force on existing `.cursorrules` → BLOCKED exit 1 + lost-content listing unless the token is named; default skip unchanged | Done |
-| `skills/biz-deploy-basic/skill.md`: force row, flag-equivalence note, leak-block, step 3, idempotency, checklist (6 spots) | Done |
-| Evidence: force blocked/token/skip matrix on mktemp targets; `framework-verify` PASS | Done |
-
-**Verify in-repo:** `bash scripts/framework-verify.sh` · `bash scripts/biz-deploy-basic.sh /tmp/t --force` (expect BLOCKED exit 1) · append the token to overwrite.
-
-**Prior sessions below are historical.**
-
----
-
-## Session summary (2026-10-09, judgment-quality layer close)
-
-| Step | Status |
-|------|--------|
-| Audited the advice/planning layer for judgment-quality mechanisms: framework-wide absence of decision records, outcome tracking, base rates, pre-mortems, sensitivity, scenario analysis, and reversibility confirmed by grep plus a 10-file skill audit; BIZ-01–06 concept stubs found orphaned (no skill references any of them) | Done |
-| **Decision loop shipped** — `.work.biz/decisions/DECISIONS.md` + template (7 required columns + Calibration + Repeating-misses), `CONVENTIONS.md` § Decision loop (consequence test, record rule, scoring rule, calibration rule, empty-ledger warning); writers wired into `biz-strategy` (certify/amend), `biz-advisory` (step 8), `biz-pricing` (set/revise), `biz-market-validate` (go), `biz-proposal` (send); auditor added as `@biz-review quarterly` § Decision audit + weekly overdue flag + monthly dead-assumption cross-check | Done |
-| **Reality check shipped** — `biz-strategy` greenfield Element 8 (arithmetic table + outside view) and certify checks 11 Reality arithmetic, 12 Outside view, 13 Decision record; `biz-pricing` pre-quote reality check (margin / capacity / runway); `biz-advisory` outside-view step 4b + "does the math close" | Done |
-| **Evidence grades A–D + freshness** — CONVENTIONS § Evidence discipline extended (tier ladder, grade-the-claim rule, 18/12-month freshness); consumed by `biz-advisory` step 4, the assumption-ledger Grade column, `biz-pricing` anchors, `biz-market-validate` Signal grade, `biz-sources` catalog | Done |
-| **Load-bearing unknown gate** replaces the 30%-unknown count (certify check 3); ledger gains Load-bearing / If wrong / Grade columns; probe targets the largest blast radius first + new Reality question row | Done |
-| **`@biz-director` never dead-ends** — 5 new intent rows, 4-way judgment-route disambiguation, no-match default (one splitting question → `@biz-advisory` fallback → orientation fallback → gap detection), decision ledger in I0, completion contract requires the row | Done |
-| Manifest sync (rule #22): `decisions` dir + `decisions/DECISIONS.md` across bootstrap.sh, WORK_DIRS, WORK_FILES, templates/README, work/README.md.template, biz-bootstrap § I1/I2 (`empty ledger` warning), biz-deploy-basic; DIRECTORY_MAP canonized + Decision rule | Done |
-| Routing surfaces: PROCESS_ROUTER (5 rows + judgment-loop section), START_HERE (tree, strategy/generative tables, resume, reading order, anti-patterns), skills/README (5 rows + `decisions` entry), `.cursorrules` + template (`{DECISIONS}`, Before-Claiming-Completion items 3–5, refreshed rows) | Done |
-| `framework-verify.sh` — new "Decision loop wiring" block (template + 7 columns + conventions + 5 writers + auditor + director routing); bootstrap smoke test confirms `decisions/DECISIONS.md` scaffolds in a fresh target | Done |
-| Gates: framework-verify PASS (rsync `--no-g` shim for the sandbox chgrp issue), gate-verify PASS (n/a — no ledger), touch-scope PASS (25 files), blast-radius WARN (10 areas, cross-cutting by design — acknowledged) | Done |
-
----
-
-> Older session summaries (2026-09-10 evidence-guard hardening, 2026-08-21 advisory capability, both 2026-08-19 closes, and earlier) moved to `context/HANDOFF.archive.md` (Context budget, CONVENTIONS). Newest-first; nothing deleted.
+> Older session summaries (2026-10-15 deploy-reliability, 2026-10-09 judgment-quality, 2026-09-10 evidence-guard, and earlier) moved to `context/HANDOFF.archive.md`. Newest-first; nothing deleted.
 
 ## Pending for next session
 
 | # | Task | Priority |
 |---|------|----------|
+| 0 | Operator will supply 2–3 real writing samples later. Then fill `reference/VOICE_PROFILE.md` from those samples and run one narrative draft through `prose-rhythm-check.sh` (UNKNOWNS #25) | High |
 | 1 | Smoke-test `@biz-advisory` on `future-strategy` against its own feedback case (`.work.biz/feedback/20260820-small-rescue-team.md`): does a cold run clear the calibration bar (reframe, ranked options with precedent, anti-advice, decisive pick)? Gaps become new BIZ-10 patterns (UNKNOWNS #12) | High |
 | 1b | Smoke-test the biz-session verbs on a live target project: standalone `commit` (session stays open), `add` (stage-only), `close commit scoped`, task-ref extraction into `.work.biz/active-ref` | High |
 | 1c | Retry `future-strategy` close commit/push with the patched biz-session — `reasonix.toml` sandbox now allows its own `.work.biz/` + `.git/`; pending `.work.biz` changes + the `reasonix.toml` edit are uncommitted there | High |
@@ -180,6 +164,7 @@
 | 51 | **`standards/20260621-BRAND-GUIDE.md` stays thin by operator decision (2026-11-14)** — 2,527 B while carrying the `brand-ready` gate. Deliberate, not an oversight; do not "fix" it by padding. |
 | 52 | **Change-safety gates measure untracked files too.** Staged content still wins when anything is staged (that is what makes split-into-scoped-commits executable), but with nothing staged both gates now include `git ls-files --others --exclude-standard`. A scaffold or a new skill folder is a touched path. |
 | 53 | **Skill size is ratcheted, not policed by taste.** `framework-verify` fails when a `skill.md` grows past its byte budget; the three grandfathered files are named in the script. Raising a baseline is a deliberate written act, and the intended direction is extraction into a sibling `reference.md`, the pattern `biz-social/platforms/` already uses. |
+| 54 | **A correction that the drafting skill does not load is not a correction.** Platform-guide fixes must land in the skill the agent was invoked with, and in the Content Standard when that standard still states the old rule. `framework-verify` fails if the retired first-comment instruction strings return. Advisory reframes are affirmative sentences, because the operator repeats them. |
 
 ---
 

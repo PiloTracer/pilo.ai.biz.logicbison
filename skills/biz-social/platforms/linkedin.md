@@ -26,13 +26,13 @@ Evidence and grades: `docs/sources/verified-sources.md` § LinkedIn distribution
 
 ### LinkedIn post structure
 
-Apply the Universal Platform Format with these deltas:
+Apply the Universal Platform Format with these deltas. The dashes below are outline labels. They never appear in the post, and neither do the words HOOK, BODY, or INSIGHT.
 
 ```
 HOOK (first 1-2 lines — this is the only text visible before "see more")
   — Stop the scroll. Specificity > mystery.
   — Bad: "I learned something important today..."
-  — Good: "I chose PostgreSQL over MongoDB for a $40k financial platform. Here's why — and what I almost got wrong."
+  — Good: "I chose PostgreSQL over MongoDB for a $40k financial platform. Here is what I almost got wrong."
 
 BODY (3-6 short paragraphs)
   — Personal angle: "I" statements build trust faster than "we" or impersonal analysis.
@@ -42,7 +42,7 @@ BODY (3-6 short paragraphs)
 INSIGHT / THE LESSON
   — The sentence people screenshot and share.
   — Must be specific enough that it feels earned, not generic.
-  — "The biggest lesson: when your database has 4,900 rules, normalization isn't optional — it's survival."
+  — "The biggest lesson: a database with 4,900 rules survives only if it is normalized."
 
 CTA / ENGAGEMENT PROMPT (optional, context-dependent)
   — Invite conversation, not clicks.
@@ -159,7 +159,7 @@ Use when you want to **build trust faster than text or carousel can**. Video let
 | First frame | Treat as the thumbnail: face or clear visual + hook text overlay |
 | Structure | 0–3 sec hook → one idea with proof → screenshot-worthy lesson → conversation CTA |
 | CTA | Ask a professional question; never "DM me" or external link in post copy |
-| Posting ritual | First comment within 60 seconds; engage heavily in first 60 minutes |
+| Posting ritual | Reply while you are present. A flat first hour is not a dead post. No URL in a first comment. |
 
 For the complete production mentor guide — scripting, shooting, editing, captions, equipment, analytics, 30-day challenge, and repurposing — see `skills/biz-social/platforms/linkedin-video.md`.
 
@@ -175,6 +175,6 @@ When running `@biz-social research linkedin`, use these methods:
 | **Industry conversation scan** | Search relevant industry terms on LinkedIn. Sort by "Top" and "Latest." What are the active debates? Who's driving conversation? |
 | **Competitor content audit** | Review last 20 posts from 5 accounts in the project's space. Note hook styles, formats, engagement patterns, and comment quality. |
 | **Content white space** | Identify topics that the project's target buyer cares about but no one is covering well on LinkedIn. Look for shallow posts with high engagement — these are opportunities to go deeper. |
-| **Hashtag analysis** | Search 3-5 niche hashtags. What content performs best? What's oversaturated? What's absent? |
+| **Topic scan** | Search the 2-3 declared territories in words. Hashtags are a weak secondary signal, 0-3 if used at all. |
 | **Poll & question mining** | Find polls and question posts in the space. What gets votes? What gets comments? What reveals audience uncertainty? |
 

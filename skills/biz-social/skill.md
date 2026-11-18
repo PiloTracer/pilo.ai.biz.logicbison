@@ -38,7 +38,7 @@ Generate platform-native social media content. Every platform has a different cu
 | `@biz-social write reddit - <topic>` | Generate a Reddit post (self-post, comment, AMA thread) |
 | `@biz-social write instagram - <topic>` | Generate Instagram content (caption + visual brief, carousel script, story) |
 | `@biz-social write linkedin - <topic>` | Generate a LinkedIn text post calibrated to professional audience |
-| `@biz-social write linkedin carousel - <topic>` | Generate a LinkedIn document/carousel (slide copy + caption + first comment) |
+| `@biz-social write linkedin carousel - <topic>` | Generate a LinkedIn document/carousel (slide copy + caption, no outbound URL) |
 | `@biz-social write linkedin video - <topic>` | Generate a complete LinkedIn native video package (script, shot list, captions, post copy, posting ritual) |
 | `@biz-social write facebook - <topic>` | Generate Facebook content (group post, page update, community post) |
 | `@biz-social write x - <topic>` | Generate an X (Twitter) post (tweet, thread, reply) calibrated to real-time, concise format |
@@ -696,7 +696,7 @@ Different platforms support different levels of depth. Structure your content py
 
 - [ ] Is the content calibrated to this specific platform's culture and audience?
 - [ ] Does the piece's implied buyer match `strategy/target-buyer-profile.md` (primary or a named secondary)? If it addresses a different audience than the strategy serves, revise or flag before delivering.
-- [ ] Does the CTA / first comment point to a current offer in `strategy/offer-scope.md`? No bare calendar links without a one-line offer bridge; no framings from superseded positioning.
+- [ ] Does the CTA point to a current offer in `strategy/offer-scope.md`? No bare calendar links without a one-line offer bridge; no framings from superseded positioning.
 - [ ] Freshness: if anything under `strategy/` is newer than the last certification (or `gates.md` lacks strategy-ready PASS), surface that before delivering publish-ready copy.
 - [ ] Does the first line/frame/hook earn its place?
 - [ ] **Appeal:** does the piece take a position an informed peer could disagree with?
@@ -706,8 +706,7 @@ Different platforms support different levels of depth. Structure your content py
 - [ ] Have I removed all hollow adjectives and marketing language?
 - [ ] Is the length appropriate for this platform?
 - [ ] Is the CTA platform-appropriate (no "DM me" on Reddit, no external links in body on Instagram)?
-- [ ] **LinkedIn:** Are all external links stripped from the post body and placed as a first-comment suggestion?
-- [ ] **LinkedIn:** Has the operator been reminded to post the link as the first comment?
+- [ ] **LinkedIn:** No URL in the body or a first comment. Name the resource in words; point at Featured or the bio. Run `bash scripts/prose-rhythm-check.sh` on narrative drafts and report PASS, FAIL, or SKIP.
 - [ ] **LinkedIn carousel:** One idea per slide, ≤40 words/slide, hook on slide 1, no links on slides?
 - [ ] **LinkedIn video:** Is the first frame a silent hook? Are captions burned in? Is there one clear takeaway, one proof point, and a conversation-prompt CTA?
 - [ ] **YouTube:** Are title + thumbnail evaluated as a pair and CTR-optimized?

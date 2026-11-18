@@ -28,7 +28,7 @@ Reusable judgment patterns for situational advice ("what should I do?"). Used by
 
 ### 4. Anchor channel
 **When:** the operator has a former employer, ex-colleagues, vendors, or past clients.
-**The move:** the first sales channel is the network that already trusts the work. The ask is not "do you know anyone hiring?" but "we're operating independently now — if you know a company struggling with <specific problem>, we'd love to talk." Check contractual / non-solicit constraints first.
+**The move:** the first sales channel is the network that already trusts the work. The ask names the situation: "We're operating independently now. If you know a company struggling with <specific problem>, I'd like to talk." Skip "do you know anyone hiring?" Check contractual and non-solicit constraints first.
 **Failure mode:** leading with need instead of capability; skipping the legal check.
 
 ### 5. Complementor channel
@@ -64,6 +64,6 @@ Reusable judgment patterns for situational advice ("what should I do?"). Used by
 ## Output
 
 - Which patterns apply to the operator's situation, and why
-- The reframe sentence(s) — "don't sell X, sell Y" — ready to use
+- The reframe sentence(s): affirmative, ready to say to a buyer. No "don't sell X, sell Y". No em dash.
 - The concrete offer structure implied (entry offer, configurations, ladder)
 - Evidence to gather before committing (per pattern: what would prove the move works in this market)

@@ -36,10 +36,13 @@ The appeal standard never overrides truth: a sharper claim is never worth an inv
 
 ### LinkedIn
 
-- Post body: no external links.
-- First comment: links to resources.
-- Carousels: 7–10 slides, one idea per slide, strong cover.
-- Text posts: 4–8 short paragraphs, white space, one strong opening line.
+Aligned with `skills/biz-social/platforms/linkedin.md` and `docs/sources/verified-sources.md` § LinkedIn distribution (2026). The multipliers there are grade C and directional.
+
+- No external URL in the post body, and none in a first comment. The first-comment workaround is detected and suppressed (reported 20–80% reach loss). Name the resource in words and point to the profile Featured section or the bio. A native article or document post is on-platform.
+- Text posts: about 150–300 words, 4–8 short paragraphs, one strong opening line. Write for dwell and saves.
+- Hashtags: 0–3, or none. Ten or more is a visibility penalty. Semantic matching does the topic work.
+- Carousels: 6–12 slides, one idea per slide, strong cover.
+- The first hour is a launchpad, not the verdict. Posts circulate for two to three weeks. Do not judge a post at hour two, and do not delete and repost on that basis.
 
 ### YouTube long-form
 
@@ -66,7 +69,7 @@ Before any piece is marked done:
 - [ ] Platform-native formatting applied
 - [ ] External links placed according to platform rules
 - [ ] Proofread; no placeholder text
-- [ ] AI-artifact scan passed (em-dashes, hedging words, generic transitions, passive voice, empty intensifiers)
+- [ ] AI-artifact scan passed (em-dashes, contrastive negation, hedging words, generic transitions, passive voice, empty intensifiers). Narrative drafts: `prose-rhythm-check.sh` result reported, not assumed
 - [ ] Scheduled or published with tracking note in `.work.biz/plans/NEXT.md` or content tracker
 
 ## Anti-AI-artifact rules
@@ -85,7 +88,7 @@ Readers and viewers increasingly associate certain stylistic tics with low-effor
 - **Numbered frameworks that don't need numbers.** "3 ways to…" only when the structure genuinely helps the reader. Don't force a count.
 - **Excessive subheadings.** In long-form, one subheading every 200–300 words is enough. More frequent subheadings feel like an outline, not an article.
 - **Overly tidy paragraph symmetry.** Human writing has ragged edges. Not every paragraph needs to be the same length or follow the same shape.
-- **The "not just X, it's Y" construction.** "It's not just a tool, it's a mindset", "X isn't just about Y". A favored AI crescendo that adds emphasis without information. State the Y directly.
+- **Contrastive negation.** "It's not just a tool, it's a mindset." "It's not X. It's Y." "X, not Y." "Don't sell X, sell Y." The drumroll adds no information, and it is the shape models reach for when told to sound sharp. State the Y. If the rejected alternative matters, give it its own sentence and a reason.
 - **Confessional openers.** "Here's the thing:", "Let's be honest", "Real talk:". They simulate candor without delivering it. Say the candid thing without the announcement.
 - **Rhetorical questions as a crutch.** At most one rhetorical question per piece, and never as the opener. Humans assert; chatbots ask and then answer themselves.
 - **Triplet cadence.** Three parallel clauses stacked for rhythm ("The one that… The one that… The one that…") or anaphora repeated down a page reads as generated within two lines. Break the pattern before it starts.
@@ -139,6 +142,7 @@ Replace these with plain, specific language:
 The goal is not polished prose. The goal is a credible human talking to a peer.
 
 - **Read the draft aloud.** This is a gauntlet, not a suggestion. If it sounds like a report, a pitch deck, or a chatbot, rewrite it. If you stumble saying a sentence, the reader stumbles reading it.
+- **Measure the rhythm on narrative drafts.** For a post, article, script, or case study, run `bash scripts/prose-rhythm-check.sh <file>` and report PASS, FAIL, or SKIP in the delivery. The script exists because a draft that already obeyed the banned-word list was still rejected: sentences of the same length, chopped into verbless fragments, read as generated. SKIP means the file is under 120 words of narrative prose (a checklist, a short note). FAIL means rewrite before delivery. Do not claim the scan passed without the script's line.
 - **Use contractions where natural.** "It's", "don't", "can't", "you're" are fine unless the brand voice forbids them.
 - **Vary sentence length.** Mix short punches with longer explanations. Avoid chains of same-length sentences. Two short-clause sentences back to back is a cadence tell: combine one of them or change its shape.
 - **Allow minor roughness.** A slightly informal opener or a sentence fragment is better than a perfectly balanced but lifeless paragraph.
